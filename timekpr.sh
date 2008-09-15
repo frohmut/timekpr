@@ -45,11 +45,11 @@ function notify() {
 		/proc/$pid/environ | sed -e 's/DBUS_SESSION_BUS_ADDRESS=//'`
 	# use it - give a warning, then another one 1/2 way through grace_period
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/60)) sec to save your work and log out."
+		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/60)) minutes to save your work and log out."
 	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/120)) sec to save your work and log out."
+		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/120)) minutes to save your work and log out."
 	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
