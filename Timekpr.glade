@@ -741,7 +741,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label" translatable="yes">Reward</property>
+                    <property name="label" translatable="yes">Apply Reward</property>
                     <property name="response_id">0</property>
                     <signal name="clicked" handler="on_rewardButton_clicked"/>
                   </widget>
@@ -792,7 +792,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label" translatable="yes">Disable limits today</property>
+                    <property name="label" translatable="yes">Disable Boundaries</property>
                     <property name="response_id">0</property>
                     <signal name="clicked" handler="on_extendLimitsButton_clicked"/>
                   </widget>

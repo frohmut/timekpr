@@ -18,8 +18,8 @@ class timekprGUI:
 	def __init__(self):
 		
 		#Set the Glade file
-		gladefile = "/usr/local/bin/Timekpr.glade"
-		self.wTree = gtk.glade.XML(gladefile, "window1")
+		self.gladefile = "/usr/local/bin/Timekpr.glade"
+		self.wTree = gtk.glade.XML(self.gladefile, "window1")
 		self.limitSpin0 = self.wTree.get_widget("limitSpin0")
 		self.limitSpin1 = self.wTree.get_widget("limitSpin1")
 		self.limitSpin2 = self.wTree.get_widget("limitSpin2")
@@ -90,13 +90,13 @@ class timekprGUI:
 	def rewardButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
 		arg = str(self.limitSpin0.get_value_as_int())
-		cmd = '/usr/local/bin/addtime.sh ' + user + " " + arg
+		cmd = 'addtime.sh ' + user + " " + arg
 		os.system(cmd)
 		
 		
 	def extendLimitsButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
-		cmd = '/usr/local/bin/extendlimits.sh ' + user
+		cmd = 'extendlimits.sh ' + user
 		os.system(cmd)
 
 	def boundariesCheck_toggled(self, widget):
