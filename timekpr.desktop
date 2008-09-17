@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Timekeeper
+Name[en_CA]=Timekeeper
+Name[en_GB]=Timekeeper
+Comment=Keep control of computer usage
+Comment[en_CA]=Keep control of computer usage
+Comment[en_GB]=Keep control of computer usage
+Exec=gksu timekpr-gui
+Icon=config-users
+Terminal=false
+Type=Application
+Categories=GTK;System;Settings;
+StartupNotify=true
+Encoding=UTF-8

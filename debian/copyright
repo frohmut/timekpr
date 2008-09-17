@@ -1,0 +1,20 @@
+This package was debianized by Savvas Radevic (medigeek)
+<vicedar@gmail.com> on Wed, 17 Sep 2008 10:00:00 +0200.
+
+Upstream Author: Various
+
+Copyright:
+	Copyright (C) 2008 Chris Jackson <chris@91courtstreet.net>
+	Further developed by Even Nedberg <code@nedberg.net>
+
+License:
+
+    timekpr is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, either version 3 of
+   the License, or (at your option) any later version.
+    timekpr is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   See <http://www.gnu.org/licenses/>.
