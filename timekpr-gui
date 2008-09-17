@@ -18,7 +18,7 @@ class timekprGUI:
 	def __init__(self):
 		
 		#Set the Glade file
-		self.gladefile = "/usr/local/bin/Timekpr.glade"
+		self.gladefile = "/usr/share/timekpr/timekpr.glade"
 		self.wTree = gtk.glade.XML(self.gladefile, "window1")
 		self.limitSpin0 = self.wTree.get_widget("limitSpin0")
 		self.limitSpin1 = self.wTree.get_widget("limitSpin1")
