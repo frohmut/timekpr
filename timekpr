@@ -1,33 +1,56 @@
 #!/bin/bash
-###
+
 # timekpr.sh - simple 
 # watches gnome sessions and logs them out once the user has exceeded a set, per day limit
 # /var/lib/timekpr/$username.time hold a count of seconds user has had a gnome session
 # /var/lib/timekpr/$username hold the daily allowed seconds for the user and other configurations
 #
-# you may need to install notify-send with: $apt-get install libnotify-bin
-#
-# Copyright 2008 Chris Jackson <chris@91courtstreet.net>
+
+# Ubuntu - you are required to execute command, in order for the program to work properly:
+# apt-get install libnotify-bin
+
+# Copyright / License:
+# Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
 # Further developed by Even Nedberg <code@nedberg.net>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
 # See <http://www.gnu.org/licenses/>. 
 #
 
-default_limit=86400 # All day, new users is given this value
-grace_period=120 # how much time do we give to let the user log out?
-poll_time=45 # How often the script should check the timelogs
-#from=7 # When is the users allowed to log in
-#to=22 # When is the users no longer allowed to be loged in
+## CONFIGURE START - You can change the following values:
+
+# FIXME: Bad explanation, is this a time limit for one day?
+# The default limit is used to set a time limit.
+# New users are given by default a limit of 86400 seconds.
+# The limit is expressed in seconds, e.g. 86400 means all day
+default_limit=86400
+
+# This is the grace period, where a notification pops up letting the users
+# know that their time usage will be over soon.
+# Users are given by default 120 seconds to finish up their work.
+# Limit is expressed in seconds, e.g. 120 means 2 minutes
+grace_period=120
+
+# FIXME: Bad explanation, is it seconds or minutes?
+# How often should the script check the timelogs
+poll_time=45
+
+# When are the users allowed to log in, uncomment to enable
+# (remove the '#' character in the following line).
+#from=7
+
+# Users will no longer be allowed to log in after this time/hour
+# (24-hour format), e.g. 22 means after 10 o'clock pm.
+#to=22
+
+## CONFIGURE END - Do not edit after this line!
 
 #Default directory
 #FIXME: Should be /etc/timekpr ?
@@ -37,16 +60,14 @@ TIMEKPRDIR=/var/lib/timekpr
 SESSION_MANAGER=x-session-manager
 
 function notify() {
-## get the display and xauthority used by out session manager
-	UDISPLAY=`grep -z DISPLAY \
-		/proc/$pid/environ | sed -e 's/DISPLAY=//'`
-	XAUTHORITY=`grep -z XAUTHORITY \
-		/proc/$pid/environ | sed -e 's/XAUTHORITY=//'`
-		
+	# get the display and xauthority used by out session manager
+	UDISPLAY=`grep -z DISPLAY /proc/$pid/environ | sed -e 's/DISPLAY=//'`
+	XAUTHORITY=`grep -z XAUTHORITY /proc/$pid/environ | sed -e 's/XAUTHORITY=//'`
+
 	# find DBUS session bus for this session
-	DBUS_SESSION_BUS_ADDRESS=`grep -z DBUS_SESSION_BUS_ADDRESS \
-		/proc/$pid/environ | sed -e 's/DBUS_SESSION_BUS_ADDRESS=//'`
-	# use it - give a warning, then another one 1/2 way through grace_period
+	DBUS_SESSION_BUS_ADDRESS=`grep -z DBUS_SESSION_BUS_ADDRESS /proc/$pid/environ | sed -e 's/DBUS_SESSION_BUS_ADDRESS=//'`
+
+	# use it - give a warning, then another one half way through grace_period
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
 		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/60)) minutes to save your work and log out."
 	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
@@ -60,11 +81,11 @@ function notify() {
 }
 
 function logOut() {
-# FIXME - should really check to see if user has logged out yet 
-	kill -HUP $pid    #this is a pretty bad way of killing a gnome-session, but we warned 'em
+# FIXME: should really check to see if user has logged out yet 
+	kill -HUP $pid #this is a pretty bad way of killing a gnome-session, but we warned 'em
 	touch $TIMEKPRDIR/$username.logout
 
-## uncomment the following to  brutally kill all of the users processes
+## uncomment the following to brutally kill all of the users processes
 #	sleep 5
 #	pkill -u $username
 
@@ -76,14 +97,12 @@ function logOut() {
 
 
 while(true); do
-# get the usernames and PIDs of sessions
+	# get the usernames and PIDs of sessions
 	pidlists=$( ps --no-heading -fC $SESSION_MANAGER | awk 'BEGIN{ FS=" " } { print $1 "," $2 }' )
 	for pidlist in $pidlists; do
-		
-		# split username and pid - FIXME - I bet this would be faster with bash arrays and substitution 
+		# split username and pid - FIXME: I bet this would be faster with bash arrays and substitution 
 		username=$( echo $pidlist | awk 'BEGIN{ FS=","} { print $1}' )
 		pid=$( echo $pidlist | awk 'BEGIN{ FS=","} { print $2}' )
-			
 		# If the user is not enabled, give him $default_limit
 		if [[ -e "$TIMEKPRDIR/$username" ]]; then
 			source $TIMEKPRDIR/$username
@@ -98,14 +117,13 @@ while(true); do
 			fi
 
 			echo $username, $pid, $timekpr
-			
-			# Is the user allowed to be loged in at this time?
+			# Is the user allowed to be logged in at this time?
 			# We take it for granted that if they are allowed to log in all day ($default_limit) then
 			# they can log in whenever they want, ie they are normal users
-			
+
 			# Get the index for the current day
 			index=$(date +%w)
-			
+
 			if ( [[ $(date +%k) -lt ${from[$index]} ]] || [[ $(date +%k) -ge ${to[$index]} ]] ); then
 				# Has the user been given extended log in hours?
 				if [[ -e "$TIMEKPRDIR/$username.allow" ]]; then
@@ -121,8 +139,7 @@ while(true); do
 					logOut
 				fi
 			fi
-			
-		
+
 			# Is the limit exeeded
 			if [[ $timekpr -ge ${limit[$index]} ]]; then
 				# Has the user already been kicked out?

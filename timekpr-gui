@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#FIXME: self.configRoot = '/var/lib/timekpr/' should be '/etc/conf/timekpr/' ?
+#FIXME: self.configRoot = '/var/lib/timekpr/' should be '/etc/timekpr/' ?
 
 import sys, glob, os
 try:
