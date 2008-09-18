@@ -152,6 +152,33 @@ class timekprGUI:
 				self.limitSpin[i].set_value(float(limits[i])/60)
 				self.fromSpin[i].set_value(float(bfrom[i]))
 				self.toSpin[i].set_value(float(bto[i]))
+			
+			# Single limits?
+			sl = False
+			# Use limits?
+			ul = True
+			# Use boundaries?
+			ub = True
+			# Single boundaries?
+			sb = False
+			
+			for i in range(1, 7):
+				if limits[i] != limits[i-1]:
+					sl = True
+				if (bfrom[i] != bfrom[i-1]) or (bto[i] != bto[i-1]):
+					sb = True
+			
+			if (limits[0] == str(86400)) and (not sl):
+				ul = False
+			
+			if (bfrom[0] == str(0)) and (bto[0] == str(24)) and (not sb):
+				ub = False
+				
+			self.boundariesCheck.set_active(ub)
+			self.singleBoundaries.set_active(sb)
+			self.limitCheck.set_active(ul)
+			self.singleLimits.set_active(sl)
+			
 		else:
 			for i in range(7):
 				self.limitSpin[i].set_value(300)
