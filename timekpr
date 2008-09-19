@@ -26,7 +26,6 @@
 
 ## CONFIGURE START - You can change the following values:
 
-# FIXME: Bad explanation, is this a time limit for one day?
 # The default limit is used to set a time limit.
 # New users are given by default a limit of 86400 seconds.
 # The limit is expressed in seconds, e.g. 86400 means all day
@@ -38,8 +37,8 @@ default_limit=86400
 # Limit is expressed in seconds, e.g. 120 means 2 minutes
 grace_period=120
 
-# FIXME: Bad explanation, is it seconds or minutes?
-# How often should the script check the timelogs
+# How often should the script check the timelogs.
+# Setting is expressed in seconds, e.g. 45 means 45 seconds.
 poll_time=45
 
 # When are the users allowed to log in, uncomment to enable
@@ -52,9 +51,12 @@ poll_time=45
 
 ## CONFIGURE END - Do not edit after this line!
 
+
 #Default directory
-#FIXME: Should be /etc/timekpr ?
 TIMEKPRDIR=/var/lib/timekpr
+
+#Check if it exists, if not, create it
+[ -d /var/lib/timekpr ] || mkdir /var/lib/timekpr
 
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER=x-session-manager

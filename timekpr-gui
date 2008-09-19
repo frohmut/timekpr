@@ -1,22 +1,58 @@
 #!/usr/bin/env python
-#FIXME: self.configRoot = '/var/lib/timekpr/' should be '/etc/timekpr/' ?
 
-import os, spwd, getpass
+import os, os.path, spwd, pwd, getpass, re
 
 #Check if admin
 if getpass.getuser() != "root":
 	exit('Error: You do not have administrative privileges')
 
+#Import GTK/PyGTK/Glade
 try:
- 	import pygtk
-  	pygtk.require("2.0")
+	import pygtk
+	pygtk.require("2.0")
 except:
-  	pass
+	pass
 try:
 	import gtk
-  	import gtk.glade
+	import gtk.glade
 except:
 	exit(1)
+
+
+# VARIABLES
+configroot = '/var/lib/timekpr/'
+
+#Create configuration folder if not existing
+if not os.path.isdir(configroot):
+	os.mkdir(configroot)
+
+
+#Check if it is a regular user, with userid within UID_MIN and UID_MAX.
+def isnormal(username):
+	userid = int(pwd.getpwnam(username)[2])
+	logindefs = open('/etc/login.defs')
+	uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)',re.M).findall(logindefs.read(), 1)
+	if uidminmax[0] < uidminmax[1]:
+		uidmin = int(uidminmax[0])
+		uidmax = int(uidminmax[1])
+	else:
+		uidmin = int(uidminmax[1])
+		uidmax = int(uidminmax[0])
+	if uidmin <= userid <= uidmax:
+		return 1
+	else:
+		return 0
+
+"""
+#Don't really need this, we have UID_MIN and UID_MAX check.
+#Might be useful later for locking usernames by setting !passwords in /etc/shadow
+#Check if a user has a password, not "!" or "*"
+def haspass(pw):
+	if pw != '!' and pw != '*':
+		return 1
+	else:
+		return 0
+"""
 
 class timekprGUI:
 	#This is the PyWine application
@@ -24,7 +60,7 @@ class timekprGUI:
 	def __init__(self):
 		
 		#Set the Glade file
-		self.gladefile = "/usr/share/timekpr/timekpr.glade"
+		self.gladefile = "timekpr.glade"
 		self.wTree = gtk.glade.XML(self.gladefile, "window1")
 		
 		self.get_limit_spin()
@@ -40,8 +76,7 @@ class timekprGUI:
 		self.extendLimitsButton = self.wTree.get_widget("extendLimitsButton")
 		self.rewardButton = self.wTree.get_widget("rewardButton")
 		self.rewardSpin = self.wTree.get_widget("rewardSpin")
-		self.configRoot = '/var/lib/timekpr/'
-
+		
 		dic = { "on_limitCheck_toggled" : \
 			self.limitCheck_toggled,
 			"on_boundariesCheck_toggled" : \
@@ -62,7 +97,7 @@ class timekprGUI:
 			self.read_settings,
 			"on_cancel_clicked" : \
 			self.cancel_clicked }
-
+		
 		self.wTree.signal_autoconnect (dic)
 		""" Deprecated:
 		self.root = "/home/"
@@ -72,10 +107,9 @@ class timekprGUI:
 			self.userSelect.set_active( 0 )
 		"""
 		#Using /etc/shadow spwd module
-		for line in spwd.getspall():
-			#A normal user has a password, not "!" or "*"
-			if line[1] != '!' and line[1] != '*':
-				self.userSelect.append_text( line[0] )
+		for userinfo in spwd.getspall():
+			if isnormal(userinfo[0]) == 1:
+				self.userSelect.append_text( userinfo[0] )
 				self.userSelect.set_active( 0 )
 		
 		self.read_settings(self)
@@ -139,12 +173,12 @@ class timekprGUI:
 	def rewardButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
 		arg = str(self.limitSpin0.get_value_as_int())
-		cmd = 'timekpr-addtime ' + user + " " + arg
+		cmd = 'timekpr-addtime ' + user + ' ' + arg
 		os.system(cmd)
 	
 	def read_settings(self, widget):
 		user = self.userSelect.get_active_text()
-		configFile = self.configRoot + user
+		configFile = configroot + user
 		if os.path.isfile(configFile):
 			fileHandle = open(configFile)
 			limits = fileHandle.readline()
@@ -206,7 +240,7 @@ class timekprGUI:
 		user = self.userSelect.get_active_text()
 		cmd = 'timekpr-extend ' + user
 		os.system(cmd)
-
+	
 	def boundariesCheck_toggled(self, widget):
 		if self.boundariesCheck.get_active():	
 			self.fromSpin[0].set_sensitive(True)	
@@ -223,7 +257,7 @@ class timekprGUI:
 			self.wTree.get_widget("labelFrom").set_sensitive(False)
 			self.lb[0].set_sensitive(False)
 		self.singleBoundariesCheck_toggled(self)
-			
+	
 	def singleBoundariesCheck_toggled(self, widget):
 		if self.singleBoundaries.get_active() and self.boundariesCheck.get_active():
 			for i in range(1, 7):
@@ -238,9 +272,9 @@ class timekprGUI:
 				self.lb[i].set_sensitive(False)
 			self.lb[0].set_text("Every day")
 			
-
+	
 	def limitCheck_toggled(self, widget):
-		if self.limitCheck.get_active():		
+		if self.limitCheck.get_active():
 			self.limitSpin[0].set_sensitive(True)
 			self.singleLimits.set_sensitive(True)
 			self.wTree.get_widget("labelMinutes").set_sensitive(True)
@@ -298,7 +332,7 @@ class timekprGUI:
 					bTo = bTo + space + str(self.toSpin[0].get_value_as_int())
 				bFrom = bFrom + space + ")"
 				bTo = bTo + space + ")"
-		configFile = self.configRoot + self.userSelect.get_active_text()
+		configFile = configroot + self.userSelect.get_active_text()
 		fileHandle = open(configFile, 'w')
 		if self.limitCheck.get_active() or self.boundariesCheck.get_active():
 			fileHandle.write(limit + "\n")
@@ -308,7 +342,7 @@ class timekprGUI:
 		else:
 			fileHandle.close()
 			os.remove(configFile)
-		
+
 if __name__ == "__main__":
 	tkg = timekprGUI()
 	gtk.main()
