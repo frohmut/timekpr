@@ -1,8 +1,12 @@
 #!/usr/bin/env python
-
 #FIXME: self.configRoot = '/var/lib/timekpr/' should be '/etc/timekpr/' ?
 
-import sys, glob, os
+import os, spwd, getpass
+
+#Check if admin
+if getpass.getuser() != "root":
+	exit('Error: You do not have administrative privileges')
+
 try:
  	import pygtk
   	pygtk.require("2.0")
@@ -12,15 +16,15 @@ try:
 	import gtk
   	import gtk.glade
 except:
-	sys.exit(1)
+	exit(1)
 
 class timekprGUI:
-	"""This is the PyWine application"""
+	#This is the PyWine application
 
 	def __init__(self):
 		
-		#Set the Glade file
-		self.gladefile = "/usr/share/timekpr/timekpr.glade"
+		#Set the Glade file /usr/share/timekpr/timekpr.glade
+		self.gladefile = "timekpr.glade"
 		self.wTree = gtk.glade.XML(self.gladefile, "window1")
 		
 		self.get_limit_spin()
@@ -60,11 +64,19 @@ class timekprGUI:
 			self.cancel_clicked }
 
 		self.wTree.signal_autoconnect (dic)
+		""" Deprecated:
 		self.root = "/home/"
 		self.wildcard = "*"
 		for folder in glob.glob( self.root + self.wildcard ):
 			self.userSelect.append_text(folder.replace( self.root, "" ) )
 			self.userSelect.set_active( 0 )
+		"""
+		#Using /etc/shadow spwd module
+		for line in spwd.getspall():
+			#A normal user has a password, not "!" or "*"
+			if line[1] != '!' and line[1] != '*':
+				self.userSelect.append_text( line[0] )
+				self.userSelect.set_active( 0 )
 		
 		self.read_settings(self)
 		return
