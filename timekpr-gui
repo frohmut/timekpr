@@ -196,6 +196,11 @@ class timekprGUI:
 				self.limitSpin[i].set_value(300)
 				self.fromSpin[i].set_value(7)
 				self.toSpin[i].set_value(22)
+			
+			self.boundariesCheck.set_active(False)
+			self.singleBoundaries.set_active(False)
+			self.limitCheck.set_active(False)
+			self.singleLimits.set_active(False)
 		
 	def extendLimitsButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
