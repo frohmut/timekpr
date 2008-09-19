@@ -1,16 +1,22 @@
-timekpr (0.1.0ubuntu3) intrepid; urgency=low
+timekpr (0.1.0ubuntu4) UNRELEASED; urgency=low
+
+  * GUI: Fixed users list, removed sys and glob modules
+
+ -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 13:35:03 +0200
+
+timekpr (0.1.0ubuntu3) UNRELEASED; urgency=low
 
   * Added init.d script and various changes from source
 
  -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 04:56:33 +0200
 
-timekpr (0.1.0ubuntu2) intrepid; urgency=low
+timekpr (0.1.0ubuntu2) UNRELEASED; urgency=low
 
   * Changed to license GPLv3
 
  -- Savvas Radevic <vicedar@gmail.com>  Wed, 17 Sep 2008 12:34:42 +0200
 
-timekpr (0.1.0ubuntu1) intrepid; urgency=low
+timekpr (0.1.0ubuntu1) UNRELEASED; urgency=low
 
   * Added menu shortcut
 
