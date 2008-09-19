@@ -41,11 +41,11 @@ grace_period=120
 # Setting is expressed in seconds, e.g. 45 means 45 seconds.
 poll_time=45
 
-# When are the users allowed to log in, uncomment to enable
+# When are the users allowed to login, uncomment to enable
 # (remove the '#' character in the following line).
 #from=7
 
-# Users will no longer be allowed to log in after this time/hour
+# Users will no longer be allowed to login after this time/hour
 # (24-hour format), e.g. 22 means after 10 o'clock pm.
 #to=22
 
@@ -56,7 +56,7 @@ poll_time=45
 TIMEKPRDIR=/var/lib/timekpr
 
 #Check if it exists, if not, create it
-[ -d /var/lib/timekpr ] || mkdir /var/lib/timekpr
+[ -d $TIMEKPRDIR ] || mkdir $TIMEKPRDIR
 
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER=x-session-manager
@@ -71,15 +71,15 @@ function notify() {
 
 	# use it - give a warning, then another one half way through grace_period
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/60)) minutes to save your work and log out."
+		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/60)) minutes to save your work and log out."
 	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire! You have $(($grace_period/120)) minutes to save your work and log out."
+		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/120)) minutes to save your work and log out."
 	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10 "Shutting Down" "Shutting down session ($pid) now!" 
+		notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "Shutting Down" "Shutting down session ($pid) now.." 
 }
 
 function logOut() {
@@ -107,9 +107,10 @@ while(true); do
 		pid=$( echo $pidlist | awk 'BEGIN{ FS=","} { print $2}' )
 		# If the user is not enabled, give him $default_limit
 		if [[ -e "$TIMEKPRDIR/$username" ]]; then
+			# Read arrays: $from $to $limit
 			source $TIMEKPRDIR/$username
 
-			if [[ -e "$TIMEKPRDIR/$username.time" && `( stat -c '%z' $TIMEKPRDIR/$username.time | cut -c9,10 )` == `date +%d` ]]; then
+			if [[ -e "$TIMEKPRDIR/$username.time" && `stat -c '%z' $TIMEKPRDIR/$username.time | cut -c9,10` == `date +%d` ]]; then
 				# the time file exists and was last touched today, add $poll_time seconds to it
 				timekpr=$(( `cat $TIMEKPRDIR/$username.time` + $poll_time ))
 				echo $timekpr > $TIMEKPRDIR/$username.time
@@ -120,24 +121,25 @@ while(true); do
 
 			echo $username, $pid, $timekpr
 			# Is the user allowed to be logged in at this time?
-			# We take it for granted that if they are allowed to log in all day ($default_limit) then
-			# they can log in whenever they want, ie they are normal users
+			# We take it for granted that if they are allowed to login all day ($default_limit) then
+			# they can login whenever they want, ie they are normal users
 
-			# Get the index for the current day
+			# Get current day index
 			index=$(date +%w)
 
-			if ( [[ $(date +%k) -lt ${from[$index]} ]] || [[ $(date +%k) -ge ${to[$index]} ]] ); then
-				# Has the user been given extended log in hours?
+			# Compare: is current hour less than the one in $from array OR is greater/equal to $to array?
+			if [[ $(date +%k) -lt ${from[$index]} || $(date +%k) -ge ${to[$index]} ]]; then
+				# Has the user been given extended login hours?
 				if [[ -e "$TIMEKPRDIR/$username.allow" ]]; then
-					# Was the extended log in hours given today?
+					# Was the extended login hours given today?
 					if [[ $(stat -c '%z' $TIMEKPRDIR/$username.allow | cut -c1-10) != $(date +%Y-%m-%d) ]]; then
-						notify "Only log in between ${from[$index]} and ${to[$index]}"
+						notify "Only login between ${from[$index]} and ${to[$index]}"
 						logOut
 						rm $TIMEKPRDIR/$username.allow
 					fi
 				else
-					# User has not been given extended log in hours
-					notify "Only log in between ${from[$index]} and ${to[$index]}"
+					# User has not been given extended login hours
+					notify "Only login between ${from[$index]} and ${to[$index]}"
 					logOut
 				fi
 			fi
