@@ -23,8 +23,8 @@ class timekprGUI:
 
 	def __init__(self):
 		
-		#Set the Glade file /usr/share/timekpr/timekpr.glade
-		self.gladefile = "timekpr.glade"
+		#Set the Glade file
+		self.gladefile = "/usr/share/timekpr/timekpr.glade"
 		self.wTree = gtk.glade.XML(self.gladefile, "window1")
 		
 		self.get_limit_spin()
