@@ -11,16 +11,19 @@ fi
 #Default directory
 TIMEKPRDIR=/var/lib/timekpr
 
-# Get old expiration date
-oldexpiration=$(cat $TIMEKPRDIR/$1.lock)
-if [[ "$oldexpiration" == "" ]]; then
-	oldexpdate=""
-else
-	oldexpdate=$(date -d "1970-01-01 $oldexpiration days" +%Y-%m-%d)
-fi
-
 #remove lock, reset old expiration date
-echo "Attempting to remove $1.lock.."
-[[ -e $TIMEKPRDIR/$1.lock ]] && rm -f $TIMEKPRDIR/$1.lock
-echo "Setting the old expiration date for $1.."
-usermod -e "$oldexpdate" $1
+if [[ -e $TIMEKPRDIR/$1.lock ]]; then
+	# Get old expiration date
+	oldexpiration=$(cat $TIMEKPRDIR/$1.lock)
+	if [[ "$oldexpiration" == "" ]]; then
+		oldexpdate=""
+	else
+		oldexpdate=$(date -d "1970-01-01 $oldexpiration days" +%Y-%m-%d)
+	fi
+	echo "Attempting to remove $1.lock.."
+	rm -f $TIMEKPRDIR/$1.lock
+	echo "Setting the old expiration date for $1.."
+	usermod -e "$oldexpdate" $1
+else
+	echo "$1.lock not found"
+fi
