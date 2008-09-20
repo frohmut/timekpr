@@ -11,7 +11,7 @@
 
 # Copyright / License:
 # Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
-# Further developed by Even Nedberg <code@nedberg.net> and Savvas Radevic <vicedar@gmail.com>
+# Further developed by Even Nedberg <code@nedberg.net>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,10 @@
 
 ## CONFIGURE START - You can change the following values:
 
-# (default_limit is not used anymore!)
+# The default limit is used to set a time limit.
+# New users are given by default a limit of 86400 seconds.
+# The limit is expressed in seconds, e.g. 86400 means all day
+default_limit=86400
 
 # This is the grace period, where a notification pops up letting the users
 # know that their time usage will be over soon.
@@ -40,24 +43,20 @@ poll_time=45
 
 # When are the users allowed to login, uncomment to enable
 # (remove the '#' character in the following line).
-#from=( 7 7 7 7 7 7 7 )
+#from=7
 
 # Users will no longer be allowed to login after this time/hour
 # (24-hour format), e.g. 22 means after 10 o'clock pm.
-#to=( 22 22 22 22 22 22 22 )
-
-#Create a log?
-DEBUGME='yes'
-LOGF='/var/log/timekpr.log'
-
-#Default lock period
-#Setting can be day(s), hour(s), minute(s)
-#Example: 5 hours
-lock_lasts="1 hour"
+#to=22
 
 ## CONFIGURE END - Do not edit after this line!
 
-#To log: logkpr "Something" >> $LOGF
+#Create a log?
+DEBUGME="yes"
+LOGF='/var/log/timekpr.log'
+[[ -e $LOGF ]] && rm -f $LOGF
+touch $LOGF
+#To log: [[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Something" >> $LOGF
 
 #Default directory
 TIMEKPRDIR=/var/lib/timekpr
@@ -68,16 +67,7 @@ TIMEKPRDIR=/var/lib/timekpr
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER=x-session-manager
 
-logkpr "Started timekpr" > $LOGF
-
-#Will use these variables later
-pid=""
-username=""
-
-function logkpr() {
-	#logkpr "message here"
-	[[ $DEBUGME == 'yes' ]] && echo "`date +'%Y-%m-%d %T %z'` $1" >> $LOGF
-}
+[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Started timekpr" >> $LOGF
 
 function notify() {
 	# get the display and xauthority used by out session manager
@@ -88,38 +78,32 @@ function notify() {
 	DBUS_SESSION_BUS_ADDRESS=`grep -z DBUS_SESSION_BUS_ADDRESS /proc/$pid/environ | sed -e 's/DBUS_SESSION_BUS_ADDRESS=//'`
 
 	# use it - give a warning, then another one half way through grace_period
-	logkpr "notify: Sending first notification.."
+	[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` notify: Sending first notification.." >> $LOGF
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
 notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/60)) minutes to save your work and log out."
-	[[ $DEBUGME == 'yes' ]] && echo "Result 1 notification: $?" >> $LOGF
-	sleep $(($grace_period/2)) # FIXME: this gives other sessions a free grace_period added to their accounting
+	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
 
-	sleep 1
-	logkpr "notify: Sending second notification.."
+	[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` notify: Sending second notification.." >> $LOGF
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/60)) minutes to save your work and log out."
-	[[ $DEBUGME == 'yes' ]] && echo "Result 2 notification: $?" >> $LOGF
-	sleep $(($grace_period/2)) # FIXME: this gives other sessions a free grace_period added to their accounting
+notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/120)) minutes to save your work and log out."
+	sleep $(($grace_period/2))   # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
 
-	sleep 1
-	logkpr "notify: Sending third and shutdown notification.."
+	[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` notify: Sending third and shutdown notification.." >> $LOGF
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "Shutting Down" "Shutting down session ($pid) now.."
-	[[ $DEBUGME == 'yes' ]] && echo "Result 3 notification: $?" >> $LOGF
+notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "Shutting Down" "Shutting down session ($pid) now.." 
 }
 
 function logOut() {
 	# FIXME: should really check to see if user has logged out yet 
-	logkpr "logOut: Killing (TERM)..."
+	[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` logOut: Killing..." >> $LOGF
 	#this is a pretty bad way of killing a gnome-session, but we warned 'em
-	kill -TERM $pid
-	sleep 10
-	logkpr "logOut: Killing (-9)..."
-	kill -9 $pid
+	kill -9 $pid > /dev/null
+	echo "Result: $?" >> $LOGF
+	[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` logOut: Sent kill command" >> $LOGF
 	touch $TIMEKPRDIR/$username.logout
-	logkpr "logOut: touched $username.logout"
+	[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` logOut: touched $username.logout" >> $LOGF
 
 ## uncomment the following to brutally kill all of the users processes
 #	sleep 5
@@ -131,55 +115,7 @@ function logOut() {
 
 }
 
-function lockacct() {
-	#$1 = $username
-	logkpr "lockacct: Locking $1"
-	#Get last day
-	lastday=$(date -d "-25 hours" +%Y-%m-%d)
-
-	# Sanity check: don't disable the first user!
-	userid=$(cat /etc/passwd | grep \^$1 | cut -d: -f3)
-	if [[ $userid == 1000 ]]; then
-		logkpr "lockacct: Would disable first user $1.. Aborting"
-	fi
-
-	#setting lock file with the original account expiration date
-	#Note: it is actually days since 1970-01-01
-	echo "$(cat /etc/shadow | grep \^$1 | cut -d: -f8)" > $TIMEKPRDIR/$1.lock
-
-	#usermod -L doesn't show a message similar to "account expiration" date
-	#using expire, it shows a message
-	usermod -e "$lastday" $1
-}
-
-function checklockacct() {
-	#Check username.lock file
-	lockedusers=`for i in $TIMEKPRDIR/*.lock; do basename $i .lock; done`
-	[[ "$lockedusers" == "*.lock" && "$lockedusers" == "" ]] && return
-	for useracct in $lockedusers; do
-		oldexpiration=$(cat $TIMEKPRDIR/$useracct.lock)
-		if [[ "$oldexpiration" == "" ]]; then
-			oldexpdate=""
-		else
-			oldexpdate=$(date -d "1970-01-01 $oldexpiration days" +%Y-%m-%d)
-		fi
-		lockdatetime=$(stat -c '%z' $TIMEKPRDIR/$useracct.lock | cut -c1-19)
-		# %s seconds since 1970-01-01 00:00:00 UTC
-		lockdatesec=$(date -d "$lockdatetime $lock_lasts" +%s)
-		curdatetimesec=$(date +%s)
-		# if current date/time is greater than or equal to the date/time of the unlock period
-		if [[ $curdatetimesec -ge $lockdatesec ]]; then
-			#remove lock, reset old expiration date
-			logkpr "checklockacct: unlocking $useracct"
-			rm -f $TIMEKPRDIR/$useracct.lock
-			usermod -e "$oldexpdate" $useracct
-		fi
-	done
-}
-
 while(true); do
-	#check if any accounts should be unlocked and re-activate them
-	checklockacct
 	# get the usernames and PIDs of sessions
 	pidlists=$( ps --no-headers -fC $SESSION_MANAGER | awk 'BEGIN{ FS=" " } { print $1 "," $2 }' )
 	for pidlist in $pidlists; do
@@ -188,17 +124,17 @@ while(true); do
 		pid=$( echo $pidlist | awk 'BEGIN{ FS=","} { print $2}' )
 		# check if user configfile exists
 		if [[ -e "$TIMEKPRDIR/$username" ]]; then
-			logkpr "configfile of $username exists"
+			[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` configfile of $username exists" >> $LOGF
 			# Read arrays: $from $to $limit
 			source $TIMEKPRDIR/$username
 
 			if [[ -e "$TIMEKPRDIR/$username.time" && `stat -c '%z' $TIMEKPRDIR/$username.time | cut -c9,10` == `date +%d` ]]; then
 				# the time file exists and was last touched today, add $poll_time seconds to it
-				logkpr "This day s $username.time file exists, adding time"
+				[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` This day's $username.time file exists, adding time" >> $LOGF
 				timekpr=$(( `cat $TIMEKPRDIR/$username.time` + $poll_time ))
 				echo $timekpr > $TIMEKPRDIR/$username.time
 			else  # the time file is missing or was last touched yesterday
-				logkpr "Created $username.time file"
+				[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Created $username.time file" >> $LOGF
 				timekpr=$poll_time
 				echo $timekpr > $TIMEKPRDIR/$username.time
 			fi
@@ -209,23 +145,23 @@ while(true); do
 
 			# Get current day index
 			index=$(date +%w)
-			logkpr "User $username PID $pid Day-Index: $index Seconds-passed: $timekpr"
+			[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` User $username PID $pid Day-Index: $index Seconds-passed: $timekpr" >> $LOGF
 
 			# Compare: is current hour less than the one in $from array OR is greater/equal to $to array?
 			if [[ $(date +%k) -lt ${from[$index]} || $(date +%k) -ge ${to[$index]} ]]; then
-				logkpr "Current hour less than or greater than the defined hour in configfile"
+				[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Current hour less than or greater than the defined hour in configfile" >> $LOGF
 				# Has the user been given extended login hours?
 				if [[ -e "$TIMEKPRDIR/$username.allow" ]]; then
 					# Was the extended login hours given today?
 					if [[ $(stat -c '%z' $TIMEKPRDIR/$username.allow | cut -c1-10) != $(date +%Y-%m-%d) ]]; then
-						logkpr "Extended login hours detected $username.allow, but not in allowed period from-to"
+						[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Extended login hours detected $username.allow, but not in allowed period from-to" >> $LOGF
 						notify "Only login between ${from[$index]} and ${to[$index]}"
 						logOut
 						rm $TIMEKPRDIR/$username.allow
 					fi
 				else
 					# User has not been given extended login hours
-					logkpr "Extended hours not detected, $username not in allowed period from-to"
+					[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Extended hours not detected, $username not in allowed period from-to" >> $LOGF
 					notify "Only login between ${from[$index]} and ${to[$index]}"
 					logOut
 				fi
@@ -233,24 +169,22 @@ while(true); do
 
 			# Is the limit exeeded
 			if [[ $timekpr -ge ${limit[$index]} ]]; then
-				logkpr "Seconds-passed exceeded todays limit"
+				[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Seconds-passed exceeded todays limit" >> $LOGF
 				# Has the user already been kicked out?
 				if [[ -e "$TIMEKPRDIR/$username.logout" ]]; then
 					# Was he kicked out today?
 					if [[ $(stat -c '%z' $TIMEKPRDIR/$username.logout | cut -c1-10) == $(date +%Y-%m-%d) ]]; then
-						logkpr "$username has been kicked out today"
+						[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` $username has been kicked out today" >> $LOGF
 						logOut
-						#Lock account
-						lockacct $username
 					else
 						# The user has not been kicked out today
-						logkpr "$username has been kicked out, but not today"
+						[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` $username has been kicked out, but not today" >> $LOGF
 						notify "Daily time limit"
 						logOut
 					fi
 				else
 					# The user has not been kicked out today
-					logkpr "Not found $username.logout"
+					[[ $DEBUGME == "yes" ]] && echo "`date +'%Y-%m-%d %T %z'` Not found $username.logout" >> $LOGF
 					notify "Daily time limit"
 					logOut
 				fi

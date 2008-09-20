@@ -1,3 +1,10 @@
+timekpr (0.1.0ubuntu6) intrepid; urgency=low
+
+  * Removed exclamation marks which caused problems to timekpr
+  * Cleaned up timekpr script
+
+ -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 23:35:45 +0200
+
 timekpr (0.1.0ubuntu5) UNRELEASED; urgency=low
 
   * Cleaned up timekpr and timekpr-gui
