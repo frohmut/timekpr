@@ -68,7 +68,7 @@ TIMEKPRDIR=/var/lib/timekpr
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER=x-session-manager
 
-logkpr "Started timekpr" > $LOGF
+[[ $DEBUGME == 'yes' ]] && echo "`date +'%Y-%m-%d %T %z'` Started timekpr" > $LOGF
 
 #Will use these variables later
 pid=""
@@ -112,11 +112,11 @@ notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "Shutting Down
 
 function logOut() {
 	# FIXME: should really check to see if user has logged out yet 
-	logkpr "logOut: Killing (TERM)..."
+	logkpr "logOut: Attempting killing (TERM)..."
 	#this is a pretty bad way of killing a gnome-session, but we warned 'em
 	kill -TERM $pid
 	sleep 10
-	logkpr "logOut: Killing (-9)..."
+	logkpr "logOut: Attempting killing (-9)..."
 	kill -9 $pid
 	touch $TIMEKPRDIR/$username.logout
 	logkpr "logOut: touched $username.logout"
@@ -154,8 +154,9 @@ function lockacct() {
 
 function checklockacct() {
 	#Check username.lock file
-	lockedusers=`for i in $TIMEKPRDIR/*.lock; do basename $i .lock; done`
-	[[ "$lockedusers" == "*.lock" && "$lockedusers" == "" ]] && return
+	lockedusers=$(for i in $TIMEKPRDIR/*.lock; do basename $i .lock; done)
+	#negative: "*.lock" or "*" or ""
+	[[ "$lockedusers" == "*" || "$lockedusers" == "*.lock" || "$lockedusers" == "" ]] && return
 	for useracct in $lockedusers; do
 		oldexpiration=$(cat $TIMEKPRDIR/$useracct.lock)
 		if [[ "$oldexpiration" == "" ]]; then
