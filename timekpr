@@ -257,9 +257,19 @@ while(true); do
 				else
 					# User has not been given extended login hours
 					logkpr "Extended hours not detected, $username not in allowed period from-to"
-					notify "Only login between ${from[$index]} and ${to[$index]}"
-					logOut
-					touch $TIMEKPRDIR/$username.late
+					if [[ -e "$TIMEKPRDIR/$username.late" ]] && [[ $(stat -c '%z' "$TIMEKPRDIR/$username.late" | cut -c1-10) == $(date +%Y-%m-%d) ]]; then
+						logkpr "User: $username has been late-kicked today"
+						logOut
+						rm $TIMEKPRDIR/$username.allow
+						#Lock account
+						lockacct $username
+					else
+						logkpr "User: $username has NOT been late-kicked today"
+						notify "Only login between ${from[$index]} and ${to[$index]}"
+						logOut
+						touch $TIMEKPRDIR/$username.late
+						rm $TIMEKPRDIR/$username.allow
+					fi
 				fi
 			fi
 
