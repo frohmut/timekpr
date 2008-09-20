@@ -115,10 +115,9 @@ function logOut() {
 	logkpr "logOut: Attempting killing (TERM)..."
 	#this is a pretty bad way of killing a gnome-session, but we warned 'em
 	kill -TERM $pid
-	sleep 10
+	sleep 5
 	logkpr "logOut: Attempting killing (-9)..."
 	kill -9 $pid
-	touch $TIMEKPRDIR/$username.logout
 	logkpr "logOut: touched $username.logout"
 
 ## uncomment the following to brutally kill all of the users processes
@@ -212,14 +211,32 @@ while(true); do
 			index=$(date +%w)
 			logkpr "User $username PID $pid Day-Index: $index Seconds-passed: $timekpr"
 
-			# Compare: is current hour less than the one in $from array OR is greater/equal to $to array?
-			if [[ $(date +%k) -lt ${from[$index]} || $(date +%k) -ge ${to[$index]} ]]; then
+			# Compare: is current hour less than the one in $from array?
+			if [[ $(date +%k) -lt ${from[$index]} ]]; then
+				logkpr "Current hour less than the defined hour in configfile"
+				# Has the user been given extended login hours?
+				if [[ -e "$TIMEKPRDIR/$username.allow" ]]; then
+					# Was the extended login hours given today?
+					if [[ $(stat -c '%z' $TIMEKPRDIR/$username.allow | cut -c1-10) != $(date +%Y-%m-%d) ]]; then
+						logkpr "Extended login hours detected $username.allow, but not from today"
+						logOut
+						rm $TIMEKPRDIR/$username.allow
+					fi
+				else
+					# User has not been given extended login hours
+					logkpr "Extended hours not detected, $username not in allowed period from-to"
+					logOut
+				fi
+			fi
+
+			# Compare: is current hour greater/equal to $to array?
+			if [[ $(date +%k) -ge ${to[$index]} ]]; then
 				logkpr "Current hour less than or greater than the defined hour in configfile"
 				# Has the user been given extended login hours?
 				if [[ -e "$TIMEKPRDIR/$username.allow" ]]; then
 					# Was the extended login hours given today?
 					if [[ $(stat -c '%z' $TIMEKPRDIR/$username.allow | cut -c1-10) != $(date +%Y-%m-%d) ]]; then
-						logkpr "Extended login hours detected $username.allow, but not in allowed period from-to"
+						logkpr "Extended login hours detected $username.allow, but not from today"
 						notify "Only login between ${from[$index]} and ${to[$index]}"
 						logOut
 						rm $TIMEKPRDIR/$username.allow
@@ -248,12 +265,14 @@ while(true); do
 						logkpr "$username has been kicked out, but not today"
 						notify "Daily time limit"
 						logOut
+						touch $TIMEKPRDIR/$username.logout
 					fi
 				else
 					# The user has not been kicked out today
 					logkpr "Not found $username.logout"
 					notify "Daily time limit"
 					logOut
+					touch $TIMEKPRDIR/$username.logout
 				fi
 			fi
 		fi
