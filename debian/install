@@ -3,4 +3,5 @@ timekpr usr/bin/
 timekpr-addtime usr/bin/
 timekpr-extend usr/bin/
 timekpr-gui usr/bin/
+timekpr-unlock usr/bin/
 timekpr.desktop usr/share/applications/

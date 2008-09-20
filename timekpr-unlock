@@ -20,5 +20,7 @@ else
 fi
 
 #remove lock, reset old expiration date
+echo "Attempting to remove $1.lock.."
 [[ -e $TIMEKPRDIR/$1.lock ]] && rm -f $TIMEKPRDIR/$1.lock
+echo "Setting the old expiration date for $1.."
 usermod -e "$oldexpdate" $1

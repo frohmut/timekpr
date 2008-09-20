@@ -4,8 +4,8 @@ timekpr (0.1.0ubuntu7) intrepid; urgency=low
   * Fixed timekpr, tested working
   * New script to unlock a user account manually: timekpr-unlock username
   * New logging function: logkpr 'message' - Log file: /var/log/timekpr.log
-  * New lock/unlock functions: based on usermod -e (user expiration) - Would use -L to actually lock it, but it would just say 'wrong 
-password'
+  * New lock/unlock functions: based on usermod -e (user expiration) - Would use
+    -L to actually lock it, but it would just say 'wrong password'
   * Tidied up timekpr
   * New variable for lock function: lock_lasts='1 hour' 
 
