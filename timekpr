@@ -231,21 +231,32 @@ while(true); do
 
 			# Compare: is current hour greater/equal to $to array?
 			if [[ $(date +%k) -ge ${to[$index]} ]]; then
-				logkpr "Current hour less than or greater than the defined hour in configfile"
+				logkpr "Current hour greater than the defined hour in configfile"
 				# Has the user been given extended login hours?
 				if [[ -e "$TIMEKPRDIR/$username.allow" ]]; then
-					# Was the extended login hours given today?
+					# Was the extended login hours given on a previous day?
 					if [[ $(stat -c '%z' $TIMEKPRDIR/$username.allow | cut -c1-10) != $(date +%Y-%m-%d) ]]; then
 						logkpr "Extended login hours detected $username.allow, but not from today"
-						notify "Only login between ${from[$index]} and ${to[$index]}"
-						logOut
-						rm $TIMEKPRDIR/$username.allow
+						# Has the user been late-kicked today?
+						if [[ -e "$TIMEKPRDIR/$username.late" ]] && [[ $(stat -c '%z' "$TIMEKPRDIR/$username.late" | cut -c1-10) == $(date +%Y-%m-%d) ]]; then
+							logkpr "User: $username has been late-kicked today"
+							logOut
+							rm $TIMEKPRDIR/$username.allow
+						else
+							logkpr "User: $username has NOT been late-kicked today"
+							notify "Only login between ${from[$index]} and ${to[$index]}"
+							logOut
+							touch $TIMEKPRDIR/$username.late
+							rm $TIMEKPRDIR/$username.allow
+					else
+						logkpr "Extended login hours detected $username.allow is from today"
 					fi
 				else
 					# User has not been given extended login hours
 					logkpr "Extended hours not detected, $username not in allowed period from-to"
 					notify "Only login between ${from[$index]} and ${to[$index]}"
 					logOut
+					touch $TIMEKPRDIR/$username.late
 				fi
 			fi
 
