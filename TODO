@@ -1,0 +1,9 @@
+* Pythonize timekpr! :)
+
+* Checkout the PAM module:
+ /etc/pam.d/login
+ /etc/security/access.conf
+ /etc/security/time.conf
+ /etc/pam.d/gdm
+ to apply, restart the service, i.e. /etc/init.d/gdm reload
+

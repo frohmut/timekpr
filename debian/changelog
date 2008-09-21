@@ -1,3 +1,14 @@
+timekpr (0.1.0ubuntu8) intrepid; urgency=low
+
+  * Revision #30:
+  * More fixes to timekpr, kicking and locking after allowed hours also
+    when username.allow does not exist
+  * Fixed error in timekpr
+  * Changed timekpr, restricted user will be kicked out faster when
+    logging in after allowed time
+
+ -- Savvas Radevic <vicedar@gmail.com>  Sun, 21 Sep 2008 17:39:31 +0200
+
 timekpr (0.1.0ubuntu7) intrepid; urgency=low
 
   * Old timekpr: timekpr.old (not in deb package)
