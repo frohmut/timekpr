@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import os.path, os mkdir, getpass, re
+import os.path, getpass, re
+from os import popen, mkdir
 
 # Copyright / License:
 # Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
@@ -69,11 +70,13 @@ if not os.path.isfile(TIMEKPRCONF):
 def readconf(conffile):
 	f = open(conffile, 'r')
 	filevars = re.compile('^\s*((?:GRACEPERIOD|POLLTIME|DEBUGME|LOGFILE|LOCKLASTS)\s*=\s*.*)\s*$',re.M).findall( f.read(), 1)
+	f.close()
 	#More secure, variable names or values should not contain characters: ()[]
 	for i in filevars:
 		if re.compile('[()\[\]]').search(i):
 			exit('Error: Found ()[] characters in ' + conffile + ' - ' + i)
 	return filevars
+
 #Import variables
 allvars = readconf(TIMEKPRCONF)
 for i in allvars:
@@ -93,11 +96,59 @@ def notify(user, message):
 def logOut(user):
 	
 
-def lockaact(user):
+def lockacct(user):
 	
 
 def checklockacct():
 	
+
+def getcmdoutput(cmd):
+	#Execute a command, returns its output
+	out = os.popen(cmd)
+	return out.read()
+
+def getsessions():
+	#Returns sessions that run x-session-manager
+	#Needs: ps
+	#for uname, pid in getsessions():
+	#	print "username="+uname+" pid="+pid
+
+	sessionsraw = getcmdoutput('ps --no-headers -fC x-session-manager')
+	sessions = re.compile('^([^\s+]+)\s+([^\s+]+)',re.M).findall(sessionsraw)
+	return sessions
+
+def getdbus(pid):
+	#Returns DBUS_SESSION_BUS_ADDRESS variable from /proc/pid/environ
+	pid = str(pid)
+	p = open('/proc/'+pid+'/environ', 'r')
+	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').findall(p.read())
+	p.close()
+	return i[0]
+	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
+	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
+
+def sendnotification(username, pid, title, message):
+	"""
+	Sends a notification via notify-send
+	Usage: sendnotification( "youruser", "pid", "your title", "your message")
+	We will be probably using pynotify module for this, we'll see!
+	"""
+
+	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like:
+	# -bash: !": event not found
+	#Might be good to include these substitutions, if someone doesn't read this warning
+	title = re.compile('!').sub('\!', title)
+	message = re.compile('!').sub('\!', message)
+	#Get DBus
+	dbus = getdbus(pid)
+	#Create and send command
+	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (username, dbus, title, message)
+	getcmdoutput(notifycmd)
+
+	'''The long representations in terminal:
+	# su username -c "DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send \"title\" \"message\""
+	# sudo -u username DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send "title" "message"
+	'''
 
 while (True):
 	
