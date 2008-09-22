@@ -96,9 +96,6 @@ def logkpr(string,clear=0):
 	nowtime = time.strftime('%Y-%m-%d %H:%M:%S ', time.localtime())
 	l.write(nowtime + string +'\n')
 
-def notify(user, message):
-	
-
 def logOut(user):
 	
 
@@ -159,7 +156,7 @@ def getdbus(pid):
 	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
 
-def sendnotification(username, pid, title, message):
+def notify(username, pid, title, message):
 	"""
 	Sends a notification via notify-send
 	Usage: sendnotification( "youruser", "pid", "your title", "your message")
