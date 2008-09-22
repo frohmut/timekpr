@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os.path, getpass, re
+import os.path, getpass, re, time
 from os import popen, mkdir
 
 # Copyright / License:
@@ -86,9 +86,15 @@ for i in allvars:
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER = 'x-session-manager'
 
-#To log: logkpr "Something" >> $LOGF
-def logkpr(string):
-	
+def logkpr(string,clear=0):
+	#To log: logkpr("Something")
+	#To clear file and log: logkpr("Something",1)
+	if clear == 1:
+		l = open(LOGFILE, 'w')
+	else:
+		l = open(LOGFILE, 'a')
+	nowtime = time.strftime('%Y-%m-%d %H:%M:%S ', time.localtime())
+	l.write(nowtime + string +'\n')
 
 def notify(user, message):
 	
@@ -127,10 +133,6 @@ def readusersettings(conffile):
 	bto = bto.replace(")", "")
 	bto = bto.split(" ")
 	return limits, bfrom, bto
-
-
-def getpidlist():
-	return os.system('ps --no-headers -fC ' + SESSION_MANAGER + '| awk \'BEGIN{ FS=" " } { print $1 "," $2 }\'' )
 
 
 def getcmdoutput(cmd):
@@ -181,15 +183,13 @@ def sendnotification(username, pid, title, message):
 	# sudo -u username DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send "title" "message"
 	'''
 
+logkpr('Starting timekpr',1)
+
 while (True):
 	#check if any accounts should be unlocked and re-activate them
-	checklockacct
+	checklockacct()
 	# get the usernames and PIDs of sessions
-	pidlists = getpidlist()
-	for pidlist in pidlists:
-		pidlist = pidlist.split(",")
-		username = pidlist[0]
-		pid = pidlist[1]
+	for username, pid in getsessions():
 		conffile = TIMEKPRDIR + '/' + username
 		# check if user configfile exists
 		if os.isfile(conffile):
