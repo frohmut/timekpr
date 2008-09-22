@@ -145,7 +145,6 @@ def getsessions():
 	#Needs: ps
 	#for uname, pid in getsessions():
 	#	print "username="+uname+" pid="+pid
-
 	sessionsraw = getcmdoutput('ps --no-headers -fC x-session-manager')
 	sessions = re.compile('^([^\s+]+)\s+([^\s+]+)',re.M).findall(sessionsraw)
 	return sessions
@@ -166,7 +165,6 @@ def sendnotification(username, pid, title, message):
 	Usage: sendnotification( "youruser", "pid", "your title", "your message")
 	We will be probably using pynotify module for this, we'll see!
 	"""
-
 	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like:
 	# -bash: !": event not found
 	#Might be good to include these substitutions, if someone doesn't read this warning
@@ -177,7 +175,6 @@ def sendnotification(username, pid, title, message):
 	#Create and send command
 	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (username, dbus, title, message)
 	getcmdoutput(notifycmd)
-
 	'''The long representations in terminal:
 	# su username -c "DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send \"title\" \"message\""
 	# sudo -u username DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send "title" "message"
