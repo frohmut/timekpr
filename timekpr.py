@@ -47,7 +47,7 @@ if getpass.getuser() != "root":
 #Default directory (for per-user configuration)
 TIMEKPRDIR = '/etc/timekpr'
 
-#Default configuration file
+#Default configuration file (for timekpr variables)
 TIMEKPRCONF = '/etc/timekpr.conf'
 
 #Default working directory (for .logout, .lock, etc. files)
@@ -64,9 +64,21 @@ if not os.path.isdir(TIMEKPRWORK):
 if not os.path.isfile(TIMEKPRCONF):
 	exit('Error: Could not find configuration file ' + TIMEKPRCONF)
 
-#Read configuration file TIMEKPRCONF (use re module)
+#Read configuration file TIMEKPRCONF (re module)
+#Security note: These values should be read only when running timekpr, not on the fly
 def readconf(conffile):
-	
+	f = open(conffile, 'r')
+	filevars = re.compile('^\s*((?:GRACEPERIOD|POLLTIME|DEBUGME|LOGFILE|LOCKLASTS)\s*=\s*.*)\s*$',re.M).findall( f.read(), 1)
+	#More secure, variable names or values should not contain characters: ()[]
+	for i in filevars:
+		if re.compile('[()\[\]]').search(i):
+			exit('Error: Found ()[] characters in ' + conffile + ' - ' + i)
+	return filevars
+#Import variables
+allvars = readconf(TIMEKPRCONF)
+for i in allvars:
+	exec i
+#Imported variables: GRACEPERIOD, POLLTIME, DEBUGME, LOGFILE, LOCKLASTS
 
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER = 'x-session-manager'
