@@ -102,6 +102,37 @@ def lockacct(user):
 def checklockacct():
 	
 
+def fileisok(filename):
+	exists = os.isfile(filename)
+	filedate = time.strftime("%Y%m%d", time.localtime(os.path.getmtime(filename)))
+	today = time.strftime("%Y%m%d", time.localtime())
+	if (exists) and (filedate == today):
+		return True
+	else:
+		return False
+
+
+def readusersettings(conffile):
+	fileHandle = open(configFile)
+	limits = fileHandle.readline()
+	bfrom = fileHandle.readline()
+	bto = fileHandle.readline()
+	limits = limits.replace("limit=( ","")
+	limits = limits.replace(")", "")
+	limits = limits.split(" ")
+	bfrom = bfrom.replace("from=( ", "")
+	bfrom = bfrom.replace(")", "")
+	bfrom = bfrom.split(" ")
+	bto = bto.replace("to=( ", "")
+	bto = bto.replace(")", "")
+	bto = bto.split(" ")
+	return limits, bfrom, bto
+
+
+def getpidlist():
+	return os.system('ps --no-headers -fC ' + SESSION_MANAGER + '| awk \'BEGIN{ FS=" " } { print $1 "," $2 }\'' )
+
+
 def getcmdoutput(cmd):
 	#Execute a command, returns its output
 	out = os.popen(cmd)
@@ -151,5 +182,24 @@ def sendnotification(username, pid, title, message):
 	'''
 
 while (True):
-	
+	#check if any accounts should be unlocked and re-activate them
+	checklockacct
+	# get the usernames and PIDs of sessions
+	pidlists = getpidlist()
+	for pidlist in pidlists:
+		pidlist = pidlist.split(",")
+		username = pidlist[0]
+		pid = pidlist[1]
+		conffile = TIMEKPRDIR + '/' + username
+		# check if user configfile exists
+		if os.isfile(conffile):
+			logkpr('conffile of ' + username + 'exists')
+			# Read lists: from, to and limit
+			limits, bfrom, bto = readusersettings(conffile)
+			timefile = TIMEKPRDIR + '/' + username + '.time'
+			allowfile = TIMEKPRDIR + '/' + username + '.allow'
+			latefile = TIMEKPRDIR + '/' + username + '.late'
+			
+			if fileisok(timefile):
+				logkpr('This days ' + username + '.time file exists, adding time')
 
