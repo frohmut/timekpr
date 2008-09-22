@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-import os.path, os mkdir
+import os.path, os mkdir, getpass, re
 
 # Copyright / License:
 # Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
-# Further developed by Even Nedberg <code@nedberg.net> and Savvas Radevic <vicedar@gmail.com>
+# Further developed by:	Even Nedberg <code@nedberg.net>
+#			Savvas Radevic <vicedar@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,36 +23,55 @@ import os.path, os mkdir
 # know that their time usage will be over soon.
 # Users are given by default 120 seconds to finish up their work.
 # Limit is expressed in seconds, e.g. 120 means 2 minutes
-grace_period = 120
+GRACEPERIOD = 120
 
 # How often should the script check the timelogs.
 # Setting is expressed in seconds, e.g. 45 means 45 seconds.
-poll_time = 45
+POLLTIME = 45
 
 #Create a log?
 DEBUGME = True
-LOGF = '/var/log/timekpr.log'
+LOGFILE = '/var/log/timekpr.log'
 
 #Default lock period
 #Setting can be day(s), hour(s), minute(s)
 #Example: 5 hours
-lock_lasts = "1 hour"
+LOCKLASTS = '1 hour'
 
 ## CONFIGURE END - Do not edit after this line!
 
-#To log: logkpr "Something" >> $LOGF
+#Check if admin
+if getpass.getuser() != "root":
+	exit('Error: You do not have administrative privileges')
 
-#Default directory
+#Default directory (for per-user configuration)
 TIMEKPRDIR = '/etc/timekpr'
+
+#Default configuration file
+TIMEKPRCONF = '/etc/timekpr.conf'
+
+#Default working directory (for .logout, .lock, etc. files)
+#I think we will still need them, in case they wish to revert the
+#changes done by timekpr (unlock account, grant time, etc)
+TIMEKPRWORK = '/var/lib/timekpr'
 
 #TO-DO
 #Check if it exists, if not, create it
 if not os.path.isdir(TIMEKPRDIR):
 	os.mkdir(TIMEKPRDIR)
+if not os.path.isdir(TIMEKPRWORK):
+	os.mkdir(TIMEKPRWORK)
+if not os.path.isfile(TIMEKPRCONF):
+	exit('Error: Could not find configuration file ' + TIMEKPRCONF)
+
+#Read configuration file TIMEKPRCONF (use re module)
+def readconf(conffile):
+	
 
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER = 'x-session-manager'
 
+#To log: logkpr "Something" >> $LOGF
 def logkpr(string):
 	
 
