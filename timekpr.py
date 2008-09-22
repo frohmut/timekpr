@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-import os.path, getpass, re, time
-from os import popen, mkdir
+import getpass, re
+from time import strftime, sleep, localtime
+from os.path import isfile, isdir, getmtime
+from os import popen, mkdir, kill, isfile
 
 # Copyright / License:
 # Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
@@ -78,8 +80,7 @@ def readconf(conffile):
 	return filevars
 
 #Import variables
-allvars = readconf(TIMEKPRCONF)
-for i in allvars:
+for i in readconf(TIMEKPRCONF):
 	exec i
 #Imported variables: GRACEPERIOD, POLLTIME, DEBUGME, LOGFILE, LOCKLASTS
 
@@ -96,8 +97,27 @@ def logkpr(string,clear=0):
 	nowtime = time.strftime('%Y-%m-%d %H:%M:%S ', time.localtime())
 	l.write(nowtime + string +'\n')
 
-def logOut(user):
+def logOut(user,pid):
+	#Forces the user to log out.
+	if issessionalive(user) == 1:
+		logkpr('logOut: Attempting killing '+user+' (TERM, 15)...')
+		#this is a pretty bad way of killing a gnome-session, but we warned 'em
+		#Should it be signal 1 (HUP)?
+		os.kill(pid,15)
+		time.sleep(5)
+		if issessionalive(user) == 1:
+			logkpr('logOut: Process still there, attempting force-killing '+user+' (KILL, 9)...')
+			os.kill(pid,9)
+		#logkpr('logOut: touched $username.logout')
+		#touched?
 	
+	""" uncomment the following to brutally kill all of the users processes
+		sleep 5
+		pkill -u $username
+	# killing gnome-session should be more like:
+	DISPLAY=":0" XAUTHORITY="/tmp/.gdmEQ0V5T" SESSION_MANAGER="local/wretched:/tmp/.ICE-unix/$pid" su -c 'gnome-session-save --kill --silent' $username
+	# but this can still leave processes to cleanup - plus it's not easy to get SESSION_MANAG
+	"""
 
 def lockacct(user):
 	
@@ -113,7 +133,6 @@ def fileisok(filename):
 		return True
 	else:
 		return False
-
 
 def readusersettings(conffile):
 	fileHandle = open(configFile)
@@ -131,7 +150,6 @@ def readusersettings(conffile):
 	bto = bto.split(" ")
 	return limits, bfrom, bto
 
-
 def getcmdoutput(cmd):
 	#Execute a command, returns its output
 	out = os.popen(cmd)
@@ -145,6 +163,16 @@ def getsessions():
 	sessionsraw = getcmdoutput('ps --no-headers -fC x-session-manager')
 	sessions = re.compile('^([^\s+]+)\s+([^\s+]+)',re.M).findall(sessionsraw)
 	return sessions
+
+def issessionalive(user):
+	# Checking if session process still running
+	# Should it check against username and pid?
+	# Returns:	1 if process is still there (user logged in),
+	#		0 if user has logged out
+	for u,p in getsessions():
+		if u == user:
+			return 1
+	return 0
 
 def getdbus(pid):
 	#Returns DBUS_SESSION_BUS_ADDRESS variable from /proc/pid/environ
@@ -172,21 +200,22 @@ def notify(username, pid, title, message):
 	#Create and send command
 	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (username, dbus, title, message)
 	getcmdoutput(notifycmd)
-	'''The long representations in terminal:
+	
+	"""The long representations in terminal:
 	# su username -c "DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send \"title\" \"message\""
 	# sudo -u username DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send "title" "message"
-	'''
+	"""
 
 logkpr('Starting timekpr',1)
 
 while (True):
-	#check if any accounts should be unlocked and re-activate them
+	# Check if any accounts should be unlocked and re-activate them
 	checklockacct()
-	# get the usernames and PIDs of sessions
+	# Get the usernames and PIDs of sessions
 	for username, pid in getsessions():
 		conffile = TIMEKPRDIR + '/' + username
-		# check if user configfile exists
-		if os.isfile(conffile):
+		# Check if user configfile exists
+		if os.path.isfile(conffile):
 			logkpr('conffile of ' + username + 'exists')
 			# Read lists: from, to and limit
 			limits, bfrom, bto = readusersettings(conffile)
