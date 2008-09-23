@@ -7,3 +7,6 @@
  /etc/pam.d/gdm
  to apply, restart the service, i.e. /etc/init.d/gdm reload
 
+* Idea: to make a timekpr-client.py that would run using
+ /etc/xdg/autostart/, somehow sending with dbus or with
+ some other way (username.message?)
