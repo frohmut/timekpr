@@ -126,13 +126,9 @@ def checklockacct():
 	
 
 def fileisok(filename):
-	exists = os.isfile(filename)
-	filedate = time.strftime("%Y%m%d", time.localtime(os.path.getmtime(filename)))
-	today = time.strftime("%Y%m%d", time.localtime())
-	if (exists) and (filedate == today):
+	if (os.isfile(filename)) and fromtoday(filename):
 		return True
-	else:
-		return False
+	return False
 
 def readusersettings(conffile):
 	fileHandle = open(configFile)
@@ -206,6 +202,26 @@ def notify(username, pid, title, message):
 	# sudo -u username DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send "title" "message"
 	"""
 
+def gettime(timefile):
+    if fileisok(timefile):
+        logkpr('This days ' + username + '.time file exists, adding time')
+        fileHandle = open(timefile)
+    else:
+        fileHandle = open(timefile, 'w')
+    time = fileHandle.readline() + POLLTIME
+    writetime(timefile, time)
+    return time
+
+def writetime(timefile, time):
+    fileHandle = open(timefile, 'w')
+    filehandle.write(time)
+    return
+
+def fromtoday(filename):
+    filedate = time.strftime("%Y%m%d", time.localtime(os.path.getmtime(filename)))
+    today = time.strftime("%Y%m%d", time.localtime())
+    return filedate == today
+
 logkpr('Starting timekpr',1)
 
 while (True):
@@ -223,6 +239,66 @@ while (True):
 			allowfile = TIMEKPRDIR + '/' + username + '.allow'
 			latefile = TIMEKPRDIR + '/' + username + '.late'
 			
-			if fileisok(timefile):
-				logkpr('This days ' + username + '.time file exists, adding time')
+            time = gettime(timefile)
+			
+            # Is the user allowed to be logged in at this time?
+            # We take it for granted that if they are allowed to login all day ($default_limit) then
+            # they can login whenever they want, ie they are normal users
 
+            # Get current day index and hour of day
+            index = time.strftime("%w", time.localtime())
+            hour = time.strftime("%H", time.localtime())
+            
+            logkpr('User ' + username + ' PID ' + pid + ' Day-Index: ' + index + ' Seconds-passed: ' + time)
+            
+            # Compare: is current hour less than the one in bfrom list?
+            if hour < bfrom[index]:
+                if os.isfile(allowfile):
+                    logkpr('Current hour less than the defined hour in conffile for user: ' + username)
+                    if not fromtoday(allowfile):
+                        logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
+                        logOut(username, pid)
+                        os.remove(allowfile)
+                else:
+                    # User has not been given extended login hours
+                    logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
+                    logOut(username, pid)
+            
+            # Compare: is current hour greater/equal to $to array?
+            if hour > bto[index]:
+                logkpr('Current hour greater than the defined hour in conffile for user: ' + username)
+                # Has the user been given extended login hours?
+                if os.isfile(allowfile):
+                    if not fromtoday(allowfile):
+                        logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
+                        # Has the user been late-kicked today?
+                        if os.isfile(latefile):
+                            if fromtoday(latefile):
+                                logkpr('User: ' + username + ' has been late-kicked today')
+                                logOut(username, pid)
+                                os.remove(allowfile)
+                                #Lock account
+                                lockacct(username)
+                            else:
+                                logkpr('User: ' + username + ' has NOT been late-kicked today')
+                                notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
+                                logOut(username, pid)
+                                open(latefile, 'w')
+                                os.remove(allowfile)
+                    else:
+                        logkpr('Extended login hours detected ' + username + '.allow is from today')
+                else:
+                    # User has not been given extended login hours
+                    logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
+                    if os.isfile(latefile) and fromtoday(latefile):
+                        logkpr('User: ' + username + ' has been late-kicked today')
+                        logOut(username, pid)
+                        #Lock account
+                        lockacct(username)
+                    else:
+                        logkpr('User: ' + username + ' has NOT been late-kicked today')
+                        notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
+                        logOut
+                        open(latefile, 'w')
+            
+            # Is the limit exeeded
