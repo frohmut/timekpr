@@ -4,3 +4,5 @@ timekpr-addtime usr/bin/
 timekpr-extend usr/bin/
 timekpr-gui usr/bin/
 timekpr-unlock usr/bin/
+timekpr.conf etc/
+debian/timekpr.desktop usr/share/applications/

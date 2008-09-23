@@ -11,4 +11,3 @@ Terminal=false
 Type=Application
 Categories=System;Settings;GTK;
 StartupNotify=true
-Encoding=UTF-8

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#This will clear the default directory when package is purged
+if [ "$1" = "purge" ] ; then
+	if [ -d /var/lib/timekpr ] ; then
+		rm -rf /var/lib/timekpr
+	fi
+fi
