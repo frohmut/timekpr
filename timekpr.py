@@ -307,7 +307,7 @@ while (True):
 					else:
 						logkpr('User: ' + username + ' has NOT been late-kicked today')
 						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
-						logOut
+						logOut(username, pid)
 						open(latefile, 'w')
 			
 			# Is the limit exeeded
