@@ -239,7 +239,7 @@ while (True):
 	# Get the usernames and PIDs of sessions
 	for username, pid in getsessions():
 		conffile = TIMEKPRDIR + '/' + username
-		# Check if user configfile exists
+		# Check if user configfile exists, if it doesn't the user is unrestricted and we need not check any more
 		if os.path.isfile(conffile):
 			logkpr('conffile of ' + username + 'exists')
 			# Read lists: from, to and limit
@@ -247,66 +247,93 @@ while (True):
 			timefile = TIMEKPRDIR + '/' + username + '.time'
 			allowfile = TIMEKPRDIR + '/' + username + '.allow'
 			latefile = TIMEKPRDIR + '/' + username + '.late'
+			logoutfile = TIMEKPRDIR + '/' + username + '.logout'
 		
-		time = gettime(timefile)
-		'''Is the user allowed to be logged in at this time?
-		We take it for granted that if they are allowed to login all day ($default_limit) then
-		they can login whenever they want, ie they are normal users'''
-		
-		# Get current day index and hour of day
-		index = int(time.strftime("%w", time.localtime()))
-		hour = time.strftime("%H", time.localtime())
-		
-		logkpr('User ' + username + ' PID ' + pid + ' Day-Index: ' + index + ' Seconds-passed: ' + time)
-		
-		# Compare: is current hour less than the one in bfrom list?
-		if hour < bfrom[index]:
-			if os.isfile(allowfile):
-				logkpr('Current hour less than the defined hour in conffile for user: ' + username)
-				if not fromtoday(allowfile):
-				logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
-				logOut(username, pid)
-				os.remove(allowfile)
-			else:
-				# User has not been given extended login hours
-				logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
-				logOut(username, pid)
-		
-		# Compare: is current hour greater/equal to $to array?
-		if hour > bto[index]:
-			logkpr('Current hour greater than the defined hour in conffile for user: ' + username)
-			# Has the user been given extended login hours?
-			if os.isfile(allowfile):
-				if not fromtoday(allowfile):
-				logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
-				# Has the user been late-kicked today?
-				if os.isfile(latefile):
-					if fromtoday(latefile):
+			time = gettime(timefile)
+			'''Is the user allowed to be logged in at this time?
+			We take it for granted that if they are allowed to login all day ($default_limit) then
+			they can login whenever they want, ie they are normal users'''
+			
+			# Get current day index and hour of day
+			index = int(time.strftime("%w", time.localtime()))
+			hour = time.strftime("%H", time.localtime())
+			
+			logkpr('User ' + username + ' PID ' + pid + ' Day-Index: ' + index + ' Seconds-passed: ' + time)
+			
+			# Compare: is current hour less than the one in bfrom list?
+			if hour < bfrom[index]:
+				if os.isfile(allowfile):
+					logkpr('Current hour less than the defined hour in conffile for user: ' + username)
+					if not fromtoday(allowfile):
+					logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
+					logOut(username, pid)
+					os.remove(allowfile)
+				else:
+					# User has not been given extended login hours
+					logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
+					logOut(username, pid)
+			
+			# Compare: is current hour greater/equal to $to array?
+			if hour > bto[index]:
+				logkpr('Current hour greater than the defined hour in conffile for user: ' + username)
+				# Has the user been given extended login hours?
+				if os.isfile(allowfile):
+					if not fromtoday(allowfile):
+					logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
+					# Has the user been late-kicked today?
+					if os.isfile(latefile):
+						if fromtoday(latefile):
+							logkpr('User: ' + username + ' has been late-kicked today')
+							logOut(username, pid)
+							os.remove(allowfile)
+							#Lock account
+							lockacct(username)
+						else:
+							logkpr('User: ' + username + ' has NOT been late-kicked today')
+							notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
+							logOut(username, pid)
+							open(latefile, 'w')
+							os.remove(allowfile)
+					else:
+					logkpr('Extended login hours detected ' + username + '.allow is from today')
+				else:
+					# User has not been given extended login hours
+					logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
+					if os.isfile(latefile) and fromtoday(latefile):
 						logkpr('User: ' + username + ' has been late-kicked today')
 						logOut(username, pid)
-						os.remove(allowfile)
 						#Lock account
 						lockacct(username)
 					else:
 						logkpr('User: ' + username + ' has NOT been late-kicked today')
 						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
-						logOut(username, pid)
+						logOut
 						open(latefile, 'w')
-						os.remove(allowfile)
+			
+			# Is the limit exeeded
+			if time > limits[index]:
+				logkpr('Exceeded todays limit, user: ' + username)
+				# Has the user already been kicked out?
+				if os.isfile(logoutfile):
+					# Was he kicked out today?
+					if fromtoday(logoutfile):
+						logkpr(username + ' has been kicked out today')
+						logOut(username, pid)
+						#Lock account
+						lockacct(username)
+					else:
+						# The user has not been kicked out today
+						logkpr(username + ' has been kicked out, but not today')
+						notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit')
+						logOut(username, pid)
+						open(logoutfile, 'w')
 				else:
-				logkpr('Extended login hours detected ' + username + '.allow is from today')
-			else:
-				# User has not been given extended login hours
-				logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
-				if os.isfile(latefile) and fromtoday(latefile):
-					logkpr('User: ' + username + ' has been late-kicked today')
+					# The user has not been kicked out before
+					logkpr('Not found: ' + username + '.logout')
+					notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit')
 					logOut(username, pid)
-					#Lock account
-					lockacct(username)
-				else:
-					logkpr('User: ' + username + ' has NOT been late-kicked today')
-					notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
-					logOut
-					open(latefile, 'w')
-		
-		# Is the limit exeeded
+					open(logoutfile, 'w')
+	
+	# Done checking all users, sleeping
+	logkpr('Finished checking all users, sleeping for ' + POLLTIME + ' seconds')
+	time.sleep(POLLTIME)
