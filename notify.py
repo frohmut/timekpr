@@ -3,17 +3,17 @@ try:
 	import gtk, pygtk, os, os.path, pynotify
 	pygtk.require('2.0')
 except:
-	print "Error: need python-notify, python-gtk2 and gtk"
+	exit('Error: need python-notify, python-gtk2 and gtk')
 
 if __name__ == '__main__':
 	if not pynotify.init("Timekpr notification"):
-		sys.exit(1)
+		exit(1)
 
 #	n = pynotify.Notification("Moo title", "test")
-	n = pynotify.Notification("Moo title", "test", "file:///home/forger/project/timekpr/timekpr/logo/stop-hand-clock-small.png")
+	n = pynotify.Notification('Moo title', 'test', 'file://' + os.getcwd() + '/logo/stop-hand-clock-small.png')
 	n.set_urgency(pynotify.URGENCY_CRITICAL)
 	n.set_timeout(10000) # 10 seconds
-	n.set_category("device")
+	n.set_category('device')
 
 	#Call an icon
 #	helper = gtk.Button()
@@ -21,5 +21,5 @@ if __name__ == '__main__':
 #	n.set_icon_from_pixbuf(icon)
 
 	if not n.show():
-		print "Failed to send notification"
-		sys.exit(1)
+		print 'Failed to send notification'
+		exit(1)

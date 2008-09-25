@@ -1,6 +1,26 @@
 #!/usr/bin/env python
 import re
 
+#TODO: Test and make it a module
+
+## Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
+
+## Read access.conf
+def parseaccessconf(conffile = '/etc/security/access.conf'):
+	c = open('/etc/security/access.conf').read()
+	#We don't support some stuff yet
+	if re.search('^[+-].*:\s?(?!ALL)$',c,re.M): exit('Error: The program does not support other than "ALL" yet: "'+i+'"')
+	if re.search('^[+-]\s?:\s?[^:]*[\(\)][^:]*\s?:\s?(?!ALL)$',c,re.M): exit('Error: The program does not support groups yet: "'+i+'"')
+	
+	#Currently supports "- : username : ALL" or "+ : username : ALL"
+	ualist = re.compile('^-\s?:\s?([^:]*)\s?:\s?ALL$', re.M).findall(c)
+	"""ualist:
+		permit: allow(+) or deny(-)
+		user
+		type of block
+	"""
+
+## Convert timekpr format into a time.conf line
 def hourize(n):
 	#make 7 into 0700, or 22 into 2200
 	if int(n) < 10: return '0%s00' % str(n)
@@ -30,6 +50,7 @@ hto = "22 22 22 22 22 22 22".split(" ")
 mktimeconfline("username",hfrom,hto)
 """
 
+## Attempt to read time.conf an return it in a timekpr format
 def strint(x): return str(int(x)) #makes '08' into '8' and '10' as '10'
 
 def converttconf(tfrom,tto,mode=0):
@@ -105,8 +126,6 @@ def parseutlist(utlist):
 	Example: parseutlist(utlist)[0][1][0]
 		['0', '0', '0', '0', '0', '0', '0']
 	"""
-
-
 
 
 
