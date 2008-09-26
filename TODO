@@ -1,12 +1,18 @@
-* Pythonize timekpr! :)
-
 * Checkout the PAM module:
  /etc/pam.d/login
  /etc/security/access.conf
  /etc/security/time.conf
  /etc/pam.d/gdm
- to apply, restart the service, i.e. /etc/init.d/gdm reload
 
 * Idea: to make a timekpr-client.py that would run using
  /etc/xdg/autostart/, somehow sending with dbus or with
  some other way (username.message?)
+
+* Check out "memory files": http://docs.python.org/lib/module-StringIO.html
+
+* Debian package:
+ Hint for preinst, this will append the section to end of the file:
+  sed -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' file.conf
+ Hint for postrm (just on purge or remove too?) removal, this removes the section timekpr would create:
+  sed -e '/^## TIMEKPR START/,/^## TIMEKPR END/d' file.conf
+ Should add "Tags:" in debian/control?

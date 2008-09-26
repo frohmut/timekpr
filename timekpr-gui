@@ -2,6 +2,8 @@
 
 import os, os.path, spwd, pwd, getpass, re
 
+#TODO: Make it exclude administrators,sudoers,wheel members etc
+
 #Check if admin
 if getpass.getuser() != "root":
 	exit('Error: You do not have administrative privileges')

@@ -1,32 +1,71 @@
 #!/usr/bin/env python
 import re
+from time import strftime
 
 #TODO: Test and make it a module
 
 ## Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
 
-## Read access.conf
-def parseaccessconf(conffile = '/etc/security/access.conf'):
-	c = open('/etc/security/access.conf').read()
-	#We don't support some stuff yet
-	if re.search('^[+-].*:\s?(?!ALL)$',c,re.M): exit('Error: The program does not support other than "ALL" yet: "'+i+'"')
-	if re.search('^[+-]\s?:\s?[^:]*[\(\)][^:]*\s?:\s?(?!ALL)$',c,re.M): exit('Error: The program does not support groups yet: "'+i+'"')
-	
-	#Currently supports "- : username : ALL" or "+ : username : ALL"
-	ualist = re.compile('^-\s?:\s?([^:]*)\s?:\s?ALL$', re.M).findall(c)
-	"""ualist:
-		permit: allow(+) or deny(-)
-		user
-		type of block
-	"""
+## COMMON
+def getconfsection(conffile):
+	#Argument: string
+	#Returns the section of the timekpr in a file
+	s = open(conffile).read()
+	m = re.compile('## TIMEKPR START\n(.*)\n## TIMEKPR END', re.S).findall(s)
+	if len(m) > 1: exit('Error: More then one timekpr sections found(?): "' + conffile + '"')
+	return m[0]
 
-## Convert timekpr format into a time.conf line
+## Read/Write access.conf
+def parseaccessconf(f = '/etc/security/access.conf'):
+	#Parses the timekpr section in access.conf
+	#Returns a list with the disabled usernames: ['niania','wawa']
+	s = getconfsection(f)
+	m = re.compile('^-:([^:]+):ALL$',re.M).findall(s)
+	#If no matches (or bad format?), m = []
+	return m
+
+def isuserlocked(u):
+	#Argument: username
+	#Checks if user is in access.conf
+	#Returns: True/False
+	try: i = parseaccessconf().index(u)
+	except ValueError: i = -1
+	if i < 0: return False
+	return True
+
+def unlockuser(u, f = '/etc/security/access.conf'):
+	#Argument: username
+	#Removes access.conf line of user
+	#Returns True (even if user is not locked) or False (if not possible)
+	if isuserlocked(u) is False: return True
+	fn = open(f,'w+')
+	s = fn.read()
+	m = re.sub('(## TIMEKPR START\n.*)-:'+u+':ALL\n','\\1', s)
+	try: fn.write(m)
+	except: return False
+	fn.close()
+	return True
+
+def lockuser(u, f = '/etc/security/access.conf'):
+	#Argument: username
+	#Removes access.conf line of user
+	#Returns True (even if user is already locked) or False
+	if isuserlocked(u) is True: return True
+	fn = open(f,'w+')
+	s = fn.read()
+	m = re.sub('(## TIMEKPR END.*)', '-:'+u+':ALL\n\\1', s)
+	try: fn.write(m)
+	except: return False
+	fn.close()
+	return True
+
+## Read/write time.conf
 def hourize(n):
 	#make 7 into 0700, or 22 into 2200
 	if int(n) < 10: return '0%s00' % str(n)
 	return '%s00' % str(n)
 
-def optimizetimeline(hfrom,hto):
+def converttimeline(hfrom,hto):
 	#all same:
 	mfrom = re.compile('^(?:(\d+) ){6}\\1').findall(' '.join(hfrom))
 	mto = re.compile('^(?:(\d+) ){6}\\1').findall(' '.join(hto))
@@ -41,21 +80,80 @@ def optimizetimeline(hfrom,hto):
 	th = 'Th' + hourize(hfrom[4]) + '-' + hourize(hto[4])
 	fr = 'Fr' + hourize(hfrom[5]) + '-' + hourize(hto[5])
 	sa = 'Sa' + hourize(hfrom[6]) + '-' + hourize(hto[6])
-	return ' | '.join([su,mo,tu,we,th,fr,sa])
+	#Escaping \|, will be used in regular expressions
+	return ' \| '.join([su,mo,tu,we,th,fr,sa])
 
-def mktimeconfline(uname,hfrom,hto): return '*;*;'+uname+';'+optimizetimeline(hfrom,hto)
+def mktimeconfline(uname,hfrom,hto): return '\*;\*;'+uname+';'+converttimeline(hfrom,hto) #Escaping \*, will be used in regular expressions
 """ Example:
-hfrom = "7 7 7 7 7 7 7".split(" ")
-hto = "22 22 22 22 22 22 22".split(" ")
+hfrom = ['7', '7', '7', '7', '7', '7', '7']
+hto = ['22', '22', '22', '22', '22', '22', '22']
 mktimeconfline("username",hfrom,hto)
 """
 
-## Attempt to read time.conf an return it in a timekpr format
+def adduserlimits(username,bftom,bto,f = '/etc/security/time.conf'):
+	#Adds a line with the username and their time limits in time.conf
+	#Returns True or False (if it can't write to file)
+	line = mktimeconfline(username,bfrom,bto)
+	fn = open(f,'w+')
+	s = fn.read()
+	m = re.sub('(## TIMEKPR END.*)',line+'\n\\1', s)
+	try: fn.write(m)
+	except: return False
+	fn.close()
+	return True
+
+def removeuserlimits(username,f = '/etc/security/time.conf'):
+	#Removes a line with the username in time.conf
+	#Returns True or False (if it can't write to file)
+	fn = open(f,'w+')
+	s = fn.read()
+	m = re.sub('(## TIMEKPR START\n.*)\*;\*;'+username+'\n','\\1', s)
+	try: fn.write(m)
+	except: return False
+	fn.close()
+	return True
+
+def isuserlimited(u,f = '/etc/security/time.conf'):
+	#Argument: username
+	#Checks if user is in time.conf
+	#Returns: True/False
+	s = getconfsection(f)
+	m = re.compile('^\*;\*;([^;]+);',re.M).findall(s)
+	try: i = m.index(u)
+	except ValueError: i = -1
+	if i < 0: return False
+	return True
+
+def isuserlimitednow(u,f = '/etc/security/time.conf'):
+	#Argument: username
+	#Checks if username should be limited as defined in time.conf
+	#If this is True and the user is logged in, they should be killed
+	#Returns: True or False (even if user is not in time.conf)
+	if isuserlimited(u) is False: return False
+	s = getconfsection(f)
+	m = re.compile('^\*;\*;'+u+';(.*)$',re.M).findall(s)
+	
+	today = int(time.strftime("%w"))
+	hournow = int(time.strftime("%H"))
+	
+	#If Al (All days):
+	x = re.match('Al(\d\d)00-(\d\d)00',m[0])
+	if x:
+		low = int(x.group(1)) #lowest limit
+		high= int(x.group(2)) #highest limit
+		if low <= hournow < high: return False
+	else:
+		d = re.split(' \| ',m[0])[today]
+		z = re.match('\w\w(\d\d)00-(\d\d)00',d)
+		low = int(z.group(1))
+		high = int(z.group(2))
+		if low <= hournow < high: return False
+	return True
+
 def strint(x): return str(int(x)) #makes '08' into '8' and '10' as '10'
 
 def converttconf(tfrom,tto,mode=0):
-	"""
-	In short, it removes the unnecessary 0 and multiplies tfrom,tto if necessary
+	""" In short, it removes the unnecessary 0 and multiplies tfrom,tto if necessary
 	If mode=0 (default), it converts tfrom = ['08','08','13','14','15','01','09'], tto = ['22','14','19','20','21','23','25'] into ['8','8','13','14','15','1','9'] and ['22','14','19','20','21','23','25'] respectively
 	If mode=1, it converts tfrom = '08', tto = '22' into ['8','8','8','8','8','8','8'] and ['22','22','22','22','22','22','22'] respectively
 	"""
@@ -68,11 +166,10 @@ def converttconf(tfrom,tto,mode=0):
 		fto = [strint(tto)]*7
 	return ffrom,fto
 
-def parsetimeconf(conffile = '/etc/security/time.conf'):
-	#Returns an array/list with usernames and from/to configurations from the time.conf file
-	c = open(conffile).read()
-	#TODO: Remove the '#' from the regex string when done testing
-	utlist = re.compile('^#\*;\*;([^;]+);(.*)$', re.M).findall(c)
+def parsetimeconf(f = '/etc/security/time.conf'):
+	#Returns a list with usernames and from/to configurations from the time.conf file
+	c = getconfsection(f)
+	utlist = re.compile('^\*;\*;([^;]+);(.*)$', re.M).findall(c)
 	return utlist
 	#example: [('niania', 'Al0000-2400'),('wawa', 'Su0700-2200 | Mo0700-2200 | Tu0700-2200 | We0700-2200 | Th0700-2200 | Fr0700-2200 | Sa0900-2200')]
 
@@ -83,12 +180,7 @@ def parseutlist(utlist):
 		#('niania', 'Al0000-2400')
 		#u = 'niania' and t = 'Al0000-2400'
 		
-		#Some stuff not supported yet
-		if re.search('!',t): exit('Error: The program does not support "!" negation yet: "' + t + '"')
-		if re.search('&',t): exit('Error: The program does not support "&" adding yet: "' + t + '"')
-		if re.search('[A-Za-z]{3,}',t): exit('Error: The program does not support same setting for a lot of days together yet: "' + t + '"')
 		#Check if Al is used
-		if re.search('^Al\d{4}-\d{4}$',t) and not re.search('^Al\d{2}00-\d{2}00$',t): exit('Error: The program does not support minutes yet: "' + t + '"')
 		checkAl = re.compile('^Al(\d{2})00-(\d{2})00$').findall(t)
 		if checkAl:
 			final = converttconf(checkAl[0][0],checkAl[0][1],1)
@@ -97,11 +189,6 @@ def parseutlist(utlist):
 			pieces = re.split(' \| ',t)
 			if len(pieces) != 7: exit('Error: Unsupported format detected (should have 7 time items): "' + t + '"')
 			if not re.search('^Su\d{2}00-\d{2}00$',pieces[0]): exit('Error: Unsupported format detected (Sunday should be first): "' + t + '"')
-			#Analyze each piece separately
-			for i in pieces:
-				if re.search('Al|Wk|Wd',i): exit('Error: The program does not support Al or Wk or Wd alone or with other days yet: "' + i + '"')
-				if not re.search('^[A-Z][a-z]\d{2}00-\d{2}00$',i): exit('Error: Unsupported format detected: "' + i + '"' + ' at line: "' + t + '" (program supports hours only, not minutes)')
-			#Wheow, now let's parse it properly
 			#0=Sunday, su[0] is from, su[1] is to
 			su = re.compile('^Su(\d\d)00-(\d\d)00$').findall(pieces[0])[0]
 			mo = re.compile('^Mo(\d\d)00-(\d\d)00$').findall(pieces[1])[0]
@@ -116,9 +203,8 @@ def parseutlist(utlist):
 		#user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
 		#user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
 	return retlist
-	"""Returns a list:
-	retlist
-	[0] item:
+	"""Returns a list (retlist):
+	[0] = first item:
 		[0] = username niania
 		[1] = fromto:
 			[0] = from ['0', '0', '0', '0', '0', '0', '0']
@@ -126,54 +212,3 @@ def parseutlist(utlist):
 	Example: parseutlist(utlist)[0][1][0]
 		['0', '0', '0', '0', '0', '0', '0']
 	"""
-
-
-
-
-""" the syntax of the lines is as follows:
-#
-#       services;ttys;users;times
-#
-# white space is ignored and lines maybe extended with '\\n' (escaped
-# newlines). As should be clear from reading these comments,
-# text following a '#' is ignored to the end of the line.
-#
-# the combination of individual users/terminals etc is a logic list
-# namely individual tokens that are optionally prefixed with '!' (logical
-# not) and separated with '&' (logical and) and '|' (logical or).
-#
-# services
-#	is a logic list of PAM service names that the rule applies to.
-#
-# ttys
-#	is a logic list of terminal names that this rule applies to.
-#
-# users
-#	is a logic list of users or a netgroup of users to whom this
-#	rule applies.
-#
-# NB. For these items the simple wildcard '*' may be used only once.
-#
-# times
-#	the format here is a logic list of day/time-range
-#	entries the days are specified by a sequence of two character
-#	entries, MoTuSa for example is Monday Tuesday and Saturday. Note
-#	that repeated days are unset MoMo = no day, and MoWk = all weekdays
-#	bar Monday. The two character combinations accepted are
-#
-#		Mo Tu We Th Fr Sa Su Wk Wd Al
-#
-#	the last two being week-end days and all 7 days of the week
-#	respectively. As a final example, AlFr means all days except Friday.
-#
-#	each day/time-range can be prefixed with a '!' to indicate "anything
-#	but"
-#
-#	The time-range part is two 24-hour times HHMM separated by a hyphen
-#	indicating the start and finish time (if the finish time is smaller
-#	than the start time it is deemed to apply on the following day).
-#
-# for a rule to be active, ALL of service+ttys+users must be satisfied
-# by the applying process.
-"""
-
