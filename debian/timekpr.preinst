@@ -4,6 +4,16 @@ if [ -e /usr/share/applications/timekpr.desktop ] ; then
 	rm /usr/share/applications/timekpr.desktop
 fi
 
+#TODO: Prepare gdm and login pam.d
+#gfile=/etc/pam.d/gdm
+#lfile=/etc/pam.d/login
+
+#if [ -e $gfile ]; then
+#	x=`grep...`
+#else
+#	#Should it do something?
+#fi
+
 #Prepare access.conf and time.conf
 tfile=/etc/security/time.conf
 afile=/etc/security/access.conf
@@ -35,4 +45,3 @@ else
 	#Create access.conf
 	touch $tfile
 	sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $tfile
-
