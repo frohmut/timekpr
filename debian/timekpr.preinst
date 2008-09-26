@@ -1,4 +1,38 @@
 #!/bin/sh
+#Remove old .desktop menu item
 if [ -e /usr/share/applications/timekpr.desktop ] ; then
 	rm /usr/share/applications/timekpr.desktop
 fi
+
+#Prepare access.conf and time.conf
+tfile=/etc/security/time.conf
+afile=/etc/security/access.conf
+
+if [ -e $afile ]; then
+	x=`grep -c "^###\? TIMEKPR START" $afile`
+	if [ $x -ge 1 ]; then
+		#Found timekpr section, fix if commented (after removal, see postrm)
+		sed -n -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
+	else
+		#No timekpr section
+		sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $afile
+	fi
+else
+	#Create access.conf
+	touch $afile
+	sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $afile
+
+if [ -e $tfile ]; then
+	x=`grep -c "^###\? TIMEKPR START" $tfile`
+	if [ $x -ge 1 ]; then
+		#Found timekpr section, fix if commented (after removal, see postrm)
+		sed -n -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
+	else
+		#No timekpr section
+		sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $tfile
+	fi
+else
+	#Create access.conf
+	touch $tfile
+	sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $tfile
+
