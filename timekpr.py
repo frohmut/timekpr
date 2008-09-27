@@ -2,7 +2,7 @@
 import getpass, re
 from time import strftime, sleep, localtime
 from os.path import isfile, isdir, getmtime
-from os import popen, mkdir, kill, isfile
+from os import popen, mkdir, kill
 
 # Copyright / License:
 # Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
@@ -60,11 +60,11 @@ TIMEKPRWORK = '/var/lib/timekpr'
 
 #TO-DO
 #Check if it exists, if not, create it
-if not os.path.isdir(TIMEKPRDIR):
-	os.mkdir(TIMEKPRDIR)
-if not os.path.isdir(TIMEKPRWORK):
-	os.mkdir(TIMEKPRWORK)
-if not os.path.isfile(TIMEKPRCONF):
+if not isdir(TIMEKPRDIR):
+	mkdir(TIMEKPRDIR)
+if not isdir(TIMEKPRWORK):
+	mkdir(TIMEKPRWORK)
+if not isfile(TIMEKPRCONF):
 	exit('Error: Could not find configuration file ' + TIMEKPRCONF)
 
 #Read configuration file TIMEKPRCONF (re module)
@@ -94,7 +94,7 @@ def logkpr(string,clear=0):
 		l = open(LOGFILE, 'w')
 	else:
 		l = open(LOGFILE, 'a')
-	nowtime = time.strftime('%Y-%m-%d %H:%M:%S ', time.localtime())
+	nowtime = strftime('%Y-%m-%d %H:%M:%S ', localtime())
 	l.write(nowtime + string +'\n')
 
 def logOut(user,pid):
@@ -103,11 +103,11 @@ def logOut(user,pid):
 		logkpr('logOut: Attempting killing '+user+' (TERM, 15)...')
 		#this is a pretty bad way of killing a gnome-session, but we warned 'em
 		#Should it be signal 1 (HUP)?
-		os.kill(pid,15)
+		kill(pid,15)
 		time.sleep(5)
 		if issessionalive(user) == 1:
 			logkpr('logOut: Process still there, attempting force-killing '+user+' (KILL, 9)...')
-			os.kill(pid,9)
+			kill(pid,9)
 		#logkpr('logOut: touched $username.logout')
 		#touched?
 	
@@ -120,14 +120,14 @@ def logOut(user,pid):
 	"""
 
 def lockacct(user):
-	
+	logkpr('lockacct called with user: ' + user)
 
 def checklockacct():
-	
+	logkpr('checklockacct called')
 
 def fileisok(fname):
 	#File exists and is today's?
-	if (os.isfile(fname)) and fromtoday(fname):
+	if (isfile(fname)) and fromtoday(fname):
 		return True
 	return False
 
@@ -155,7 +155,7 @@ def readusersettings(conffile):
 
 def getcmdoutput(cmd):
 	#Execute a command, returns its output
-	out = os.popen(cmd)
+	out = popen(cmd)
 	return out.read()
 
 def getsessions():
@@ -227,8 +227,8 @@ def writetime(tfile, time):
 
 def fromtoday(fname):
 	#Is the file today's?
-	fdate = time.strftime("%Y%m%d", time.localtime(os.path.getmtime(fname)))
-	today = time.strftime("%Y%m%d", time.localtime())
+	fdate = strftime("%Y%m%d", localtime(getmtime(fname)))
+	today = strftime("%Y%m%d", localtime())
 	return fdate == today
 
 logkpr('Starting timekpr',1)
@@ -240,7 +240,7 @@ while (True):
 	for username, pid in getsessions():
 		conffile = TIMEKPRDIR + '/' + username
 		# Check if user configfile exists, if it doesn't the user is unrestricted and we need not check any more
-		if os.path.isfile(conffile):
+		if isfile(conffile):
 			logkpr('conffile of ' + username + 'exists')
 			# Read lists: from, to and limit
 			limits, bfrom, bto = readusersettings(conffile)
@@ -255,19 +255,19 @@ while (True):
 			they can login whenever they want, ie they are normal users'''
 			
 			# Get current day index and hour of day
-			index = int(time.strftime("%w", time.localtime()))
-			hour = time.strftime("%H", time.localtime())
+			index = int(strftime("%w", localtime()))
+			hour = strftime("%H", localtime())
 			
 			logkpr('User ' + username + ' PID ' + pid + ' Day-Index: ' + index + ' Seconds-passed: ' + time)
 			
 			# Compare: is current hour less than the one in bfrom list?
 			if hour < bfrom[index]:
-				if os.isfile(allowfile):
+				if isfile(allowfile):
 					logkpr('Current hour less than the defined hour in conffile for user: ' + username)
 					if not fromtoday(allowfile):
-					logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
-					logOut(username, pid)
-					os.remove(allowfile)
+						logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
+						logOut(username, pid)
+						remove(allowfile)
 				else:
 					# User has not been given extended login hours
 					logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
@@ -277,29 +277,29 @@ while (True):
 			if hour > bto[index]:
 				logkpr('Current hour greater than the defined hour in conffile for user: ' + username)
 				# Has the user been given extended login hours?
-				if os.isfile(allowfile):
+				if isfile(allowfile):
 					if not fromtoday(allowfile):
-					logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
-					# Has the user been late-kicked today?
-					if os.isfile(latefile):
-						if fromtoday(latefile):
-							logkpr('User: ' + username + ' has been late-kicked today')
-							logOut(username, pid)
-							os.remove(allowfile)
-							#Lock account
-							lockacct(username)
-						else:
-							logkpr('User: ' + username + ' has NOT been late-kicked today')
-							notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
-							logOut(username, pid)
-							open(latefile, 'w')
-							os.remove(allowfile)
+						logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
+						# Has the user been late-kicked today?
+						if isfile(latefile):
+							if fromtoday(latefile):
+								logkpr('User: ' + username + ' has been late-kicked today')
+								logOut(username, pid)
+								remove(allowfile)
+								#Lock account
+								lockacct(username)
+							else:
+								logkpr('User: ' + username + ' has NOT been late-kicked today')
+								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
+								logOut(username, pid)
+								open(latefile, 'w')
+								remove(allowfile)
 					else:
-					logkpr('Extended login hours detected ' + username + '.allow is from today')
+						logkpr('Extended login hours detected ' + username + '.allow is from today')
 				else:
 					# User has not been given extended login hours
 					logkpr('Extended hours not detected, ' + username + ' not in allowed period from-to')
-					if os.isfile(latefile) and fromtoday(latefile):
+					if isfile(latefile) and fromtoday(latefile):
 						logkpr('User: ' + username + ' has been late-kicked today')
 						logOut(username, pid)
 						#Lock account
@@ -314,7 +314,7 @@ while (True):
 			if time > limits[index]:
 				logkpr('Exceeded todays limit, user: ' + username)
 				# Has the user already been kicked out?
-				if os.isfile(logoutfile):
+				if isfile(logoutfile):
 					# Was he kicked out today?
 					if fromtoday(logoutfile):
 						logkpr(username + ' has been kicked out today')
@@ -335,5 +335,5 @@ while (True):
 					open(logoutfile, 'w')
 	
 	# Done checking all users, sleeping
-	logkpr('Finished checking all users, sleeping for ' + POLLTIME + ' seconds')
-	time.sleep(POLLTIME)
+	logkpr('Finished checking all users, sleeping for ' + str(POLLTIME) + ' seconds')
+	sleep(POLLTIME)
