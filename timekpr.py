@@ -4,7 +4,21 @@ from time import strftime, sleep, localtime
 from os.path import isfile, isdir, getmtime
 from os import popen, mkdir, kill
 
-# Copyright/License: See debian/copyright
+# Copyright / License:
+# Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
+# Further developed by:	Even Nedberg <code@nedberg.net>
+#			Savvas Radevic <vicedar@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# See <http://www.gnu.org/licenses/>. 
+#
 
 ## CONFIGURE START - You can change the following values:
 
@@ -34,7 +48,7 @@ if getpass.getuser() != "root":
 	exit('Error: You do not have administrative privileges')
 
 #Default directory (for per-user configuration)
-TIMEKPRDIR = '/etc/timekpr'
+TIMEKPRDIR = '/var/lib/timekpr'
 
 #Default configuration file (for timekpr variables)
 TIMEKPRCONF = '/etc/timekpr.conf'
@@ -200,16 +214,18 @@ def gettime(tfile):
 	if fileisok(tfile):
 		logkpr('This day\'s ' + username + '.time file exists, adding time')
 		t = open(tfile)
+		newtime = int(t.readline()) + POLLTIME
 	else:
 		t = open(tfile, 'w+')
-	newtime = t.readline() + POLLTIME
+		newtime = POLLTIME
+	t.close()
 	writetime(tfile, newtime)
 	return newtime
 
 def writetime(tfile, time):
 	#Write time to timefile
 	f = open(tfile, 'w')
-	f.write(time)
+	f.write(str(time))
 
 def fromtoday(fname):
 	#Is the file today's?
@@ -227,7 +243,7 @@ while (True):
 		conffile = TIMEKPRDIR + '/' + username
 		# Check if user configfile exists, if it doesn't the user is unrestricted and we need not check any more
 		if isfile(conffile):
-			logkpr('conffile of ' + username + 'exists')
+			logkpr('conffile of ' + username + ' exists')
 			# Read lists: from, to and limit
 			limits, bfrom, bto = readusersettings(conffile)
 			timefile = TIMEKPRDIR + '/' + username + '.time'
@@ -244,7 +260,7 @@ while (True):
 			index = int(strftime("%w", localtime()))
 			hour = strftime("%H", localtime())
 			
-			logkpr('User ' + username + ' PID ' + pid + ' Day-Index: ' + index + ' Seconds-passed: ' + time)
+			logkpr('User ' + username + ' PID ' + str(pid) + ' Day-Index: ' + str(index) + ' Seconds-passed: ' + str(time))
 			
 			# Compare: is current hour less than the one in bfrom list?
 			if hour < bfrom[index]:
