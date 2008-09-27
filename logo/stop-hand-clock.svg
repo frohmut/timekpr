@@ -7662,17 +7662,6 @@
     <svg:radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4750"
-       id="radialGradient5079"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="scale(1.03682,0.964486)"
-       cx="18.63378"
-       cy="17.486208"
-       fx="18.934305"
-       fy="17.810213"
-       r="40.692665" />
-    <svg:radialGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4750"
        id="radialGradient5081"
        gradientUnits="userSpaceOnUse"
        gradientTransform="scale(1.03682,0.964486)"
@@ -7692,57 +7681,255 @@
        fx="18.934305"
        fy="17.810213"
        r="40.692665" />
-    <svg:linearGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_11_"
-       id="linearGradient5085"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.3133,0,0,0.3133,63.8133,-101.903)"
-       x1="128.00049"
-       y1="244.42773"
-       x2="128.00047"
-       y2="11.573135" />
-    <svg:linearGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_12_"
-       id="linearGradient5087"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.3133,0,0,0.3133,63.8133,-101.903)"
-       x1="127.99951"
-       y1="244.40723"
-       x2="127.9995"
-       y2="11.546326" />
-    <svg:linearGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_13_"
-       id="linearGradient5089"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.3133,0,0,0.3133,63.8133,-101.903)"
-       x1="128.00244"
-       y1="239.71191"
-       x2="128.00243"
-       y2="16.285156" />
     <svg:radialGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_14_"
-       id="radialGradient5091"
+       r="64"
+       fy="63.429962"
+       fx="78.225098"
+       cy="63.429962"
+       cx="78.225098"
+       gradientTransform="matrix(1.0790693,0,0,1.0790693,-13.362745,1.5920524)"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.444478,0,0,0.444478,77.4184,-165.826)"
-       cx="59.616211"
-       cy="234.03906"
-       fx="59.616211"
-       fy="234.03906"
-       r="69.963379" />
+       id="radialGradient3325"
+       xlink:href="#linearGradient3157"
+       inkscape:collect="always" />
     <svg:linearGradient
-       inkscape:collect="always"
-       xlink:href="#XMLID_20_"
-       id="linearGradient5093"
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(1.1030691,0,0,-1.1030691,-139.57797,204.33098)"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.3133,0,0,0.3133,63.8133,-101.903)"
-       x1="117.74365"
-       y1="123.58594"
-       x2="137.875"
-       y2="123.58594" />
+       id="linearGradient3322"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="56.999004"
+       fy="69.259918"
+       fx="69.829964"
+       cy="69.259918"
+       cx="69.829964"
+       gradientTransform="matrix(1.5810231,0,-1.6614101e-8,1.5698896,-39.269393,-38.567118)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3319"
+       xlink:href="#linearGradient3203"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="56.999004"
+       fy="69.259918"
+       fx="69.829964"
+       cy="69.259918"
+       cx="69.829964"
+       gradientTransform="matrix(1.4651729,0,-1.5396695e-8,1.4548552,-32.558934,-31.516084)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3312"
+       xlink:href="#linearGradient3203"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(1.0222412,0,0,-1.0222412,-125.51735,193.58354)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3310"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="64"
+       fy="63.429962"
+       fx="78.225098"
+       cy="63.429962"
+       cx="78.225098"
+       gradientTransform="translate(-8.5506073,5.7004048)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3308"
+       xlink:href="#linearGradient3157"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="64"
+       fy="63.429962"
+       fx="78.225098"
+       cy="63.429962"
+       cx="78.225098"
+       gradientTransform="translate(-8.5506073,5.7004048)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3295"
+       xlink:href="#linearGradient3157"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(1.0222412,0,0,-1.0222412,-125.51735,193.58354)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3292"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(0,0.9857807,0.9857807,0,53.409412,-135.60278)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3289"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="56.999004"
+       fy="69.259918"
+       fx="69.829964"
+       cy="69.259918"
+       cx="69.829964"
+       gradientTransform="matrix(1.4651729,0,-1.5396695e-8,1.4548552,-32.558934,-31.516084)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3286"
+       xlink:href="#linearGradient3203"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="56.999004"
+       fy="69.259918"
+       fx="69.829964"
+       cy="69.259918"
+       cx="69.829964"
+       gradientTransform="matrix(1.4200362,0,-1.4922378e-8,1.4100363,-29.90115,-27.258998)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3276"
+       xlink:href="#linearGradient3203"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(0,0.9857807,0.9857807,0,-50.709129,-118.13323)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3274"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(1.0142191,0,0,-1.0142191,-123.84896,193.55318)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3272"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="64"
+       fy="63.429962"
+       fx="78.225098"
+       cy="63.429962"
+       cx="78.225098"
+       gradientTransform="translate(-8.5506073,5.7004048)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3270"
+       xlink:href="#linearGradient3157"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       r="56.999004"
+       fy="69.259918"
+       fx="69.829964"
+       cy="69.259918"
+       cx="69.829964"
+       gradientTransform="matrix(1.4200362,0,-1.4922378e-8,1.4100363,-29.90115,-27.258998)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3243"
+       xlink:href="#linearGradient3203"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       gradientTransform="matrix(0,0.9857807,0.9857807,0,-50.709129,-118.13323)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3221"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:linearGradient
+       gradientTransform="matrix(1.0142191,0,0,-1.0142191,-123.84896,193.55318)"
+       gradientUnits="userSpaceOnUse"
+       y2="69.834999"
+       x2="190.96356"
+       y1="190.67351"
+       x1="190.96356"
+       id="linearGradient3199"
+       xlink:href="#linearGradient3187"
+       inkscape:collect="always" />
+    <svg:radialGradient
+       gradientTransform="translate(-8.5506073,5.7004048)"
+       gradientUnits="userSpaceOnUse"
+       r="64"
+       fy="63.429962"
+       fx="78.225098"
+       cy="63.429962"
+       cx="78.225098"
+       id="radialGradient3175"
+       xlink:href="#linearGradient3157"
+       inkscape:collect="always" />
+    <inkscape:perspective
+       id="perspective14"
+       inkscape:persp3d-origin="16.5 : 11 : 1"
+       inkscape:vp_z="33 : 16.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 16.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <svg:linearGradient
+       id="linearGradient3157">
+      <svg:stop
+         id="stop3171"
+         offset="0"
+         style="stop-color:#ff2323;stop-opacity:1;" />
+      <svg:stop
+         id="stop3161"
+         offset="1"
+         style="stop-color:#b90000;stop-opacity:1;" />
+    </svg:linearGradient>
+    <svg:linearGradient
+       id="linearGradient3181">
+      <svg:stop
+         style="stop-color:#ff2323;stop-opacity:1;"
+         offset="0"
+         id="stop3183" />
+      <svg:stop
+         style="stop-color:#b90000;stop-opacity:1;"
+         offset="1"
+         id="stop3185" />
+    </svg:linearGradient>
+    <svg:linearGradient
+       id="linearGradient3187">
+      <svg:stop
+         id="stop3189"
+         offset="0"
+         style="stop-color:#ffc6c6;stop-opacity:1;" />
+      <svg:stop
+         style="stop-color:#d30000;stop-opacity:1;"
+         offset="0.57522714"
+         id="stop3201" />
+      <svg:stop
+         id="stop3191"
+         offset="1"
+         style="stop-color:#ff9e9e;stop-opacity:1;" />
+    </svg:linearGradient>
+    <svg:linearGradient
+       id="linearGradient3203">
+      <svg:stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3213" />
+      <svg:stop
+         id="stop3217"
+         offset="0.60679752"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+      <svg:stop
+         id="stop3207"
+         offset="1"
+         style="stop-color:#460041;stop-opacity:1;" />
+    </svg:linearGradient>
   </svg:defs>
   <svg:g
      id="g3263">
@@ -7876,130 +8063,56 @@
      id="layer5"
      transform="matrix(0.485814,0,0,0.485814,-174.99835,52.57727)" />
   <svg:g
-     id="g5261"
-     transform="matrix(1.1550291,0,0,1.1550291,73.303223,116.96963)">
+     id="g4398"
+     transform="matrix(0.6584674,0,0,0.6584674,147.75057,-2.1366719e-2)">
+    <svg:path
+       id="path2218"
+       style="fill:#ffffff;fill-opacity:1;stroke:url(#radialGradient3325);stroke-width:8.34286785;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 135.93656,70.037376 C 135.93656,105.87459 106.88476,134.92638 71.04756,134.92638 C 35.210354,134.92638 6.1585587,105.87459 6.1585598,70.037376 C 6.1585587,34.200179 35.210354,5.1483759 71.04756,5.1483759 C 106.88476,5.1483759 135.93656,34.200179 135.93656,70.037376 z" />
+    <svg:path
+       id="path3177"
+       style="fill:url(#linearGradient3322);fill-opacity:1;stroke:none;stroke-width:7.7315402;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 137.40028,69.769039 C 137.40028,33.134767 107.70232,3.43682 71.068092,3.43682 C 34.43381,3.43682 4.7358688,33.134767 4.7358688,69.769039 C 4.7358688,106.40331 34.43381,136.10126 71.068092,136.10126 C 107.70232,136.10126 137.40028,106.40331 137.40028,69.769039 z" />
+    <svg:path
+       id="path3195"
+       style="fill:url(#radialGradient3319);fill-opacity:1;stroke:none;stroke-width:7.7315402;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 134.59428,70.163301 C 134.59428,105.21178 106.18187,133.62419 71.1334,133.62419 C 36.084914,133.62419 7.6725145,105.21178 7.6725145,70.163301 C 7.6725145,35.114832 36.084914,6.7024202 71.1334,6.7024202 C 106.18187,6.7024202 134.59428,35.114832 134.59428,70.163301 z" />
+    <svg:path
+       id="path3335"
+       d="M 70.4,14.08 L 70.4,27.76684"
+       style="fill:none;fill-rule:evenodd;stroke:#6c0061;stroke-width:3.75737357;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <svg:g
-       style="fill:#000000;fill-opacity:0.71344999;fill-rule:nonzero;stroke:none;stroke-miterlimit:4"
-       id="g3638"
-       transform="matrix(2.72344,0,0,2.72344,-7.94373,-88.5761)">
-      <svg:g
-         id="g3640">
-        <svg:path
-           id="path3642"
-           d="M 28.833,12.7749 L 28.542,12.0337 L 28.0322,12.1987 L 28.1787,13.103 L 28.833,12.7749" />
-      </svg:g>
-    </svg:g>
-    <svg:g
-       style="fill:#000000;fill-opacity:0.71344999;fill-rule:nonzero;stroke:none;stroke-miterlimit:4"
-       id="g3644"
-       transform="matrix(2.72344,0,0,2.72344,-7.94373,-88.5761)">
-      <svg:g
-         id="g3646">
-        <svg:path
-           id="path3648"
-           d="M 29.123,12.6089 L 28.9775,13.5972 L 29.7773,13.4322 L 30.3584,12.857 L 29.8496,12.3629 C 29.6787,11.9078 29.4824,11.483 29.2685,11.0465 L 28.833,11.0465 L 28.833,11.5397 L 29.123,11.8688 L 29.123,12.609" />
-      </svg:g>
-    </svg:g>
-    <svg:g
-       id="g3242"
-       style="fill:url(#radialGradient5083);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.01795006;stroke-linecap:butt;stroke-linejoin:miter;marker:none;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
-       transform="matrix(2.72344,0,0,2.72344,-8.50382,-89.1362)">
-      <svg:g
-         id="g3246"
-         style="fill:url(#radialGradient5081);marker:none;stroke-dashoffset:0;visibility:visible;display:inline;overflow:visible">
-        <svg:path
-           id="path3248"
-           style="fill:url(#radialGradient5079);marker:none;stroke-dashoffset:0;visibility:visible;display:inline;overflow:visible"
-           d="M 28.833,12.7749 L 28.542,12.0337 L 28.0322,12.1987 L 28.1787,13.103 L 28.833,12.7749" />
-      </svg:g>
+       transform="translate(1.197782,1.915491)"
+       id="g3327">
+      <svg:path
+         d="M 44.538438,32.853333 L 69.202876,75.573396"
+         style="fill:none;fill-rule:evenodd;stroke:#e0e0e0;stroke-width:9.20805454;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path7082" />
+      <svg:path
+         d="M 69.202218,26.244509 L 69.202218,28.349476 L 69.202218,75.573396"
+         style="fill:none;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:9.20805454;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path8059"
+         sodipodi:nodetypes="ccc" />
+      <svg:path
+         d="M 93.866667,32.853333 L 69.202218,75.573396"
+         style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:9.20805454;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path8061" />
+      <svg:path
+         d="M 36.6103,56.755344 L 69.203178,75.573396 L 111.92228,50.908968"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:9.20805454;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+         id="path8063" />
     </svg:g>
     <svg:path
-       id="path137"
-       style="fill:url(#linearGradient5085)"
-       d="M 65.373732,-61.800447 C 65.373732,-40.54871 82.663925,-23.257891 103.91628,-23.257891 C 125.16772,-23.257891 142.45761,-40.54871 142.45761,-61.800447 C 142.45761,-83.052637 125.16772,-100.343 103.91628,-100.343 C 82.663925,-100.343 65.373732,-83.052637 65.373732,-61.800447 z" />
+       id="path3255"
+       d="M 14.47316,70.4 L 28.16,70.4"
+       style="fill:none;fill-rule:evenodd;stroke:#6c0061;stroke-width:3.75737357;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <svg:path
-       id="path158"
-       style="fill:url(#linearGradient5087)"
-       d="M 67.691951,-61.800447 C 67.691951,-41.826383 83.942214,-25.576426 103.91628,-25.576426 C 123.88974,-25.576426 140.13908,-41.826383 140.13908,-61.800447 C 140.13908,-81.774504 123.88974,-98.024615 103.91628,-98.024615 C 83.942214,-98.024615 67.691951,-81.774504 67.691951,-61.800447 z" />
+       id="path3333"
+       d="M 113.03316,70.4 L 126.72,70.4"
+       style="fill:none;fill-rule:evenodd;stroke:#6c0061;stroke-width:3.75737357;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <svg:path
-       id="path179"
-       style="fill:url(#linearGradient5089)"
-       d="M 68.915465,-61.800447 C 68.915465,-42.500096 84.617762,-26.801169 103.91628,-26.801169 C 123.21601,-26.801169 138.91708,-42.500096 138.91708,-61.800447 C 138.91708,-81.098951 123.21601,-96.800789 103.91628,-96.800789 C 84.617762,-96.800789 68.915465,-81.098951 68.915465,-61.800447 z" />
-    <svg:path
-       id="path181"
-       style="opacity:0.8;fill:#ffffff"
-       d="M 103.91628,-92.42806 C 86.339382,-92.42806 72.037757,-78.129644 72.037757,-60.550614 C 72.037757,-42.973717 86.339382,-28.675766 103.91628,-28.675766 C 121.49378,-28.675766 135.79389,-42.973717 135.79389,-60.550614 C 135.79389,-78.129644 121.49378,-92.42806 103.91628,-92.42806 z" />
-    <svg:path
-       id="path183"
-       style="fill:#8d0000;fill-opacity:1"
-       d="M 72.037757,-61.800447 C 72.037757,-44.222329 86.339382,-29.925595 103.91628,-29.925595 C 121.49378,-29.925595 135.79389,-44.222329 135.79389,-61.800447 C 135.79389,-79.377488 121.49378,-93.677891 103.91628,-93.677891 C 86.339382,-93.677891 72.037757,-79.377488 72.037757,-61.800447 z" />
-    <svg:path
-       id="path210"
-       style="fill:url(#radialGradient5091)"
-       d="M 72.818555,-61.800447 C 72.818555,-44.654031 86.768653,-30.704564 103.91628,-30.704564 C 121.06361,-30.704564 135.0143,-44.654031 135.0143,-61.800447 C 135.0143,-78.947007 121.06361,-92.89755 103.91628,-92.89755 C 86.768653,-92.89755 72.818555,-78.947007 72.818555,-61.800447 z" />
-    <svg:path
-       id="path212"
-       style="fill:#771111;fill-opacity:1"
-       d="M 75.391888,-62.817211 C 75.045844,-62.817211 74.765279,-62.536649 74.765279,-62.190612 L 74.765279,-61.411499 C 74.765279,-61.065462 75.045844,-60.7849 75.391888,-60.7849 L 80.856266,-60.7849 C 81.202287,-60.7849 81.482851,-61.065462 81.482851,-61.411499 L 81.482851,-62.190612 C 81.482851,-62.536649 81.202287,-62.817211 80.856266,-62.817211 L 75.391888,-62.817211 z" />
-    <svg:rect
-       id="rect214"
-       style="fill:#a00000;fill-opacity:1"
-       y="-62.190609"
-       x="75.391869"
-       height="0.77911806"
-       width="5.4643822" />
-    <svg:path
-       id="path216"
-       style="fill:#771111;fill-opacity:1"
-       d="M 126.80557,-62.817211 C 126.45955,-62.817211 126.17899,-62.536649 126.17899,-62.190612 L 126.17899,-61.411499 C 126.17899,-61.065462 126.45955,-60.7849 126.80557,-60.7849 L 132.2721,-60.7849 C 132.61814,-60.7849 132.89871,-61.065462 132.89871,-61.411499 L 132.89871,-62.190612 C 132.89871,-62.536649 132.61814,-62.817211 132.2721,-62.817211 L 126.80557,-62.817211 z" />
-    <svg:rect
-       id="rect218"
-       style="fill:#a00000;fill-opacity:1"
-       y="-62.190609"
-       x="126.80562"
-       height="0.77911806"
-       width="5.4665236" />
-    <svg:path
-       id="path220"
-       style="fill:#771111;fill-opacity:1"
-       d="M 103.52603,-39.537128 C 103.18001,-39.537128 102.89944,-39.256561 102.89944,-38.910531 L 102.89944,-33.446144 C 102.89944,-33.100106 103.18001,-32.819547 103.52603,-32.819547 L 104.30685,-32.819547 C 104.65287,-32.819547 104.93343,-33.100106 104.93343,-33.446144 L 104.93343,-38.910531 C 104.93343,-39.256561 104.65287,-39.537128 104.30685,-39.537128 L 103.52603,-39.537128 z" />
-    <svg:rect
-       id="rect222"
-       style="fill:#a00000;fill-opacity:1"
-       y="-38.910519"
-       x="103.52604"
-       height="5.4643822"
-       width="0.78080076" />
-    <svg:path
-       id="path224"
-       style="fill:#771111;fill-opacity:1"
-       d="M 103.52603,-90.951599 C 103.18001,-90.951599 102.89944,-90.671036 102.89944,-90.324999 L 102.89944,-84.860617 C 102.89944,-84.514581 103.18001,-84.23402 103.52603,-84.23402 L 104.30685,-84.23402 C 104.65287,-84.23402 104.93343,-84.514581 104.93343,-84.860617 L 104.93343,-90.324999 C 104.93343,-90.671036 104.65287,-90.951599 104.30685,-90.951599 L 103.52603,-90.951599 L 103.52603,-90.951599 z" />
-    <svg:rect
-       id="rect226"
-       style="fill:#a00000;fill-opacity:1"
-       y="-90.325005"
-       x="103.52604"
-       height="5.4643822"
-       width="0.78080076" />
-    <svg:path
-       id="path412"
-       style="fill:url(#linearGradient5093)"
-       d="M 106.33975,-62.606184 C 106.00106,-63.62211 105.04343,-64.357475 103.91505,-64.357475 C 102.59026,-64.357475 101.49832,-63.343842 101.37194,-62.050873 C 103.04337,-61.930325 104.73411,-62.058211 106.33975,-62.606184 z" />
-    <svg:path
-       id="path7082"
-       style="fill:none;fill-rule:evenodd;stroke:#e0e0e0;stroke-width:5.07013988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 85.843308,-81.822086 L 103.70741,-60.908811" />
-    <svg:path
-       id="path8059"
-       style="fill:none;fill-rule:evenodd;stroke:#bfbfbf;stroke-width:5.07013988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 98.692913,-87.952228 L 103.70706,-60.908747" />
-    <svg:path
-       id="path8061"
-       style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:5.07013988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 112.88643,-86.836154 L 103.70706,-60.908747" />
-    <svg:path
-       id="path8063"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5.07013988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 83.926453,-67.912461 L 103.70758,-60.908849 L 124.62034,-78.772847" />
+       id="path3337"
+       d="M 70.4,113.03316 L 70.4,126.72"
+       style="fill:none;fill-rule:evenodd;stroke:#6c0061;stroke-width:3.75737357;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </svg:g>
 </svg:svg>
