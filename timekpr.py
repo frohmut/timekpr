@@ -48,7 +48,7 @@ if getpass.getuser() != "root":
 	exit('Error: You do not have administrative privileges')
 
 #Default directory (for per-user configuration)
-TIMEKPRDIR = '/var/lib/timekpr'
+TIMEKPRDIR = '/etc/timekpr'
 
 #Default configuration file (for timekpr variables)
 TIMEKPRCONF = '/etc/timekpr.conf'
