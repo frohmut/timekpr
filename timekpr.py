@@ -4,21 +4,7 @@ from time import strftime, sleep, localtime
 from os.path import isfile, isdir, getmtime
 from os import popen, mkdir, kill
 
-# Copyright / License:
-# Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
-# Further developed by:	Even Nedberg <code@nedberg.net>
-#			Savvas Radevic <vicedar@gmail.com>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# See <http://www.gnu.org/licenses/>. 
-#
+# Copyright/License: See debian/copyright
 
 ## CONFIGURE START - You can change the following values:
 
