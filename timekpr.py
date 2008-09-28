@@ -1,24 +1,18 @@
 #!/usr/bin/env python
-import getpass, re
-from time import strftime, sleep, localtime
-from os.path import isfile, isdir, getmtime
-from os import popen, mkdir, kill
+import re, sys
+from getpass import getuser
+from time import strftime, sleep, localtime, mktime, time
+from os.path import split as splitpath, isfile, isdir, getmtime
+from os import popen, mkdir, kill, remove
+from glob import glob
 
-# Copyright / License:
-# Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
-# Further developed by:	Even Nedberg <code@nedberg.net>
-#			Savvas Radevic <vicedar@gmail.com>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# See <http://www.gnu.org/licenses/>. 
-#
+# Import modules
+timekprmodules = '/usr/share/timekpr/'
+sys.path.append(timekprmodules)
+# timekprpam.py
+from timekprpam import *
+
+# Copyright / License: See debian/copyright
 
 ## CONFIGURE START - You can change the following values:
 
@@ -37,14 +31,14 @@ DEBUGME = True
 LOGFILE = '/var/log/timekpr.log'
 
 #Default lock period
-#Setting can be day(s), hour(s), minute(s)
+#Setting can be second(s), minute(s), hour(s), day(s), week(s), month(s) (30 days)
 #Example: 5 hours
 LOCKLASTS = '1 hour'
 
 ## CONFIGURE END - Do not edit after this line!
 
 #Check if admin
-if getpass.getuser() != "root":
+if getuser() != "root":
 	exit('Error: You do not have administrative privileges')
 
 #Default directory (for per-user configuration)
@@ -58,7 +52,6 @@ TIMEKPRCONF = '/etc/timekpr.conf'
 #changes done by timekpr (unlock account, grant time, etc)
 TIMEKPRWORK = '/var/lib/timekpr'
 
-#TO-DO
 #Check if it exists, if not, create it
 if not isdir(TIMEKPRDIR):
 	mkdir(TIMEKPRDIR)
@@ -111,24 +104,65 @@ def logOut(user,pid):
 		#logkpr('logOut: touched $username.logout')
 		#touched?
 	
-	""" uncomment the following to brutally kill all of the users processes
+	''' uncomment the following to brutally kill all of the users processes
 		sleep 5
 		pkill -u $username
 	# killing gnome-session should be more like:
 	DISPLAY=":0" XAUTHORITY="/tmp/.gdmEQ0V5T" SESSION_MANAGER="local/wretched:/tmp/.ICE-unix/$pid" su -c 'gnome-session-save --kill --silent' $username
 	# but this can still leave processes to cleanup - plus it's not easy to get SESSION_MANAG
-	"""
+	'''
 
-def lockacct(user):
-	logkpr('lockacct called with user: ' + user)
+## Using Linux-PAM to lock and disable users
+def getlocklasts():
+	#Returns the LOCKLASTS variable in seconds
+	t=re.compile('(\d+) (second|minute|hour|day|week|month|year)s?').match(LOCKLASTS)
+	if not t: exit('Error: LOCKLASTS is badly formatted, should be something like "1 week" or "2 hours"')
+	#n = time length
+	#m = second|minute|hour|day|week|month|year
+	(n,m)=(int(t.group(1)),t.group(2))
+	#variable dictionary: multiply
+	multiply = {
+		'second': n,
+		'minute': n*60,
+		'hour': n*60*60,
+		'day': n*60*60*24,
+		'week': n*60*60*24*7,
+		'month': n*60*60*24*30
+	}
+	#Return in seconds (integer)
+	return multiply[m]
+
+def lockacct(u):
+	#Locks user and sets the date in a file
+	logkpr('lockacct called with user: ' + u)
+	lockfile = TIMEKPRDIR + '/' + u + '.lock'
+	f = open(lockfile, 'w')
+	f.close()
+	#lockuser(u) # timekprpam.py
 
 def checklockacct():
+	#Check if user should be unlocked and unlock them
 	logkpr('checklockacct called')
+	#Find *.lock in TIMEKPRDIR
+	s = TIMEKPRDIR + '/' + '*.lock'
+	l = glob(s)
+	for f in l:
+		#Get username from filename - os.path.split
+		username = splitpath(f)[1].replace('.lock','')
+		lastmodified = getmtime(f) #Get last modified time from username.lock file
+		#Get time when lock should be lifted
+		dtlock = lastmodified + getlocklasts()
+		dtnow = time()
+		#If time now is great than or equal to the time when lock should be lifted
+		if dtnow >= dtlock:
+			logkpr('checklockacct: ' + username + 'should be unlocked, unlocking..')
+			#unlock(username)
+			remove(f)
 
+## File defs
 def fileisok(fname):
 	#File exists and is today's?
-	if (isfile(fname)) and fromtoday(fname):
-		return True
+	if isfile(fname) and fromtoday(fname): return True
 	return False
 
 def readusersettings(conffile):
@@ -137,7 +171,7 @@ def readusersettings(conffile):
 	limits = fhandle.readline() #Read 1st line
 	bfrom = fhandle.readline() #Read 2nd line
 	bto = fhandle.readline()
-	"""Deprecated
+	'''Deprecated
 	limits = limits.replace("limit=( ","")
 	limits = limits.replace(" )", "")
 	limits = limits.split(" ")
@@ -147,7 +181,7 @@ def readusersettings(conffile):
 	bto = bto.replace("to=( ", "")
 	bto = bto.replace(" )", "")
 	bto = bto.split(" ")
-	"""
+	'''
 	limits = re.compile('(\d+)').findall(limits)
 	bfrom = re.compile('(\d+)').findall(bfrom)
 	bto = re.compile('(\d+)').findall(bto)
@@ -173,8 +207,7 @@ def issessionalive(user):
 	# Returns:	1 if process is still there (user logged in),
 	#		0 if user has logged out
 	for u,p in getsessions():
-		if u == user:
-			return 1
+		if u == user: return 1
 	return 0
 
 def getdbus(pid):
@@ -188,11 +221,11 @@ def getdbus(pid):
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
 
 def notify(username, pid, title, message):
-	"""
+	'''
 	Sends a notification via notify-send
 	Usage: sendnotification( "youruser", "pid", "your title", "your message")
 	We will be probably using pynotify module for this, we'll see!
-	"""
+	'''
 	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like:
 	# -bash: !": event not found
 	#Might be good to include these substitutions, if someone doesn't read this warning
@@ -204,10 +237,10 @@ def notify(username, pid, title, message):
 	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (username, dbus, title, message)
 	getcmdoutput(notifycmd)
 	
-	"""The long representations in terminal:
+	'''The long representations in terminal:
 	# su username -c "DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send \"title\" \"message\""
 	# sudo -u username DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send "title" "message"
-	"""
+	'''
 
 def gettime(tfile):
 	#Adds time to the timefile
@@ -250,7 +283,7 @@ while (True):
 			allowfile = TIMEKPRDIR + '/' + username + '.allow'
 			latefile = TIMEKPRDIR + '/' + username + '.late'
 			logoutfile = TIMEKPRDIR + '/' + username + '.logout'
-		
+			
 			time = gettime(timefile)
 			'''Is the user allowed to be logged in at this time?
 			We take it for granted that if they are allowed to login all day ($default_limit) then

@@ -1,4 +1,5 @@
 timekpr.glade usr/share/timekpr/
+timekprpam.py usr/share/timekpr/
 timekpr usr/bin/
 timekpr-addtime usr/bin/
 timekpr-extend usr/bin/

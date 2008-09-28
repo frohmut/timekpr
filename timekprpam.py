@@ -2,7 +2,7 @@
 import re
 from time import strftime
 
-#TODO: Test and make it a module
+#Test: works
 
 ## Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
 
@@ -35,7 +35,7 @@ def isuserlocked(u):
 
 def unlockuser(u, f = '/etc/security/access.conf'):
 	#Argument: username
-	#Removes access.conf line of user
+	#Removes access.conf line of user (Unblocks)
 	#Returns True (even if user is not locked) or False (if not possible)
 	if isuserlocked(u) is False: return True
 	fn = open(f,'w+')
@@ -48,7 +48,7 @@ def unlockuser(u, f = '/etc/security/access.conf'):
 
 def lockuser(u, f = '/etc/security/access.conf'):
 	#Argument: username
-	#Removes access.conf line of user
+	#Adds access.conf line of user (Blocks)
 	#Returns True (even if user is already locked) or False
 	if isuserlocked(u) is True: return True
 	fn = open(f,'w+')
@@ -83,12 +83,13 @@ def converttimeline(hfrom,hto):
 	#Escaping \|, will be used in regular expressions
 	return ' \| '.join([su,mo,tu,we,th,fr,sa])
 
-def mktimeconfline(uname,hfrom,hto): return '\*;\*;'+uname+';'+converttimeline(hfrom,hto) #Escaping \*, will be used in regular expressions
-""" Example:
+#Escaping \*, will be used in regular expressions
+def mktimeconfline(uname,hfrom,hto): return '\*;\*;'+uname+';'+converttimeline(hfrom,hto)
+''' Example:
 hfrom = ['7', '7', '7', '7', '7', '7', '7']
 hto = ['22', '22', '22', '22', '22', '22', '22']
 mktimeconfline("username",hfrom,hto)
-"""
+'''
 
 def adduserlimits(username,bftom,bto,f = '/etc/security/time.conf'):
 	#Adds a line with the username and their time limits in time.conf
@@ -133,8 +134,8 @@ def isuserlimitednow(u,f = '/etc/security/time.conf'):
 	s = getconfsection(f)
 	m = re.compile('^\*;\*;'+u+';(.*)$',re.M).findall(s)
 	
-	today = int(time.strftime("%w"))
-	hournow = int(time.strftime("%H"))
+	today = int(strftime("%w"))
+	hournow = int(strftime("%H"))
 	
 	#If Al (All days):
 	x = re.match('Al(\d\d)00-(\d\d)00',m[0])
@@ -153,10 +154,10 @@ def isuserlimitednow(u,f = '/etc/security/time.conf'):
 def strint(x): return str(int(x)) #makes '08' into '8' and '10' as '10'
 
 def converttconf(tfrom,tto,mode=0):
-	""" In short, it removes the unnecessary 0 and multiplies tfrom,tto if necessary
+	''' In short, it removes the unnecessary 0 and multiplies tfrom,tto if necessary
 	If mode=0 (default), it converts tfrom = ['08','08','13','14','15','01','09'], tto = ['22','14','19','20','21','23','25'] into ['8','8','13','14','15','1','9'] and ['22','14','19','20','21','23','25'] respectively
 	If mode=1, it converts tfrom = '08', tto = '22' into ['8','8','8','8','8','8','8'] and ['22','22','22','22','22','22','22'] respectively
-	"""
+	'''
 	if mode == 0:
 		ffrom = map(strint,tfrom)
 		fto = map(strint,tto)
@@ -203,7 +204,7 @@ def parseutlist(utlist):
 		#user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
 		#user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
 	return retlist
-	"""Returns a list (retlist):
+	'''Returns a list (retlist):
 	[0] = first item:
 		[0] = username niania
 		[1] = fromto:
@@ -211,4 +212,4 @@ def parseutlist(utlist):
 			[1] = to ['24', '24', '24', '24', '24', '24', '24']
 	Example: parseutlist(utlist)[0][1][0]
 		['0', '0', '0', '0', '0', '0', '0']
-	"""
+	'''
