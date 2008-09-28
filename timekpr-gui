@@ -22,7 +22,7 @@ except:
 
 
 # VARIABLES
-configroot = '/etc/timekpr/'
+configroot = '/var/lib/timekpr'
 
 #Create configuration folder if not existing
 if not os.path.isdir(configroot):

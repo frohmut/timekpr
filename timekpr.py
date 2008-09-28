@@ -279,10 +279,10 @@ while (True):
 			logkpr('conffile of ' + username + ' exists')
 			# Read lists: from, to and limit
 			limits, bfrom, bto = readusersettings(conffile)
-			timefile = TIMEKPRDIR + '/' + username + '.time'
-			allowfile = TIMEKPRDIR + '/' + username + '.allow'
-			latefile = TIMEKPRDIR + '/' + username + '.late'
-			logoutfile = TIMEKPRDIR + '/' + username + '.logout'
+			timefile = TIMEKPRWORK + '/' + username + '.time'
+			allowfile = TIMEKPRWORK + '/' + username + '.allow'
+			latefile = TIMEKPRWORK + '/' + username + '.late'
+			logoutfile = TIMEKPRWORK + '/' + username + '.logout'
 			
 			time = gettime(timefile)
 			'''Is the user allowed to be logged in at this time?
