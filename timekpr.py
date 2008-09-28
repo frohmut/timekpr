@@ -60,6 +60,9 @@ if not isdir(TIMEKPRWORK):
 if not isfile(TIMEKPRCONF):
 	exit('Error: Could not find configuration file ' + TIMEKPRCONF)
 
+latekickedusers = list()
+loggedoutusers = list()
+
 #Read configuration file TIMEKPRCONF (re module)
 #Security note: These values should be read only when running timekpr, not on the fly
 def readconf(conffile):
@@ -260,6 +263,20 @@ def writetime(tfile, time):
 	f = open(tfile, 'w')
 	f.write(str(time))
 
+def islatekicked(user):
+	return user in latekickedusers
+
+def isloggedout(user):
+	return user in loggedoutusers
+
+def latekick(user):
+	if not islatekicked(user):
+		latekickedusers.append(user)
+
+def loggedout(user):
+	if not isloggedout(user):
+		loggedoutusers.append(user)
+
 def fromtoday(fname):
 	#Is the file today's?
 	fdate = strftime("%Y%m%d", localtime(getmtime(fname)))
@@ -297,8 +314,8 @@ while (True):
 			
 			# Compare: is current hour less than the one in bfrom list?
 			if hour < bfrom[index]:
+				logkpr('Current hour less than the defined hour in conffile for user: ' + username)
 				if isfile(allowfile):
-					logkpr('Current hour less than the defined hour in conffile for user: ' + username)
 					if not fromtoday(allowfile):
 						logkpr('Extended login hours detected from ' + username + '.allow, but not from today')
 						logOut(username, pid)
