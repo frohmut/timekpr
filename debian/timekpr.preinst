@@ -1,47 +1,82 @@
 #!/bin/sh
 #Remove old .desktop menu item
 if [ -e /usr/share/applications/timekpr.desktop ] ; then
-	rm /usr/share/applications/timekpr.desktop
+  rm /usr/share/applications/timekpr.desktop
 fi
 
-#TODO: Prepare gdm and login pam.d
-#gfile=/etc/pam.d/gdm
-#lfile=/etc/pam.d/login
+#Prepare gdm and login in /etc/pam.d/
+gfile='/etc/pam.d/gdm'
+lfile='/etc/pam.d/login'
 
-#if [ -e $gfile ]; then
-#	x=`grep...`
-#else
-#	#Should it do something?
-#fi
-
-#Prepare access.conf and time.conf
-tfile=/etc/security/time.conf
-afile=/etc/security/access.conf
-
-if [ -e $afile ]; then
-	x=`grep -c "^###\? TIMEKPR START" $afile`
-	if [ $x -ge 1 ]; then
-		#Found timekpr section, fix if commented (after removal, see postrm)
-		sed -n -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
-	else
-		#No timekpr section
-		sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $afile
-	fi
+if [ -e $gfile ] ; then
+  #pam_time
+  echo "Checking for pam_time.so in $gfile"
+  x=$(grep -c '^account\s*required\s*pam_time.so' $gfile)
+  if [ $x = 0 ] ; then
+    #Didn't find pam_time.so - add it
+    echo "Adding pam_time in $gfile"
+    sed -i -e '$s/$/\naccount required pam_time.so\n/' $gfile
+  fi
+  #pam_access
+  echo "Checking for pam_access.so in $gfile"
+  x=$(grep -c '^account\s*required\s*pam_access.so' $gfile)
+  if [ $x = 0 ] ; then
+    #Didn't find pam_access.so - add it
+    sed -i -e '$s/$/\naccount required pam_access.so\n/' $gfile
+  fi
 else
-	#Create access.conf
-	touch $afile
-	sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $afile
+  echo "Couldn't find $gfile (oops?)"
+fi
 
-if [ -e $tfile ]; then
-	x=`grep -c "^###\? TIMEKPR START" $tfile`
-	if [ $x -ge 1 ]; then
-		#Found timekpr section, fix if commented (after removal, see postrm)
-		sed -n -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
-	else
-		#No timekpr section
-		sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $tfile
-	fi
+if [ -e $lfile ] ; then
+  #pam_time
+  echo "Checking for pam_time.so in $lfile"
+  x=$(grep -c '^account\s*required\s*pam_time.so' $lfile)
+  if [ $x = 0 ] ; then
+    #Didn't find pam_time.so - add it
+    sed -i -e '$s/$/\naccount required pam_time.so\n/' $lfile
+  fi
+  #pam_access
+  echo "Checking for pam_access.so in $lfile"
+  x=$(grep -c '^account\s*required\s*pam_access.so' $lfile)
+  if [ $x = 0 ] ; then
+    #Didn't find pam_access.so - add it
+    sed -i -e '$s/$/\naccount required pam_access.so\n/' $lfile
+  fi
 else
-	#Create access.conf
-	touch $tfile
-	sed -n -i -e '$s/$/\n\n##TIMEKPR START\n##TIMEKPR END/' $tfile
+  echo "Couldn't find $lfile (oops?)"
+fi
+
+#Prepare access.conf and time.conf in /etc/security/
+tfile='/etc/security/time.conf'
+afile='/etc/security/access.conf'
+
+if [ -e $afile ] ; then
+  x=$(grep -c "^###\? TIMEKPR START" $afile)
+  if [ $x -ge 1 ] ; then
+    #Found timekpr section, fix if commented (after removal, see postrm)
+    sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
+  else
+    #No timekpr section
+    sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $afile
+  fi
+else
+  #Create access.conf
+  touch $afile
+  sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $afile
+fi
+
+if [ -e $tfile ] ; then
+  x=$(grep -c "^###\? TIMEKPR START" $tfile)
+  if [ $x -ge 1 ] ; then
+    #Found timekpr section, fix if commented (after removal, see postrm)
+    sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
+  else
+    #No timekpr section
+    sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $tfile
+  fi
+else
+  #Create access.conf
+  touch $tfile
+  sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $tfile
+fi

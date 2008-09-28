@@ -1,20 +1,32 @@
 #!/bin/sh
-afile=/etc/security/access.conf
-tfile=/etc/security/time.conf
+afile='/etc/security/access.conf'
+tfile='/etc/security/time.conf'
 
 if [ "$1" = "purge" ] ; then
-	#This will clear the default working directory
-	if [ -d /var/lib/timekpr ] ; then
-		rm -rf /var/lib/timekpr
-	fi
-	#This will uncomment the commented areas and remove the lines
-	sed -n -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
-	sed -n -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
-	sed -n -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/d' $afile
-	sed -n -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/d' $tfile
+  #This will clear the default working directory
+  if [ -d /var/lib/timekpr ] ; then
+    rm -rf /var/lib/timekpr
+  fi
+  #This will uncomment the commented areas and remove the lines
+  echo "Removing timekpr section from $afile"
+  sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
+  sed -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/d' $afile
+  echo "Removing timekpr section from $tfile"
+  sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
+  sed -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/d' $tfile
 else
-	#Adds '#' in front of lines between these sections
-	sed -n -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/ s/^/#/g' $afile
-	sed -n -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/ s/^/#/g' $tfile
+  #Adds '#' in front of lines between these sections
+  echo "Disabling (comment out) $afile"
+  sed -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/ s/^/#/g' $afile
+  echo "Disabling (comment out) $tfile"
+  sed -i -e '/^## TIMEKPR START/,/^## TIMEKPR END/ s/^/#/g' $tfile
 fi
 
+# Automatically added by dh_installmenu
+if [ -x "`which update-menus 2>/dev/null`" ]; then update-menus ; fi
+# End automatically added section
+# Automatically added by dh_installinit
+if [ "$1" = "purge" ] ; then
+	update-rc.d timekpr remove >/dev/null || exit $?
+fi
+# End automatically added section

@@ -1,10 +1,16 @@
-timekpr (0.1.0ubuntu9) intrepid; urgency=low
+timekpr (0.1.0ubuntu10) UNRELEASED; urgency=low
+
+  * Testing pythonized package install/remove/purge
+
+ -- Savvas Radevic <vicedar@gmail.com>  Sun, 28 Sep 2008 20:20:59 +0200
+
+timekpr (0.1.0ubuntu9) UNRELEASED; urgency=low
 
   * Testing
 
  -- Savvas Radevic <vicedar@gmail.com>  Tue, 23 Sep 2008 17:28:46 +0200
 
-timekpr (0.1.0ubuntu8) intrepid; urgency=low
+timekpr (0.1.0ubuntu8) UNRELEASED; urgency=low
 
   * Revision #30:
   * More fixes to timekpr, kicking and locking after allowed hours also
@@ -15,7 +21,7 @@ timekpr (0.1.0ubuntu8) intrepid; urgency=low
 
  -- Savvas Radevic <vicedar@gmail.com>  Sun, 21 Sep 2008 17:39:31 +0200
 
-timekpr (0.1.0ubuntu7) intrepid; urgency=low
+timekpr (0.1.0ubuntu7) UNRELEASED; urgency=low
 
   * Old timekpr: timekpr.old (not in deb package)
   * Fixed timekpr, tested working
@@ -28,7 +34,7 @@ timekpr (0.1.0ubuntu7) intrepid; urgency=low
 
  -- Savvas Radevic <vicedar@gmail.com>  Sat, 20 Sep 2008 14:11:56 +0200
 
-timekpr (0.1.0ubuntu6) intrepid; urgency=low
+timekpr (0.1.0ubuntu6) UNRELEASED; urgency=low
 
   * Removed exclamation marks which caused problems to timekpr
   * Cleaned up timekpr script
