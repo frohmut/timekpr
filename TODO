@@ -4,6 +4,10 @@
 * Debian package:
   Suggests: gdm or Recommends: gdm ?
 
+* Manual:
+  docbook? http://www.debian.org/doc/manuals/sgml-howto/x165.html
+  *OR* debiandoc? http://www.debian.org/doc/manuals/sgml-howto/x306.html
+
 * Check out "memory files": http://docs.python.org/lib/module-StringIO.html
 
 * Idea: to make a timekpr-client.py that would run using
