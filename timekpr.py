@@ -342,8 +342,10 @@ while (True):
 								lockacct(username)
 							else:
 								logkpr('User: ' + username + ' has NOT been late-kicked today')
-								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
-								logOut(username, pid)
+								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
+								sleep(GRACEPERIOD/2)
+								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
+								sleep(GRACEPERIOD/2)
 								open(latefile, 'w')
 								remove(allowfile)
 					else:
@@ -358,7 +360,10 @@ while (True):
 						lockacct(username)
 					else:
 						logkpr('User: ' + username + ' has NOT been late-kicked today')
-						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.')
+						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
+						sleep(GRACEPERIOD/2)
+						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
+						sleep(GRACEPERIOD/2)
 						logOut(username, pid)
 						open(latefile, 'w')
 			
@@ -376,13 +381,19 @@ while (True):
 					else:
 						# The user has not been kicked out today
 						logkpr(username + ' has been kicked out, but not today')
-						notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit')
+						notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit. You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
+						sleep(GRACEPERIOD/2)
+						notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit. You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
+						sleep(GRACEPERIOD/2)
 						logOut(username, pid)
 						open(logoutfile, 'w')
 				else:
 					# The user has not been kicked out before
 					logkpr('Not found: ' + username + '.logout')
-					notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit')
+					notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit. You will be logged out in ' + str(GRACEPERIOD) + ' seconds')
+					sleep(GRACEPERIOD/2)
+					notify(username, pid, 'Passed limit', 'You have exeeded your daily time limit. You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds')
+					sleep(GRACEPERIOD/2)
 					logOut(username, pid)
 					open(logoutfile, 'w')
 	
