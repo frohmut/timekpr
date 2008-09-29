@@ -174,7 +174,7 @@ class timekprGUI:
 		
 	def rewardButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
-		arg = str(self.limitSpin0.get_value_as_int())
+		arg = str(self.rewardSpin.get_value_as_int())
 		cmd = 'timekpr-addtime ' + user + ' ' + arg
 		os.system(cmd)
 	
