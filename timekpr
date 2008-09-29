@@ -85,7 +85,7 @@ notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your ses
 	sleep 1
 	logkpr "notify: Sending second notification.."
 	XAUTHORITY="$XAUTHORITY" DISPLAY="$UDISPLAY" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/60)) minutes to save your work and log out."
+notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 "$1" "Your session is about to expire, you have $(($grace_period/120)) minutes to save your work and log out."
 	[[ $DEBUGME == 'yes' ]] && echo "Result 2 notification: $?" >> $LOGF
 	sleep $(($grace_period/2)) # FIXME: this gives other sessions a free grace_period added to their accounting
 	echo -ne "\007"
