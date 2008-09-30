@@ -37,8 +37,10 @@ def unlockuser(u, f = '/etc/security/access.conf'):
 	#Removes access.conf line of user (Unblocks)
 	#Returns True (even if user is not locked) or False (if not possible)
 	if isuserlocked(u) is False: return True
-	fn = open(f,'w+')
+	fn = open(f,'r')
 	s = fn.read()
+	fn.close()
+	fn = open(f,'w')
 	m = re.compile('(## TIMEKPR START\n.*)-:'+u+':ALL\n', re.S).sub('\\1', s)
 	try: fn.write(m)
 	except: return False
@@ -50,8 +52,10 @@ def lockuser(u, f = '/etc/security/access.conf'):
 	#Adds access.conf line of user (Blocks)
 	#Returns True (even if user is already locked) or False
 	if isuserlocked(u) is True: return True
-	fn = open(f,'w+')
+	fn = open(f,'r')
 	s = fn.read()
+	fn.close()
+	fn = open(f,'w')
 	m = re.sub('(## TIMEKPR END)', '-:'+u+':ALL\n\\1', s)
 	try: fn.write(m)
 	except: return False
