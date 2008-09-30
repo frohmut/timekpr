@@ -60,8 +60,11 @@ if not isdir(TIMEKPRWORK):
 if not isfile(TIMEKPRCONF):
 	exit('Error: Could not find configuration file ' + TIMEKPRCONF)
 
+# Lists keeping track of users who has been latekicked or loggedout
 latekickedusers = list()
 loggedoutusers = list()
+# Keep track of todays date
+THISDAY = strftime("%Y%m%d", localtime())
 
 #Read configuration file TIMEKPRCONF (re module)
 #Security note: These values should be read only when running timekpr, not on the fly
@@ -226,7 +229,7 @@ def getdbus(pid):
 def notify(username, pid, title, message):
 	'''
 	Sends a notification via notify-send
-	Usage: sendnotification( "youruser", "pid", "your title", "your message")
+	Usage: notify( "youruser", "pid", "your title", "your message")
 	We will be probably using pynotify module for this, we'll see!
 	'''
 	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like:
@@ -264,21 +267,25 @@ def writetime(tfile, time):
 	f.write(str(time))
 
 def islatekicked(user):
+	# Returns True if the user has been latekicked today
 	return user in latekickedusers
 
 def isloggedout(user):
+	# Returns True if the user has been logged out earlier today
 	return user in loggedoutusers
 
 def latekick(user):
+	# Adds a user to the latekickedusers list
 	if not islatekicked(user):
 		latekickedusers.append(user)
 
 def loggedout(user):
+	# Adds a user to the loggedoutusers list
 	if not isloggedout(user):
 		loggedoutusers.append(user)
 
 def fromtoday(fname):
-	#Is the file today's?
+	# Returns True if a file was last modified today
 	fdate = strftime("%Y%m%d", localtime(getmtime(fname)))
 	today = strftime("%Y%m%d", localtime())
 	return fdate == today
@@ -288,6 +295,13 @@ logkpr('Starting timekpr',1)
 while (True):
 	# Check if any accounts should be unlocked and re-activate them
 	checklockacct()
+	# Check if we have passed midnight, ie new day
+	if THISDAY != strftime("%Y%m%d", localtime()):
+		logkpr('New day, resetting loggedoutusers and latekickedusers.')
+		del latekickedusers[:]
+		del loggedoutusers[:]
+		THISDAY = strftime("%Y%m%d", localtime())
+	
 	# Get the usernames and PIDs of sessions
 	for username, pid in getsessions():
 		conffile = TIMEKPRDIR + '/' + username
