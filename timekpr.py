@@ -255,7 +255,7 @@ def gettime(tfile):
 		t = open(tfile)
 		newtime = int(t.readline()) + POLLTIME
 	else:
-		t = open(tfile, 'w+')
+		t = open(tfile, 'w')
 		newtime = POLLTIME
 	t.close()
 	writetime(tfile, newtime)

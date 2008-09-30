@@ -2,17 +2,16 @@
 import re
 from time import strftime
 
-#Test: works
-
-## Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
+#TODO: Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
 
 ## COMMON
 def getconfsection(conffile):
 	#Argument: string
 	#Returns the section of the timekpr in a file
 	s = open(conffile).read()
-	m = re.compile('## TIMEKPR START\n(.*)\n## TIMEKPR END', re.S).findall(s)
-	if len(m) > 1: exit('Error: More then one timekpr sections found(?): "' + conffile + '"')
+	m = re.compile('## TIMEKPR START\n(.*)## TIMEKPR END', re.S).findall(s)
+	if not m: exit('Error: Could not find timekpr section: "' + conffile +'"')
+	if len(m) > 1: exit('Error: More than one timekpr sections found(?): "' + conffile + '"')
 	return m[0]
 
 ## Read/Write access.conf
@@ -40,7 +39,7 @@ def unlockuser(u, f = '/etc/security/access.conf'):
 	if isuserlocked(u) is False: return True
 	fn = open(f,'w+')
 	s = fn.read()
-	m = re.sub('(## TIMEKPR START\n.*)-:'+u+':ALL\n','\\1', s)
+	m = re.compile('(## TIMEKPR START\n.*)-:'+u+':ALL\n', re.S).sub('\\1', s)
 	try: fn.write(m)
 	except: return False
 	fn.close()
@@ -53,7 +52,7 @@ def lockuser(u, f = '/etc/security/access.conf'):
 	if isuserlocked(u) is True: return True
 	fn = open(f,'w+')
 	s = fn.read()
-	m = re.sub('(## TIMEKPR END.*)', '-:'+u+':ALL\n\\1', s)
+	m = re.sub('(## TIMEKPR END)', '-:'+u+':ALL\n\\1', s)
 	try: fn.write(m)
 	except: return False
 	fn.close()
@@ -66,13 +65,15 @@ def hourize(n):
 	return '%s00' % str(n)
 
 def converttimeline(hfrom,hto):
-	#all same:
-	mfrom = re.compile('^(?:(\d+) ){6}\\1').findall(' '.join(hfrom))
-	mto = re.compile('^(?:(\d+) ){6}\\1').findall(' '.join(hto))
+	#Arguments must be lists and text strings inside, e.g. ['0','0','0','0','0','0','0']
+	if len(hfrom) != 7 or len(hto) != 7: exit('Error: converttimeline accepts from-to lists of 7 items each')
+	#if all same:
+	mfrom = re.compile('^(?:(\d+) ){6}\\1').search(' '.join(hfrom))
+	mto = re.compile('^(?:(\d+) ){6}\\1').search(' '.join(hto))
 	#return Al0700-2400
-	if mfrom and mto: return 'Al' + hourize(mfrom[0]) + '-' + hourize(mto[0])
+	if mfrom and mto: return 'Al' + hourize(mfrom.group(1)) + '-' + hourize(mto.group(1))
 	
-	#or separately all days
+	#or if all days separate
 	su = 'Su' + hourize(hfrom[0]) + '-' + hourize(hto[0])
 	mo = 'Mo' + hourize(hfrom[1]) + '-' + hourize(hto[1])
 	tu = 'Tu' + hourize(hfrom[2]) + '-' + hourize(hto[2])
@@ -80,38 +81,43 @@ def converttimeline(hfrom,hto):
 	th = 'Th' + hourize(hfrom[4]) + '-' + hourize(hto[4])
 	fr = 'Fr' + hourize(hfrom[5]) + '-' + hourize(hto[5])
 	sa = 'Sa' + hourize(hfrom[6]) + '-' + hourize(hto[6])
-	#Escaping \|, will be used in regular expressions
-	return ' \| '.join([su,mo,tu,we,th,fr,sa])
+	return ' | '.join([su,mo,tu,we,th,fr,sa])
 
-#Escaping \*, will be used in regular expressions
-def mktimeconfline(uname,hfrom,hto): return '\*;\*;'+uname+';'+converttimeline(hfrom,hto)
+#Makes the time.conf line
+def mktimeconfline(u,hfrom,hto): return '*;*;'+u+';'+converttimeline(hfrom,hto)
 ''' Example:
 hfrom = ['7', '7', '7', '7', '7', '7', '7']
 hto = ['22', '22', '22', '22', '22', '22', '22']
 mktimeconfline("username",hfrom,hto)
 '''
 
-def adduserlimits(username,bftom,bto,f = '/etc/security/time.conf'):
+def adduserlimits(username,bfrom,bto,f = '/etc/security/time.conf'):
 	#Adds a line with the username and their time limits in time.conf
 	#Returns True or False (if it can't write to file)
-	line = mktimeconfline(username,bfrom,bto)
-	fn = open(f,'w+')
+	getconfsection(f) #Check if timekpr section exists
+	line = mktimeconfline(username,bfrom,bto) + "\n"
+	fn = open(f,'r')
 	s = fn.read()
-	m = re.sub('(## TIMEKPR END.*)',line+'\n\\1', s)
+	fn.close()
+	fn = open(f,'w')
+	m = re.sub('(## TIMEKPR END)',line+'\\1', s)
+	print m
 	try: fn.write(m)
 	except: return False
-	fn.close()
 	return True
 
 def removeuserlimits(username,f = '/etc/security/time.conf'):
 	#Removes a line with the username in time.conf
 	#Returns True or False (if it can't write to file)
-	fn = open(f,'w+')
+	getconfsection(f) #Check if timekpr section exists
+	fn = open(f,'r')
 	s = fn.read()
-	m = re.sub('(## TIMEKPR START\n.*)\*;\*;'+username+'\n','\\1', s)
+	fn.close()
+	fn = open(f,'w')
+	m = re.compile('(## TIMEKPR START\n.*)\*;\*;'+username+';[^\n]*\n', re.S).sub('\\1', s)
+	print m
 	try: fn.write(m)
 	except: return False
-	fn.close()
 	return True
 
 def isuserlimited(u,f = '/etc/security/time.conf'):
@@ -121,8 +127,7 @@ def isuserlimited(u,f = '/etc/security/time.conf'):
 	s = getconfsection(f)
 	m = re.compile('^\*;\*;([^;]+);',re.M).findall(s)
 	try: i = m.index(u)
-	except ValueError: i = -1
-	if i < 0: return False
+	except ValueError: return False
 	return True
 
 def isuserlimitednow(u,f = '/etc/security/time.conf'):
@@ -182,9 +187,9 @@ def parseutlist(utlist):
 		#u = 'niania' and t = 'Al0000-2400'
 		
 		#Check if Al is used
-		checkAl = re.compile('^Al(\d{2})00-(\d{2})00$').findall(t)
+		checkAl = re.compile('^Al(\d{2})00-(\d{2})00$').search(t)
 		if checkAl:
-			final = converttconf(checkAl[0][0],checkAl[0][1],1)
+			final = converttconf(checkAl.group(1),checkAl.group(2),1)
 		else:
 			#Break time in pieces
 			pieces = re.split(' \| ',t)
@@ -213,3 +218,14 @@ def parseutlist(utlist):
 	Example: parseutlist(utlist)[0][1][0]
 		['0', '0', '0', '0', '0', '0', '0']
 	'''
+
+def getuserlimits(u):
+	'''Gets user's from-to time limits in
+	Argument: username
+	[0] = from ['0', '0', '0', '0', '0', '0', '0']
+	[1] = to ['24', '24', '24', '24', '24', '24', '24']
+	'''
+	ls = parseutlist(parsetimeconf())
+	for user,[bfrom,bto] in ls:
+		if u == user: return [bfrom,bto]
+
