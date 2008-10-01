@@ -14,3 +14,8 @@
  /etc/xdg/autostart/, somehow sending with dbus or with
  some other way (username.message?)
 
+* Support xfce4-session, gnome-session and kde session
+Checkout: /usr/share/xsessions/gnome.desktop
+
+* Do other window managers have pam.d services? For example files such as /etc/pam.d/kde
+Should we use /etc/pam.d/other in that case?
