@@ -105,7 +105,7 @@ def adduserlimits(username,bfrom,bto,f = '/etc/security/time.conf'):
 	fn.close()
 	fn = open(f,'w')
 	m = re.sub('(## TIMEKPR END)',line+'\\1', s)
-	print m
+	#print m
 	try: fn.write(m)
 	except: return False
 	return True
@@ -119,7 +119,7 @@ def removeuserlimits(username,f = '/etc/security/time.conf'):
 	fn.close()
 	fn = open(f,'w')
 	m = re.compile('(## TIMEKPR START\n.*)\*;\*;'+username+';[^\n]*\n', re.S).sub('\\1', s)
-	print m
+	#print m
 	try: fn.write(m)
 	except: return False
 	return True
