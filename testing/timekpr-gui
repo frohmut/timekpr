@@ -76,35 +76,21 @@ class timekprGUI:
 		self.rewardButton = self.wTree.get_widget("rewardButton")
 		self.rewardSpin = self.wTree.get_widget("rewardSpin")
 		
-		dic = { "on_limitCheck_toggled" : \
-			self.limitCheck_toggled,
-			"on_boundariesCheck_toggled" : \
-			self.boundariesCheck_toggled,
-			"on_rewardButton_clicked" : \
-			self.rewardButton_clicked,
-			"on_extendLimitsButton_clicked" : \
-			self.extendLimitsButton_clicked,
-			"on_apply_clicked" : \
-			self.apply_clicked,
-			"on_singleBoundaries_toggled" : \
-			self.singleBoundariesCheck_toggled,
-			"on_singleLimits_toggled" : \
-			self.singleLimitsCheck_toggled,
-			"on_ok_clicked" : \
-			self.ok_clicked,
-			"on_userSelect_toggled": \
-			self.read_settings,
-			"on_cancel_clicked" : \
-			self.cancel_clicked }
+		dic = { "on_limitCheck_toggled": self.limitCheck_toggled,
+			"on_boundariesCheck_toggled": self.boundariesCheck_toggled,
+			"on_rewardButton_clicked": self.rewardButton_clicked,
+			"on_extendLimitsButton_clicked": self.extendLimitsButton_clicked,
+			"on_apply_clicked": self.apply_clicked,
+			"on_singleBoundaries_toggled": self.singleBoundariesCheck_toggled,
+			"on_singleLimits_toggled": self.singleLimitsCheck_toggled,
+			"on_ok_clicked": self.ok_clicked,
+			"on_userSelect_toggled": self.read_settings,
+			"on_cancel_clicked": self.cancel_clicked,
+			'gtk_main_quit': gtk.main_quit
+		}
 		
 		self.wTree.signal_autoconnect (dic)
-		""" Deprecated:
-		self.root = "/home/"
-		self.wildcard = "*"
-		for folder in glob.glob( self.root + self.wildcard ):
-			self.userSelect.append_text(folder.replace( self.root, "" ) )
-			self.userSelect.set_active( 0 )
-		"""
+		
 		#Using /etc/shadow spwd module
 		for userinfo in spwd.getspall():
 			if isnormal(userinfo[0]) == 1:
@@ -215,31 +201,17 @@ class timekprGUI:
 		if isfile(configFile):
 			fileHandle = open(configFile)
 			limits = fileHandle.readline()
-			#bfrom = fileHandle.readline()
-			#bto = fileHandle.readline()
 			limits = limits.replace("limit=( ","")
 			limits = limits.replace(")", "")
 			limits = limits.split(" ")
-			#bfrom = bfrom.replace("from=( ", "")
-			#bfrom = bfrom.replace(")", "")
-			#bfrom = bfrom.split(" ")
-			#bto = bto.replace("to=( ", "")
-			#bto = bto.replace(")", "")
-			#bto = bto.split(" ")
 			
 			for i in range(7):
 				self.limitSpin[i].set_value(float(limits[i])/60)
-				#self.fromSpin[i].set_value(float(bfrom[i]))
-				#self.toSpin[i].set_value(float(bto[i]))
 			
 			# Single limits? (set per day)
 			sl = False
 			# Use limits?
 			ul = True
-			## Use boundaries?
-			#ub = True
-			## Single boundaries? (set per day)
-			#sb = False
 			
 			for i in range(1, 7):
 				if limits[i] != limits[i-1]:
@@ -255,19 +227,12 @@ class timekprGUI:
 			
 			self.limitCheck.set_active(ul)
 			self.singleLimits.set_active(sl)
-			#self.boundariesCheck.set_active(ub)
-			#self.singleBoundaries.set_active(sb)
-			
 		else:
 			for i in range(7):
 				self.limitSpin[i].set_value(300)
-				#self.fromSpin[i].set_value(7)
-				#self.toSpin[i].set_value(22)
 			
 			self.limitCheck.set_active(False)
 			self.singleLimits.set_active(False)
-			#self.boundariesCheck.set_active(False)
-			#self.singleBoundaries.set_active(False)
 		
 	def extendLimitsButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
@@ -354,25 +319,17 @@ class timekprGUI:
 				limit = limit + space + ")"
 		if self.boundariesCheck.get_active():
 			if self.singleBoundaries.get_active():
-				#bFrom = "from=("
-				#bTo = "to=("
 				bFrom = []
 				bTo = []
 				for i in range(7):
 					bFrom.append(str(self.fromSpin[i].get_value_as_int()))
 					bTo.append(str(self.toSpin[i].get_value_as_int()))
-				#bFrom = bFrom + space + ")"
-				#bTo = bTo + space + ")"
 			else:
-				#bFrom = "from=("
-				#bTo = "to=("
 				bFrom = []
 				bTo = []
 				for i in range(7):
 					bFrom.append(str(self.fromSpin[0].get_value_as_int()))
 					bTo.append(str(self.toSpin[0].get_value_as_int()))
-				#bFrom = bFrom + space + ")"
-				#bTo = bTo + space + ")"
 		configFile = configroot + '/' + self.userSelect.get_active_text()
 		if self.limitCheck.get_active():
 			fH = open(configFile, 'w')
