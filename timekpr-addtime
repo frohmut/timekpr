@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Default directory
-#FIXME: Should be /etc/timekpr ?
+
 TIMEKPRDIR=/var/lib/timekpr
 
 if [ $# -ne 2 ]; then

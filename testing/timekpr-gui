@@ -63,6 +63,9 @@ class timekprGUI:
 		self.get_to_spin()
 		self.get_labels()
 		
+		#disable unlock button
+		self.wTree.get_widget("UnlockButton").set_sensitive(False)
+		
 		self.singleLimits = self.wTree.get_widget("singleLimits")
 		self.singleBoundaries = self.wTree.get_widget("singleBoundaries")
 		self.limitCheck = self.wTree.get_widget("limitCheck")
@@ -158,7 +161,7 @@ class timekprGUI:
 	
 	def cancel_clicked(self, widget):
 		gtk.main_quit()
-		
+	
 	def rewardButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
 		arg = str(self.rewardSpin.get_value_as_int())
@@ -223,18 +226,11 @@ class timekprGUI:
 				#if (bfrom[i] != bfrom[i-1]) or (bto[i] != bto[i-1]):
 				#	sb = True
 			
-			if (limits[0] == str(86400)) and (not sl):
-				ul = False
-			
-			#if (bfrom[0] == str(0)) and (bto[0] == str(24)) and (not sb):
-			#	ub = False
-			
+			if (limits[0] == str(86400)) and (not sl): ul = False
 			self.limitCheck.set_active(ul)
 			self.singleLimits.set_active(sl)
 		else:
-			for i in range(7):
-				self.limitSpin[i].set_value(300)
-			
+			for i in range(7): self.limitSpin[i].set_value(300)
 			self.limitCheck.set_active(False)
 			self.singleLimits.set_active(False)
 		

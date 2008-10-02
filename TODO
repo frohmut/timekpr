@@ -17,5 +17,8 @@
 * Support xfce4-session, gnome-session and kde session
 Checkout: /usr/share/xsessions/gnome.desktop
 
-* Do other window managers have pam.d services? For example files such as /etc/pam.d/kde
-Should we use /etc/pam.d/other in that case?
+* testing/timekpr-gui and testing/timekpr.glade
+ "Clear all restrictions" will clear all limits and all files related (.logout .late etc..)
+ "Reset time" will remove the .time file
+ "Bypass for today" will be "timekpr-extend" (Will set "0000-2400" in time.conf for today)
+ "Unlock account" will set user in access.conf
