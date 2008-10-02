@@ -3,7 +3,7 @@
 
 <glade-interface>
 
-<widget class="GtkWindow" id="window1">
+<widget class="GtkWindow" id="mainwindow">
   <property name="visible">True</property>
   <property name="title" translatable="yes"></property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
@@ -46,14 +46,14 @@
 		  <property name="use_underline">True</property>
 
 		  <child>
-		    <widget class="GtkMenu" id="menu3">
-		      <property name="visible">True</property>
+		    <widget class="GtkMenu" id="menuitem4_menu">
 
 		      <child>
-			<widget class="GtkImageMenuItem" id="imagemenuitem10">
+			<widget class="GtkImageMenuItem" id="aboutmenuitem">
 			  <property name="visible">True</property>
 			  <property name="label">gtk-about</property>
 			  <property name="use_stock">True</property>
+			  <signal name="activate" handler="on_aboutmenuitem_select" last_modification_time="Wed, 01 Oct 2008 23:08:35 GMT"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -2334,6 +2334,22 @@ Release restrictions</property>
       </child>
     </widget>
   </child>
+</widget>
+
+<widget class="GtkAboutDialog" id="aboutdialog">
+  <property name="border_width">5</property>
+  <property name="visible">True</property>
+  <property name="destroy_with_parent">True</property>
+  <property name="name" translatable="yes">timekpr</property>
+  <property name="copyright" translatable="yes">Copyright (c) 2008 Evan Nedberg, Savvas Radevic</property>
+  <property name="license" translatable="yes">This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;. In Debian, see file /usr/share/common-licenses/GPL-3</property>
+  <property name="wrap_license">True</property>
+  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">translator-credits</property>
+  <property name="logo">timekpr-logo-big.png</property>
 </widget>
 
 </glade-interface>

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-
+#TODO: Make it exclude administrators,sudoers,wheel members etc
 import os, spwd, pwd, getpass, re, sys
 from os.path import isdir, isfile
 
+#VARIABLES
+version = '0.2.0'
+gladefile = 'timekpr.glade'
 
-#TODO: Make it exclude administrators,sudoers,wheel members etc
-
-# Import modules
+#IMPORT
 #timekprmodules = '/usr/share/timekpr/'
 timekprmodules = '../'
 sys.path.append(timekprmodules)
@@ -36,7 +37,6 @@ configroot = '/etc/timekpr'
 if not isdir(configroot):
 	os.mkdir(configroot)
 
-
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
 	userid = int(pwd.getpwnam(username)[2])
@@ -55,12 +55,8 @@ def isnormal(username):
 
 class timekprGUI:
 	#This is the PyWine application
-
 	def __init__(self):
-		
-		#Set the Glade file
-		self.gladefile = "timekpr.glade"
-		self.wTree = gtk.glade.XML(self.gladefile, "window1")
+		self.wTree = gtk.glade.XML(gladefile,'mainwindow')
 		
 		self.get_limit_spin()
 		self.get_from_spin()
@@ -86,10 +82,11 @@ class timekprGUI:
 			"on_ok_clicked": self.ok_clicked,
 			"on_userSelect_toggled": self.read_settings,
 			"on_cancel_clicked": self.cancel_clicked,
-			'gtk_main_quit': gtk.main_quit
+			"on_aboutmenuitem_select": self.showaboutdialog,
+			'gtk_main_quit': gtk.main_quit,
 		}
 		
-		self.wTree.signal_autoconnect (dic)
+		self.wTree.signal_autoconnect(dic)
 		
 		#Using /etc/shadow spwd module
 		for userinfo in spwd.getspall():
@@ -99,6 +96,13 @@ class timekprGUI:
 		
 		self.read_settings(self)
 		return
+	
+	def showaboutdialog(self,*args):
+		self.aboutdialog = gtk.glade.XML(gladefile,'aboutdialog')
+		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
+		self.aboutd.set_version(version)
+		self.response = self.aboutd.run()
+		self.aboutd.hide()
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
@@ -262,7 +266,7 @@ class timekprGUI:
 				self.fromSpin[i].set_sensitive(True)
 				self.toSpin[i].set_sensitive(True)
 				self.lb[i].set_sensitive(True)
-			self.lb[0].set_text("    Sun     ")
+			self.lb[0].set_text("	Sun	 ")
 		else:
 			for i in range(1, 7):
 				self.fromSpin[i].set_sensitive(False)
@@ -288,7 +292,7 @@ class timekprGUI:
 			for i in range(1, 7):
 				self.ll[i].set_sensitive(True)
 				self.limitSpin[i].set_sensitive(True)
-			self.ll[0].set_text("    Sun     ")
+			self.ll[0].set_text("	Sun	 ")
 		else:
 			for i in range(1, 7):
 				self.ll[i].set_sensitive(False)
