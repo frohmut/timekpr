@@ -6,6 +6,8 @@ from os.path import isdir, isfile
 #VARIABLES
 version = '0.2.0'
 gladefile = 'timekpr.glade'
+TIMEKPRDIR = '/etc/timekpr'
+TIMEKPRWORK = '/var/lib/timekpr'
 
 #IMPORT
 #timekprmodules = '/usr/share/timekpr/'
@@ -63,9 +65,6 @@ class timekprGUI:
 		self.get_to_spin()
 		self.get_labels()
 		
-		#disable unlock button
-		self.wTree.get_widget("UnlockButton").set_sensitive(False)
-		
 		self.singleLimits = self.wTree.get_widget("singleLimits")
 		self.singleBoundaries = self.wTree.get_widget("singleBoundaries")
 		self.limitCheck = self.wTree.get_widget("limitCheck")
@@ -74,6 +73,11 @@ class timekprGUI:
 		self.extendLimitsButton = self.wTree.get_widget("extendLimitsButton")
 		self.rewardButton = self.wTree.get_widget("rewardButton")
 		self.rewardSpin = self.wTree.get_widget("rewardSpin")
+		self.labeluserstatus = self.wTree.get_widget("labeluserstatus")
+		self.limiticon = self.wTree.get_widget("imagelimited1")
+		self.boundariesicon = self.wTree.get_widget("imagelimited2")
+		self.alldayloginicon = self.wTree.get_widget("imagealldaylogin")
+		self.lockedicon = self.wTree.get_widget("imagelocked")
 		
 		dic = { "on_limitCheck_toggled": self.limitCheck_toggled,
 			"on_boundariesCheck_toggled": self.boundariesCheck_toggled,
@@ -84,6 +88,7 @@ class timekprGUI:
 			"on_singleLimits_toggled": self.singleLimitsCheck_toggled,
 			"on_ok_clicked": self.ok_clicked,
 			"on_userSelect_toggled": self.read_settings,
+			"on_refresh_clicked": self.read_settings,
 			"on_cancel_clicked": self.cancel_clicked,
 			"on_aboutmenuitem_select": self.showaboutdialog,
 			'gtk_main_quit': gtk.main_quit,
@@ -105,7 +110,7 @@ class timekprGUI:
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
 		self.aboutd.set_version(version)
 		self.response = self.aboutd.run()
-		self.aboutd.hide()
+		self.aboutd.destroy()
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
@@ -154,7 +159,7 @@ class timekprGUI:
 		self.ll.append(self.wTree.get_widget("ll4"))
 		self.ll.append(self.wTree.get_widget("ll5"))
 		self.ll.append(self.wTree.get_widget("ll6"))
-		
+	
 	def ok_clicked(self, widget):
 		self.apply_clicked(self)
 		gtk.main_quit()
@@ -168,8 +173,7 @@ class timekprGUI:
 		cmd = 'timekpr-addtime ' + user + ' ' + arg
 		os.system(cmd)
 	
-	def read_settings(self, widget):
-		user = self.userSelect.get_active_text()
+	def readfromtolimit(self, widget, user):
 		#from-to time limitation (aka boundaries) - time.conf
 		if isuserlimited(user) is True:
 			#Get user time limits (boundaries) as lists from-to
@@ -202,7 +206,8 @@ class timekprGUI:
 				self.toSpin[i].set_value(22)
 			self.boundariesCheck.set_active(False)
 			self.singleBoundaries.set_active(False)
-		
+	
+	def readdurationlimit(self, widget, user):
 		#time length limitation
 		configFile = configroot + '/' + user
 		if isfile(configFile):
@@ -226,14 +231,40 @@ class timekprGUI:
 				#if (bfrom[i] != bfrom[i-1]) or (bto[i] != bto[i-1]):
 				#	sb = True
 			
-			if (limits[0] == str(86400)) and (not sl): ul = False
+			if limits[0] == '86400' and not sl: ul = False
 			self.limitCheck.set_active(ul)
 			self.singleLimits.set_active(sl)
 		else:
 			for i in range(7): self.limitSpin[i].set_value(300)
 			self.limitCheck.set_active(False)
 			self.singleLimits.set_active(False)
+	
+	def statusicons(self, widget, user):
+		#Set icons in status gtk-yes or gtk-no
+		iconyes = gtk.STOCK_YES
+		iconno = gtk.STOCK_NO
+		iconsize = gtk.ICON_SIZE_BUTTON
+		#limitSpin status is already set, so we can use it
+		#self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
+		if self.limitCheck.get_active(): self.limiticon.set_from_stock(iconyes,iconsize)
+		else: self.boundariesicon.set_from_stock(iconno,iconsize)
 		
+		if self.boundariesCheck.get_active(): self.boundariesicon.set_from_stock(iconyes,iconsize)
+		else: self.boundariesicon.set_from_stock(iconno,iconsize)
+		
+		if not isuserlimitedtoday(user) and not isuserlocked(user): self.alldayloginicon.set_from_stock(iconyes,iconsize)
+		else: self.alldayloginicon.set_from_stock(iconno,iconsize)
+		
+		if isuserlocked(user): self.lockedicon.set_from_stock(iconyes,iconsize)
+		else: self.lockedicon.set_from_stock(iconno,iconsize)
+	
+	def read_settings(self, widget):
+		user = self.userSelect.get_active_text()
+		self.readfromtolimit(self, user)
+		self.readdurationlimit(self, user)
+		self.labeluserstatus.set_label('Status for <span weight="bold">'+user+'</span>')
+		self.statusicons(self, user)
+	
 	def extendLimitsButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()
 		cmd = 'timekpr-extend ' + user

@@ -275,10 +275,10 @@
 		  <child>
 		    <widget class="GtkLabel" id="labelislimited1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Limited by access time duration:</property>
+		      <property name="label" translatable="yes">Limited by access time duration (any day):</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_CENTER</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
 		      <property name="wrap">False</property>
 		      <property name="selectable">False</property>
 		      <property name="xalign">0</property>
@@ -303,10 +303,10 @@
 		  <child>
 		    <widget class="GtkLabel" id="labelislimited2">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Limited by access hours:</property>
+		      <property name="label" translatable="yes">Limited by access hours (any day):</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_CENTER</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
 		      <property name="wrap">False</property>
 		      <property name="selectable">False</property>
 		      <property name="xalign">0</property>
@@ -331,7 +331,8 @@
 		  <child>
 		    <widget class="GtkLabel" id="labelisallowedtoday">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Can login all day today?</property>
+		      <property name="label" translatable="yes">Able to login all day today:
+(Also active bypass)</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -362,7 +363,7 @@
 		      <property name="label" translatable="yes">Account locked:</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
-		      <property name="justify">GTK_JUSTIFY_CENTER</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
 		      <property name="wrap">False</property>
 		      <property name="selectable">False</property>
 		      <property name="xalign">0</property>
@@ -431,7 +432,7 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkImage" id="imagebypasshourlimit">
+		    <widget class="GtkImage" id="imagealldaylogin">
 		      <property name="visible">True</property>
 		      <property name="icon_size">4</property>
 		      <property name="icon_name">gtk-no</property>
@@ -1013,7 +1014,7 @@ duration</property>
 			  <property name="visible">True</property>
 			  <property name="n_rows">2</property>
 			  <property name="n_columns">8</property>
-			  <property name="homogeneous">True</property>
+			  <property name="homogeneous">False</property>
 			  <property name="row_spacing">0</property>
 			  <property name="column_spacing">0</property>
 
@@ -1560,7 +1561,7 @@ when user is allowed to login</property>
 			  <property name="visible">True</property>
 			  <property name="n_rows">3</property>
 			  <property name="n_columns">8</property>
-			  <property name="homogeneous">True</property>
+			  <property name="homogeneous">False</property>
 			  <property name="row_spacing">0</property>
 			  <property name="column_spacing">0</property>
 
@@ -2468,14 +2469,14 @@ Time extension</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="ResetToDefaultButton">
+		<widget class="GtkButton" id="refresh">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label">gtk-refresh</property>
 		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
-		  <signal name="clicked" handler="on_ResetToDefaultButton_clicked" last_modification_time="Wed, 01 Oct 2008 11:23:36 GMT"/>
+		  <signal name="clicked" handler="on_refresh_clicked" last_modification_time="Thu, 02 Oct 2008 16:45:05 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>

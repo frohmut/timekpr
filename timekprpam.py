@@ -19,7 +19,7 @@ def parseaccessconf(f = '/etc/security/access.conf'):
 	#Parses the timekpr section in access.conf
 	#Returns a list with the disabled usernames: ['niania','wawa']
 	s = getconfsection(f)
-	m = re.compile('^-:([^:]+):ALL$',re.M).findall(s)
+	m = re.compile('^-:([^:\s]+):ALL$',re.M).findall(s)
 	#If no matches (or bad format?), m = []
 	return m
 
@@ -28,8 +28,7 @@ def isuserlocked(u):
 	#Checks if user is in access.conf
 	#Returns: True/False
 	try: i = parseaccessconf().index(u)
-	except ValueError: i = -1
-	if i < 0: return False
+	except ValueError: return False
 	return True
 
 def unlockuser(u, f = '/etc/security/access.conf'):
@@ -142,10 +141,8 @@ def isuserlimitednow(u,f = '/etc/security/time.conf'):
 	if isuserlimited(u) is False: return False
 	s = getconfsection(f)
 	m = re.compile('^\*;\*;'+u+';(.*)$',re.M).findall(s)
-	
 	today = int(strftime("%w"))
 	hournow = int(strftime("%H"))
-	
 	#If Al (All days):
 	x = re.match('Al(\d\d)00-(\d\d)00',m[0])
 	if x:
@@ -159,6 +156,24 @@ def isuserlimitednow(u,f = '/etc/security/time.conf'):
 		high = int(z.group(2))
 		if low <= hournow < high: return False
 	return True
+
+def isuserlimitedtoday(u,f = '/etc/security/time.conf'):
+	#Argument: username
+	#Checks if username has limitations for this day
+	#Returns: True or False (even if user is not in time.conf)
+	if isuserlimited(u) is False: return False
+	s = getconfsection(f)
+	m = re.compile('^\*;\*;'+u+';(.*)$',re.M).findall(s)
+	today = int(strftime("%w"))
+	#If Al (All days):
+	x = re.match('Al0000-2400',m[0])
+	if x:
+		return False
+	else:
+		day = { 0:"Su", 1:"Mo", 2:"Tu", 3:"We", 4:"Th", 5:"Fr", 6:"Sa" }
+		g = re.compile(day[today] + '0000-2400').search(m[0])
+		if g: return False
+		return True
 
 def strint(x): return str(int(x)) #makes '08' into '8' and '10' as '10'
 
