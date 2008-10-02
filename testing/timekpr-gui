@@ -8,6 +8,7 @@ version = '0.2.0'
 gladefile = 'timekpr.glade'
 TIMEKPRDIR = '/etc/timekpr'
 TIMEKPRWORK = '/var/lib/timekpr'
+TIMEKPRSHARED = '/usr/share/timekpr'
 
 #IMPORT
 #timekprmodules = '/usr/share/timekpr/'
@@ -70,14 +71,19 @@ class timekprGUI:
 		self.limitCheck = self.wTree.get_widget("limitCheck")
 		self.boundariesCheck = self.wTree.get_widget("boundariesCheck")
 		self.userSelect = self.wTree.get_widget("userSelect")
-		self.extendLimitsButton = self.wTree.get_widget("extendLimitsButton")
-		self.rewardButton = self.wTree.get_widget("rewardButton")
 		self.rewardSpin = self.wTree.get_widget("rewardSpin")
 		self.labeluserstatus = self.wTree.get_widget("labeluserstatus")
+		
 		self.limiticon = self.wTree.get_widget("imagelimited1")
 		self.boundariesicon = self.wTree.get_widget("imagelimited2")
 		self.alldayloginicon = self.wTree.get_widget("imagealldaylogin")
 		self.lockedicon = self.wTree.get_widget("imagelocked")
+		
+		self.extendLimitsButton = self.wTree.get_widget("extendLimitsButton")
+		self.rewardButton = self.wTree.get_widget("rewardButton")
+		self.clearallButton = self.wTree.get_widget("ClearAllRestrictionsButton")
+		self.resettimeButton = self.wTree.get_widget("ResetTimeButton")
+		self.lockLabel = self.wTree.get_widget("labelunlockbutton")
 		
 		dic = { "on_limitCheck_toggled": self.limitCheck_toggled,
 			"on_boundariesCheck_toggled": self.boundariesCheck_toggled,
@@ -91,7 +97,7 @@ class timekprGUI:
 			"on_refresh_clicked": self.read_settings,
 			"on_cancel_clicked": self.cancel_clicked,
 			"on_aboutmenuitem_select": self.showaboutdialog,
-			'gtk_main_quit': gtk.main_quit,
+			'gtk_main_quit': gtk.main_quit
 		}
 		
 		self.wTree.signal_autoconnect(dic)
@@ -239,31 +245,40 @@ class timekprGUI:
 			self.limitCheck.set_active(False)
 			self.singleLimits.set_active(False)
 	
-	def statusicons(self, widget, user):
+	def statusicons(self, widget, user, uislocked):
 		#Set icons in status gtk-yes or gtk-no
+		lockgreen = 'Padlock-green.png'
+		lockred = 'Padlock-red.png'
 		iconyes = gtk.STOCK_YES
 		iconno = gtk.STOCK_NO
 		iconsize = gtk.ICON_SIZE_BUTTON
 		#limitSpin status is already set, so we can use it
 		#self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
-		if self.limitCheck.get_active(): self.limiticon.set_from_stock(iconyes,iconsize)
-		else: self.boundariesicon.set_from_stock(iconno,iconsize)
-		
-		if self.boundariesCheck.get_active(): self.boundariesicon.set_from_stock(iconyes,iconsize)
-		else: self.boundariesicon.set_from_stock(iconno,iconsize)
-		
-		if not isuserlimitedtoday(user) and not isuserlocked(user): self.alldayloginicon.set_from_stock(iconyes,iconsize)
+		if not isuserlimitedtoday(user) and not uislocked: self.alldayloginicon.set_from_stock(iconyes,iconsize)
 		else: self.alldayloginicon.set_from_stock(iconno,iconsize)
 		
-		if isuserlocked(user): self.lockedicon.set_from_stock(iconyes,iconsize)
-		else: self.lockedicon.set_from_stock(iconno,iconsize)
+		if self.limitCheck.get_active(): self.limiticon.set_from_file(lockred)
+		else: self.limiticon.set_from_file(lockgreen)
+		
+		if self.boundariesCheck.get_active(): self.boundariesicon.set_from_file(lockred)
+		else: self.boundariesicon.set_from_file(lockgreen)
+		
+		if uislocked: self.lockedicon.set_from_file(lockred)
+		else: self.lockedicon.set_from_file(lockgreen)
+	
+	def buttonstates(self,widget, user, uislocked):
+		#Icons in status gtk-yes or gtk-no
+		if uislocked: self.lockLabel.set_label('Unlock account')
+		else: self.lockLabel.set_label('Lock account')
 	
 	def read_settings(self, widget):
 		user = self.userSelect.get_active_text()
+		uislocked = isuserlocked(user)
 		self.readfromtolimit(self, user)
 		self.readdurationlimit(self, user)
 		self.labeluserstatus.set_label('Status for <span weight="bold">'+user+'</span>')
-		self.statusicons(self, user)
+		self.statusicons(self, user, uislocked)
+		self.buttonstates(self, user, uislocked)
 	
 	def extendLimitsButton_clicked(self, widget):
 		user = self.userSelect.get_active_text()

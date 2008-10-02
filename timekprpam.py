@@ -128,6 +128,10 @@ def isuserlimited(u,f = '/etc/security/time.conf'):
 	#Checks if user is in time.conf
 	#Returns: True/False
 	s = getconfsection(f)
+	#Check if Al0000-2400 present
+	x = re.compile('^\*;\*;'+u+';Al0000-2400$', re.M).search(s)
+	if x: return False
+	#if not, proceed
 	m = re.compile('^\*;\*;([^;]+);',re.M).findall(s)
 	try: i = m.index(u)
 	except ValueError: return False
