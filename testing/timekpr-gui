@@ -23,12 +23,11 @@ if getpass.getuser() != "root":
 #Import GTK/PyGTK/Glade
 try:
 	import pygtk
-	pygtk.require("2.0")
+
 except:
 	pass
 try:
-	import gtk
-	import gtk.glade
+	import gtk, gtk.glade
 except:
 	exit(1)
 
