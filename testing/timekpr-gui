@@ -116,19 +116,21 @@ class timekprGUI:
 		self.aboutdialog = gtk.glade.XML(gladefile,'aboutdialog')
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
 		self.aboutd.set_version(version)
-		self.aboutd.set_position(gtk.WIN_POS_CENTER)
 		self.aboutd.show_all()
 		self.aboutd.run()
 		self.aboutd.destroy()
 	
 	def lockunlockaccount(self, widget):
-		pass
+		if self.lockLabel.get_label() == 'Lock account':
+			pass #lock it
+		else:
+			pass #unlock it
 	
 	def clearallrestrictions(self, widget):
-		pass
+		pass #should clear all limits and their files
 	
 	def resettimefile(self, widget):
-		pass
+		pass #clear the .time file
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
