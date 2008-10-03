@@ -122,9 +122,13 @@ class timekprGUI:
 	
 	def lockunlockaccount(self, widget):
 		if self.lockLabel.get_label() == 'Lock account':
-			pass #lock it
+			#lock account
+			lockuser(self.user)
+			self.read_settings_nolimits(self)
 		else:
-			pass #unlock it
+			#unlock account
+			unlockuser(self.user)
+			self.read_settings_nolimits(self)
 	
 	def clearallrestrictions(self, widget):
 		pass #should clear all limits and their files
@@ -188,16 +192,15 @@ class timekprGUI:
 		gtk.main_quit()
 	
 	def rewardButton_clicked(self, widget):
-		user = self.userSelect.get_active_text()
 		arg = str(self.rewardSpin.get_value_as_int())
-		cmd = 'timekpr-addtime ' + user + ' ' + arg
+		cmd = 'timekpr-addtime ' + self.user + ' ' + arg
 		os.system(cmd)
 	
-	def readfromtolimit(self, widget, user):
+	def readfromtolimit(self, widget):
 		#from-to time limitation (aka boundaries) - time.conf
-		if isuserlimited(user) is True:
+		if isuserlimited(self.user) is True:
 			#Get user time limits (boundaries) as lists from-to
-			ulimits = getuserlimits(user)
+			ulimits = getuserlimits(self.user)
 			bfrom = ulimits[0]
 			bto = ulimits[1]
 			
@@ -208,16 +211,13 @@ class timekprGUI:
 			ub = True
 			# Single boundaries? (set per day)
 			sb = False
-			
 			#Are all boundaries the same?
 			#If they're not same, activate single (per day) boundaries
 			if ([bfrom[0]]*7) != (bfrom) or ([bto[0]]*7) != (bto):
 				sb = True
-			
 			#Even if boundaries are Al0000-2400, return False
 			if sb is False and bfrom[0] == str(0) and bto[0] == str(24):
 				ub = False
-			
 			self.boundariesCheck.set_active(ub)
 			self.singleBoundaries.set_active(sb)
 		else:
@@ -227,9 +227,9 @@ class timekprGUI:
 			self.boundariesCheck.set_active(False)
 			self.singleBoundaries.set_active(False)
 	
-	def readdurationlimit(self, widget, user):
+	def readdurationlimit(self, widget):
 		#time length limitation
-		configFile = configroot + '/' + user
+		configFile = configroot + '/' + self.user
 		if isfile(configFile):
 			fileHandle = open(configFile)
 			limits = fileHandle.readline()
@@ -247,10 +247,7 @@ class timekprGUI:
 			
 			for i in range(1, 7):
 				if limits[i] != limits[i-1]:
-					sl = True
-				#if (bfrom[i] != bfrom[i-1]) or (bto[i] != bto[i-1]):
-				#	sb = True
-			
+					sl = True			
 			if limits[0] == '86400' and not sl: ul = False
 			self.limitCheck.set_active(ul)
 			self.singleLimits.set_active(sl)
@@ -259,7 +256,7 @@ class timekprGUI:
 			self.limitCheck.set_active(False)
 			self.singleLimits.set_active(False)
 	
-	def statusicons(self, widget, user, uislocked):
+	def statusicons(self, widget, uislocked):
 		#Set icons in status gtk-yes or gtk-no
 		lockgreen = 'Padlock-green.png'
 		lockred = 'Padlock-red.png'
@@ -268,7 +265,7 @@ class timekprGUI:
 		iconsize = gtk.ICON_SIZE_BUTTON
 		#limitSpin status is already set, so we can use it
 		#self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
-		if not isuserlimitedtoday(user) and not uislocked: self.alldayloginicon.set_from_stock(iconyes,iconsize)
+		if not isuserlimitedtoday(self.user) and not uislocked: self.alldayloginicon.set_from_stock(iconyes,iconsize)
 		else: self.alldayloginicon.set_from_stock(iconno,iconsize)
 		
 		if self.limitCheck.get_active(): self.limiticon.set_from_file(lockred)
@@ -280,23 +277,27 @@ class timekprGUI:
 		if uislocked: self.lockedicon.set_from_file(lockred)
 		else: self.lockedicon.set_from_file(lockgreen)
 	
-	def buttonstates(self,widget, user, uislocked):
+	def buttonstates(self,widget, uislocked):
 		#Icons in status gtk-yes or gtk-no
 		if uislocked: self.lockLabel.set_label('Unlock account')
 		else: self.lockLabel.set_label('Lock account')
 	
 	def read_settings(self, widget):
-		user = self.userSelect.get_active_text()
-		uislocked = isuserlocked(user)
-		self.readfromtolimit(self, user)
-		self.readdurationlimit(self, user)
-		self.labeluserstatus.set_label('Status for <span weight="bold">'+user+'</span>')
-		self.statusicons(self, user, uislocked)
-		self.buttonstates(self, user, uislocked)
+		self.user = self.userSelect.get_active_text()
+		uislocked = isuserlocked(self.user)
+		self.readfromtolimit(self)
+		self.readdurationlimit(self)
+		self.labeluserstatus.set_label('Status for <span weight="bold">'+self.user+'</span>')
+		self.statusicons(self, uislocked)
+		self.buttonstates(self, uislocked)
+	
+	def read_settings_nolimits(self, widget):
+		uislocked = isuserlocked(self.user)
+		self.statusicons(self, uislocked)
+		self.buttonstates(self, uislocked)
 	
 	def extendLimitsButton_clicked(self, widget):
-		user = self.userSelect.get_active_text()
-		cmd = 'timekpr-extend ' + user
+		cmd = 'timekpr-extend ' + self.user
 		os.system(cmd)
 	
 	def boundariesCheck_toggled(self, widget):
@@ -356,8 +357,6 @@ class timekprGUI:
 			self.ll[0].set_text("Every day")
 	
 	def apply_clicked(self, widget):
-		user = self.userSelect.get_active_text()
-		print "User=" + user
 		space = " "
 		limit = "limit=( 86400 86400 86400 86400 86400 86400 86400 )"
 		#bTo = "to=( 24 24 24 24 24 24 24 )"
@@ -390,7 +389,7 @@ class timekprGUI:
 				for i in range(7):
 					bFrom.append(str(self.fromSpin[0].get_value_as_int()))
 					bTo.append(str(self.toSpin[0].get_value_as_int()))
-		configFile = configroot + '/' + self.userSelect.get_active_text()
+		configFile = configroot + '/' + self.user
 		if self.limitCheck.get_active():
 			fH = open(configFile, 'w')
 			fH.write(limit + "\n")
