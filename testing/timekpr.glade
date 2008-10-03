@@ -85,9 +85,9 @@
 		    <widget class="GtkImage" id="image1">
 		      <property name="visible">True</property>
 		      <property name="pixbuf">timekpr-logo.png</property>
-		      <property name="xalign">0.40000000596</property>
+		      <property name="xalign">0</property>
 		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
+		      <property name="xpad">50</property>
 		      <property name="ypad">0</property>
 		    </widget>
 		    <packing>
@@ -106,50 +106,30 @@
 		      <property name="yscale">1</property>
 		      <property name="top_padding">0</property>
 		      <property name="bottom_padding">0</property>
-		      <property name="left_padding">0</property>
-		      <property name="right_padding">0</property>
+		      <property name="left_padding">100</property>
+		      <property name="right_padding">50</property>
 
 		      <child>
-			<placeholder/>
-		      </child>
-		    </widget>
-		    <packing>
-		      <property name="padding">20</property>
-		      <property name="expand">True</property>
-		      <property name="fill">True</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkVBox" id="vbox5">
-		      <property name="visible">True</property>
-		      <property name="homogeneous">True</property>
-		      <property name="spacing">0</property>
-
-		      <child>
-			<widget class="GtkHBox" id="hbox9">
-			  <property name="width_request">0</property>
+			<widget class="GtkVBox" id="vbox5">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">True</property>
 			  <property name="spacing">0</property>
 
 			  <child>
-			    <widget class="GtkLabel" id="label1">
+			    <widget class="GtkAlignment" id="alignment10">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Select user</property>
-			      <property name="use_underline">False</property>
-			      <property name="use_markup">False</property>
-			      <property name="justify">GTK_JUSTIFY_LEFT</property>
-			      <property name="wrap">False</property>
-			      <property name="selectable">False</property>
 			      <property name="xalign">0.5</property>
 			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			      <property name="width_chars">-1</property>
-			      <property name="single_line_mode">False</property>
-			      <property name="angle">0</property>
+			      <property name="xscale">1</property>
+			      <property name="yscale">1</property>
+			      <property name="top_padding">0</property>
+			      <property name="bottom_padding">0</property>
+			      <property name="left_padding">0</property>
+			      <property name="right_padding">0</property>
+
+			      <child>
+				<placeholder/>
+			      </child>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -159,12 +139,74 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkComboBox" id="userSelect">
+			    <widget class="GtkHBox" id="hbox9">
+			      <property name="width_request">0</property>
 			      <property name="visible">True</property>
-			      <property name="items" translatable="yes"></property>
-			      <property name="add_tearoffs">False</property>
-			      <property name="focus_on_click">True</property>
-			      <signal name="changed" handler="on_userSelect_toggled"/>
+			      <property name="homogeneous">True</property>
+			      <property name="spacing">0</property>
+
+			      <child>
+				<widget class="GtkLabel" id="label1">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">Select user</property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkComboBox" id="userSelect">
+				  <property name="visible">True</property>
+				  <property name="items" translatable="yes"></property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
+				  <signal name="changed" handler="on_userSelect_toggled"/>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
+				</packing>
+			      </child>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">True</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkAlignment" id="alignment52">
+			      <property name="visible">True</property>
+			      <property name="xalign">0.5</property>
+			      <property name="yalign">0.5</property>
+			      <property name="xscale">1</property>
+			      <property name="yscale">1</property>
+			      <property name="top_padding">0</property>
+			      <property name="bottom_padding">0</property>
+			      <property name="left_padding">0</property>
+			      <property name="right_padding">0</property>
+
+			      <child>
+				<placeholder/>
+			      </child>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -173,34 +215,6 @@
 			    </packing>
 			  </child>
 			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">True</property>
-			  <property name="fill">False</property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkAlignment" id="alignment10">
-			  <property name="visible">True</property>
-			  <property name="xalign">0.5</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xscale">1</property>
-			  <property name="yscale">1</property>
-			  <property name="top_padding">0</property>
-			  <property name="bottom_padding">0</property>
-			  <property name="left_padding">0</property>
-			  <property name="right_padding">0</property>
-
-			  <child>
-			    <placeholder/>
-			  </child>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">True</property>
-			  <property name="fill">True</property>
-			</packing>
 		      </child>
 		    </widget>
 		    <packing>
@@ -512,7 +526,7 @@
 		  <child>
 		    <widget class="GtkLabel" id="labelislimited2">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Limited by access hours (any day):</property>
+		      <property name="label" translatable="yes">Limited by time frame (any day):</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -856,7 +870,7 @@ Reward</property>
 		  <child>
 		    <widget class="GtkLabel" id="labelislimited1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Limited by access time duration (any day):</property>
+		      <property name="label" translatable="yes">Limited by access duration (any day):</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1091,8 +1105,7 @@ Reward</property>
 				      <child>
 					<widget class="GtkLabel" id="label18">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Limit access time
-duration</property>
+					  <property name="label" translatable="yes">Limit access duration</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1639,7 +1652,7 @@ when user is allowed to login</property>
 				      <child>
 					<widget class="GtkLabel" id="label17">
 					  <property name="visible">True</property>
-					  <property name="label" translatable="yes">Limit access hours</property>
+					  <property name="label" translatable="yes">Limit time frame</property>
 					  <property name="use_underline">True</property>
 					  <property name="use_markup">False</property>
 					  <property name="justify">GTK_JUSTIFY_LEFT</property>
