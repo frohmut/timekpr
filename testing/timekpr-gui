@@ -89,6 +89,9 @@ class timekprGUI:
 			"on_boundariesCheck_toggled": self.boundariesCheck_toggled,
 			"on_rewardButton_clicked": self.rewardButton_clicked,
 			"on_extendLimitsButton_clicked": self.extendLimitsButton_clicked,
+			"on_ClearAllRestrictionsButton_clicked": self.clearallrestrictions,
+			"on_ResetTimeButton_clicked": self.resettimefile,
+			"on_UnlockButton_clicked": self.lockunlockaccount,
 			"on_apply_clicked": self.apply_clicked,
 			"on_singleBoundaries_toggled": self.singleBoundariesCheck_toggled,
 			"on_singleLimits_toggled": self.singleLimitsCheck_toggled,
@@ -111,12 +114,21 @@ class timekprGUI:
 		self.read_settings(self)
 		return
 	
-	def showaboutdialog(self,*args):
+	def showaboutdialog(self, widget):
 		self.aboutdialog = gtk.glade.XML(gladefile,'aboutdialog')
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
 		self.aboutd.set_version(version)
 		self.response = self.aboutd.run()
 		self.aboutd.destroy()
+	
+	def lockunlockaccount(self, widget):
+		pass
+	
+	def clearallrestrictions(self, widget):
+		pass
+	
+	def resettimefile(self, widget):
+		pass
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
