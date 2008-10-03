@@ -21,15 +21,9 @@ if getpass.getuser() != "root":
 	exit('Error: You do not have administrative privileges')
 
 #Import GTK/PyGTK/Glade
-try:
-	import pygtk
-
-except:
-	pass
-try:
-	import gtk, gtk.glade
-except:
-	exit(1)
+import pygtk
+try: import gtk, gtk.glade
+except: exit(1)
 
 
 # VARIABLES
@@ -113,11 +107,18 @@ class timekprGUI:
 		self.read_settings(self)
 		return
 	
+	def urlhook(self, widget, url):
+		import webbrowser
+		webbrowser.open(url,0)
+	
 	def showaboutdialog(self, widget):
+		gtk.about_dialog_set_url_hook(self.urlhook)
 		self.aboutdialog = gtk.glade.XML(gladefile,'aboutdialog')
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
 		self.aboutd.set_version(version)
-		self.response = self.aboutd.run()
+		self.aboutd.set_position(gtk.WIN_POS_CENTER)
+		self.aboutd.show_all()
+		self.aboutd.run()
 		self.aboutd.destroy()
 	
 	def lockunlockaccount(self, widget):
