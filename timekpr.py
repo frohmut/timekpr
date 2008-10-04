@@ -144,7 +144,7 @@ def lockacct(u):
 	lockfile = TIMEKPRDIR + '/' + u + '.lock'
 	f = open(lockfile, 'w')
 	f.close()
-	#lockuser(u) # timekprpam.py
+	lockuser(u) # timekprpam.py
 
 def checklockacct():
 	#Check if user should be unlocked and unlock them
@@ -154,15 +154,16 @@ def checklockacct():
 	l = glob(s)
 	for f in l:
 		#Get username from filename - os.path.split
-		username = splitpath(f)[1].replace('.lock','')
+		u = splitpath(f)[1].replace('.lock','')
 		lastmodified = getmtime(f) #Get last modified time from username.lock file
 		#Get time when lock should be lifted
 		dtlock = lastmodified + getlocklasts()
 		dtnow = time()
 		#If time now is great than or equal to the time when lock should be lifted
 		if dtnow >= dtlock:
-			logkpr('checklockacct: ' + username + 'should be unlocked, unlocking..')
-			#unlock(username)
+			logkpr('checklockacct: ' + u + ' should be unlocked, unlocking..')
+			unlockuser(u)
+			logkpr('checklockacct: removing ' + u + '.lock file..')
 			remove(f)
 
 ## File defs
