@@ -65,6 +65,7 @@ class timekprGUI:
 		self.boundariesCheck = self.wTree.get_widget("boundariesCheck")
 		self.userSelect = self.wTree.get_widget("userSelect")
 		self.rewardSpin = self.wTree.get_widget("rewardSpin")
+		self.labelrewardspin = self.wTree.get_widget("labelrewardspin")
 		self.labeluserstatus = self.wTree.get_widget("labeluserstatus")
 		
 		self.limiticon = self.wTree.get_widget("imagelimited1")
@@ -281,6 +282,20 @@ class timekprGUI:
 		#Icons in status gtk-yes or gtk-no
 		if uislocked: self.lockLabel.set_label('Unlock account')
 		else: self.lockLabel.set_label('Lock account')
+		
+		if self.limitCheck.get_active():
+			self.resettimeButton.set_sensitive(True)
+			self.rewardButton.set_sensitive(True)
+			self.rewardSpin.set_sensitive(True)
+			self.labelrewardspin.set_sensitive(True)
+		else:
+			self.resettimeButton.set_sensitive(False)
+			self.rewardButton.set_sensitive(False)
+			self.rewardSpin.set_sensitive(False)
+			self.labelrewardspin.set_sensitive(False)
+		
+		if self.boundariesCheck.get_active(): self.extendLimitsButton.set_sensitive(True)
+		else: self.extendLimitsButton.set_sensitive(False)
 	
 	def read_settings(self, widget):
 		self.user = self.userSelect.get_active_text()
@@ -401,11 +416,11 @@ class timekprGUI:
 		#No need to check if boundaries are active or not, apply the default or custom limits
 		#Remove old user limits (boundaries)
 		print "remove old boundaries"
-		rb = removeuserlimits(user)
+		rb = removeuserlimits(self.user)
 		if rb is False: exit('Could not remove (old) user boundaries')
 		#Add new limits (boundaries)
 		print "add new boundaries"
-		ab = adduserlimits(user,bFrom,bTo)
+		ab = adduserlimits(self.user,bFrom,bTo)
 		if ab is False: exit('Could not add (new) user boundaries')
 
 if __name__ == "__main__":
