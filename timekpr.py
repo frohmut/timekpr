@@ -229,11 +229,9 @@ def issessionalive(user):
 def getdbus(pid):
 	#Returns DBUS_SESSION_BUS_ADDRESS variable from /proc/pid/environ
 	pid = str(pid)
-	print pid
 	p = open('/proc/'+pid+'/environ', 'r')
 	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').findall(p.read())
 	p.close()
-	print i
 	return i[0]
 	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
