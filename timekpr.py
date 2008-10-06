@@ -102,11 +102,11 @@ def logOut(user,pid):
 		logkpr('logOut: Attempting killing '+user+' (TERM, 15)...')
 		#this is a pretty bad way of killing a gnome-session, but we warned 'em
 		#Should it be signal 1 (HUP)?
-		kill(pid,15)
-		time.sleep(5)
+		kill(int(pid),15)
+		sleep(5)
 		if issessionalive(user) == 1:
 			logkpr('logOut: Process still there, attempting force-killing '+user+' (KILL, 9)...')
-			kill(pid,9)
+			kill(int(pid),9)
 		#logkpr('logOut: touched $username.logout')
 		#touched?
 	
@@ -172,12 +172,12 @@ def fileisok(fname):
 	if isfile(fname) and fromtoday(fname): return True
 	return False
 
-def readusersettings(conffile):
+def readusersettings(user, conffile):
 	#Returns limits and from/to allowed hours
 	fhandle = open(conffile)
 	limits = fhandle.readline() #Read 1st line
-	bfrom = fhandle.readline() #Read 2nd line
-	bto = fhandle.readline()
+	#bfrom = fhandle.readline() #Read 2nd line
+	#bto = fhandle.readline()
 	'''Deprecated
 	limits = limits.replace("limit=( ","")
 	limits = limits.replace(" )", "")
@@ -189,10 +189,19 @@ def readusersettings(conffile):
 	bto = bto.replace(" )", "")
 	bto = bto.split(" ")
 	'''
+	bfrom = list()
+	bto = list()
+	lims = list()
 	limits = re.compile('(\d+)').findall(limits)
-	bfrom = re.compile('(\d+)').findall(bfrom)
-	bto = re.compile('(\d+)').findall(bto)
-	return limits, bfrom, bto
+	bfromtemp = getuserlimits(user)[0]
+	for i in range(len(bfromtemp)):
+		bfrom.append(int(bfromtemp[i]))
+	btotemp = getuserlimits(user)[1]
+	for i in range(len(btotemp)):
+		bto.append(int(btotemp[i]))
+	for i in range(len(limits)):
+		lims.append(int(limits[i]))
+	return lims, bfrom, bto
 
 def getcmdoutput(cmd):
 	#Execute a command, returns its output
@@ -220,9 +229,11 @@ def issessionalive(user):
 def getdbus(pid):
 	#Returns DBUS_SESSION_BUS_ADDRESS variable from /proc/pid/environ
 	pid = str(pid)
+	print pid
 	p = open('/proc/'+pid+'/environ', 'r')
 	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').findall(p.read())
 	p.close()
+	print i
 	return i[0]
 	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
@@ -310,25 +321,25 @@ while (True):
 		if isfile(conffile):
 			logkpr('conffile of ' + username + ' exists')
 			# Read lists: from, to and limit
-			limits, bfrom, bto = readusersettings(conffile)
+			limits, bfrom, bto = readusersettings(username, conffile)
 			timefile = TIMEKPRWORK + '/' + username + '.time'
 			allowfile = TIMEKPRWORK + '/' + username + '.allow'
 			latefile = TIMEKPRWORK + '/' + username + '.late'
 			logoutfile = TIMEKPRWORK + '/' + username + '.logout'
 			
-			time = gettime(timefile)
+			time = int(gettime(timefile))
 			'''Is the user allowed to be logged in at this time?
 			We take it for granted that if they are allowed to login all day ($default_limit) then
 			they can login whenever they want, ie they are normal users'''
 			
 			# Get current day index and hour of day
 			index = int(strftime("%w", localtime()))
-			hour = strftime("%H", localtime())
+			hour = int(strftime("%H", localtime()))
 			
 			logkpr('User ' + username + ' PID ' + str(pid) + ' Day-Index: ' + str(index) + ' Seconds-passed: ' + str(time))
 			
 			# Compare: is current hour less than the one in bfrom list?
-			if hour < bfrom[index]:
+			if (hour < bfrom[index]):
 				logkpr('Current hour less than the defined hour in conffile for user: ' + username)
 				if isfile(allowfile):
 					if not fromtoday(allowfile):
@@ -341,7 +352,7 @@ while (True):
 					logOut(username, pid)
 			
 			# Compare: is current hour greater/equal to $to array?
-			if hour > bto[index]:
+			if (hour > bto[index]):
 				logkpr('Current hour greater than the defined hour in conffile for user: ' + username)
 				# Has the user been given extended login hours?
 				if isfile(allowfile):
@@ -383,7 +394,7 @@ while (True):
 						open(latefile, 'w')
 			
 			# Is the limit exeeded
-			if time > limits[index]:
+			if (time > limits[index]):
 				logkpr('Exceeded todays limit, user: ' + username)
 				# Has the user already been kicked out?
 				if isfile(logoutfile):
