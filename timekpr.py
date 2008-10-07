@@ -232,7 +232,7 @@ def getdbus(pid):
 	p = open('/proc/'+pid+'/environ', 'r')
 	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').findall(p.read())
 	p.close()
-	return i[0]
+#	return i[0]
 	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
 
@@ -366,9 +366,9 @@ while (True):
 								lockacct(username)
 							else:
 								logkpr('User: ' + username + ' has NOT been late-kicked today')
-								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
+								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + str(bfrom[index]) + ' and ' + str(bto[index]) + '.  You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
 								sleep(GRACEPERIOD/2)
-								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
+								notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + str(bfrom[index]) + ' and ' + str(bto[index]) + '.  You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
 								sleep(GRACEPERIOD/2)
 								open(latefile, 'w')
 								remove(allowfile)
@@ -384,9 +384,9 @@ while (True):
 						lockacct(username)
 					else:
 						logkpr('User: ' + username + ' has NOT been late-kicked today')
-						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
+						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + str(bfrom[index]) + ' and ' + str(bto[index]) + '.  You will be logged out in ' + str(GRACEPERIOD) + ' seconds.')
 						sleep(GRACEPERIOD/2)
-						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + bfrom[index] + ' and ' + bto[index] + '.  You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
+						notify(username, pid, 'It is getting late', 'You are only allowed to login between ' + str(bfrom[index]) + ' and ' + str(bto[index]) + '.  You will be logged out in ' + str(GRACEPERIOD/2) + ' seconds.')
 						sleep(GRACEPERIOD/2)
 						logOut(username, pid)
 						open(latefile, 'w')
