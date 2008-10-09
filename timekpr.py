@@ -101,12 +101,12 @@ def logOut(user,pid):
 	if issessionalive(user) == 1:
 		logkpr('logOut: Attempting killing '+user+' (TERM, 15)...')
 		#this is a pretty bad way of killing a gnome-session, but we warned 'em
-		#Should it be signal 1 (HUP)?
-		kill(int(pid),15)
+		pid = int(pid)
+		kill(pid,15)
 		sleep(5)
 		if issessionalive(user) == 1:
 			logkpr('logOut: Process still there, attempting force-killing '+user+' (KILL, 9)...')
-			kill(int(pid),9)
+			kill(pid,9)
 		#logkpr('logOut: touched $username.logout')
 		#touched?
 	
@@ -176,31 +176,23 @@ def readusersettings(user, conffile):
 	#Returns limits and from/to allowed hours
 	fhandle = open(conffile)
 	limits = fhandle.readline() #Read 1st line
-	#bfrom = fhandle.readline() #Read 2nd line
-	#bto = fhandle.readline()
-	'''Deprecated
-	limits = limits.replace("limit=( ","")
-	limits = limits.replace(" )", "")
-	limits = limits.split(" ")
-	bfrom = bfrom.replace("from=( ", "")
-	bfrom = bfrom.replace(" )", "")
-	bfrom = bfrom.split(" ")
-	bto = bto.replace("to=( ", "")
-	bto = bto.replace(" )", "")
-	bto = bto.split(" ")
-	'''
-	bfrom = list()
-	bto = list()
-	lims = list()
+	#bfrom = list()
+	#bto = list()
+	#lims = list()
+	bfromandto = getuserlimits(user)
+	bfromtemp = bfromandto[0]
+	#Using map instead of for i in ...
+	bfrom = map(int,bfromtemp)
+	#for i in range(len(bfromtemp)):
+	#	bfrom.append(int(bfromtemp[i]))
+	btotemp = bfromandto[1]
+	bto = map(int,btotemp)
+	#for i in range(len(btotemp)):
+	#	bto.append(int(btotemp[i]))
 	limits = re.compile('(\d+)').findall(limits)
-	bfromtemp = getuserlimits(user)[0]
-	for i in range(len(bfromtemp)):
-		bfrom.append(int(bfromtemp[i]))
-	btotemp = getuserlimits(user)[1]
-	for i in range(len(btotemp)):
-		bto.append(int(btotemp[i]))
-	for i in range(len(limits)):
-		lims.append(int(limits[i]))
+	lims = map(int,limits)
+	#for i in range(len(limits)):
+	#	lims.append(int(limits[i]))
 	return lims, bfrom, bto
 
 def getcmdoutput(cmd):
@@ -232,11 +224,12 @@ def getdbus(pid):
 	p = open('/proc/'+pid+'/environ', 'r')
 	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').findall(p.read())
 	p.close()
+	#FIXME: Doesn't work?
 #	return i[0]
 	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
 
-def notify(username, pid, title, message):
+def notify(user, pid, title, message):
 	'''
 	Sends a notification via notify-send
 	Usage: notify( "youruser", "pid", "your title", "your message")
@@ -250,8 +243,9 @@ def notify(username, pid, title, message):
 	#Get DBus
 	dbus = getdbus(pid)
 	#Create and send command
-	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (username, dbus, title, message)
-	getcmdoutput(notifycmd)
+	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (user, dbus, title, message)
+	reply = getcmdoutput(notifycmd)
+	logkpr('notify for '+user+' returned: '+str(reply))
 	
 	'''The long representations in terminal:
 	# su username -c "DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send \"title\" \"message\""
