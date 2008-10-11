@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #TODO: Make it exclude administrators,sudoers,wheel members etc
-import os, spwd, pwd, getpass, re, sys
+import spwd, pwd, getpass, re, sys
+from os import remove, mkdir, system
 from os.path import isdir, isfile
 
 #VARIABLES
@@ -25,13 +26,9 @@ import pygtk
 try: import gtk, gtk.glade
 except: exit(1)
 
-
-# VARIABLES
-configroot = '/etc/timekpr'
-
 #Create configuration folder if not existing
-if not isdir(configroot):
-	os.mkdir(configroot)
+if not isdir(TIMEKPRDIR):
+	mkdir(TIMEKPRDIR)
 
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
@@ -48,6 +45,10 @@ def isnormal(username):
 		return 1
 	else:
 		return 0
+
+def rm(f):
+	try: remove(f)
+	except OSError: pass
 
 class timekprGUI:
 	#This is the PyWine application
@@ -129,13 +130,43 @@ class timekprGUI:
 		else:
 			#unlock account
 			unlockuser(self.user)
+			#remove .lock file
+			lockfile = TIMEKPRDIR + '/' + user + '.lock'
+			rm(lockfile)
 			self.read_settings_nolimits(self)
 	
 	def clearallrestrictions(self, widget):
-		pass #should clear all limits and their files
+		#clears all limits and their files
+		#FIXME: A yes/no confirmation would be handy here
+		timef = TIMEKPRWORK + '/' + self.user + '.time'
+		logoutf = TIMEKPRWORK + '/' + self.user + '.logout'
+		latef = TIMEKPRWORK + '/' + self.user + '.late'
+		#Should remove .allow file? It's not a restriction
+		rm(timef)
+		rm(logoutf)
+		rm(latef)
+		
+		#remove boundaries
+		removeuserlimits(self.user)
+		#remove limits
+		configf = TIMEKPRDIR + '/' + self.user
+		rm(configf)
 	
 	def resettimefile(self, widget):
-		pass #clear the .time file
+		#clear the .time file
+		timefile = TIMEKPRWORK + '/' + self.user + '.time'
+		rm(timefile)
+	
+	def rewardButton_clicked(self, widget):
+		#FIXME: Should we use timekpr-addtime or internal python command?
+		arg = str(self.rewardSpin.get_value_as_int())
+		cmd = 'timekpr-addtime ' + self.user + ' ' + arg
+		system(cmd)
+	
+	def extendLimitsButton_clicked(self, widget):
+		#FIXME: Should we use timekpr-extend or internal python command?
+		cmd = 'timekpr-extend ' + self.user
+		system(cmd)
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
@@ -192,11 +223,6 @@ class timekprGUI:
 	def cancel_clicked(self, widget):
 		gtk.main_quit()
 	
-	def rewardButton_clicked(self, widget):
-		arg = str(self.rewardSpin.get_value_as_int())
-		cmd = 'timekpr-addtime ' + self.user + ' ' + arg
-		os.system(cmd)
-	
 	def readfromtolimit(self, widget):
 		#from-to time limitation (aka boundaries) - time.conf
 		if isuserlimited(self.user) is True:
@@ -230,7 +256,7 @@ class timekprGUI:
 	
 	def readdurationlimit(self, widget):
 		#time length limitation
-		configFile = configroot + '/' + self.user
+		configFile = TIMEKPRDIR + '/' + self.user
 		if isfile(configFile):
 			fileHandle = open(configFile)
 			limits = fileHandle.readline()
@@ -279,12 +305,14 @@ class timekprGUI:
 		else: self.lockedicon.set_from_file(lockgreen)
 	
 	def buttonstates(self,widget, uislocked):
-		#Icons in status gtk-yes or gtk-no
 		if uislocked: self.lockLabel.set_label('Unlock account')
 		else: self.lockLabel.set_label('Lock account')
 		
 		if self.limitCheck.get_active():
-			self.resettimeButton.set_sensitive(True)
+			timefile = TIMEKPRWORK + '/' + self.user + '.time'
+			if isfile(timefile): self.resettimeButton.set_sensitive(True)
+			else: self.resettimeButton.set_sensitive(False)
+			#Reward button should add time even if .time is not there?
 			self.rewardButton.set_sensitive(True)
 			self.rewardSpin.set_sensitive(True)
 			self.labelrewardspin.set_sensitive(True)
@@ -310,10 +338,6 @@ class timekprGUI:
 		uislocked = isuserlocked(self.user)
 		self.statusicons(self, uislocked)
 		self.buttonstates(self, uislocked)
-	
-	def extendLimitsButton_clicked(self, widget):
-		cmd = 'timekpr-extend ' + self.user
-		os.system(cmd)
 	
 	def boundariesCheck_toggled(self, widget):
 		if self.boundariesCheck.get_active():
@@ -404,22 +428,18 @@ class timekprGUI:
 				for i in range(7):
 					bFrom.append(str(self.fromSpin[0].get_value_as_int()))
 					bTo.append(str(self.toSpin[0].get_value_as_int()))
-		configFile = configroot + '/' + self.user
+		configFile = TIMEKPRDIR + '/' + self.user
 		if self.limitCheck.get_active():
 			fH = open(configFile, 'w')
 			fH.write(limit + "\n")
 			fH.close()
-		else:
-			try: os.remove(configFile)
-			except OSError: pass
+		else: rm(configFile)
 		
 		#No need to check if boundaries are active or not, apply the default or custom limits
 		#Remove old user limits (boundaries)
-		print "remove old boundaries"
 		rb = removeuserlimits(self.user)
 		if rb is False: exit('Could not remove (old) user boundaries')
 		#Add new limits (boundaries)
-		print "add new boundaries"
 		ab = adduserlimits(self.user,bFrom,bTo)
 		if ab is False: exit('Could not add (new) user boundaries')
 
