@@ -221,11 +221,10 @@ def issessionalive(user):
 def getdbus(pid):
 	#Returns DBUS_SESSION_BUS_ADDRESS variable from /proc/pid/environ
 	pid = str(pid)
-	p = open('/proc/'+pid+'/environ', 'r')
-	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').findall(p.read())
-	p.close()
-	#FIXME: Doesn't work?
-#	return i[0]
+	p = open('/proc/'+pid+'/environ', 'r').read()
+	i = re.compile('(DBUS_SESSION_BUS_ADDRESS=[^\x00]+)').search(p)
+	return i.group(1)
+	pass
 	#Returns: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7
 	#Note:	If you would use [^,] in regex you would get: DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw
 
@@ -235,6 +234,8 @@ def notify(user, pid, title, message):
 	Usage: notify( "youruser", "pid", "your title", "your message")
 	We will be probably using pynotify module for this, we'll see!
 	'''
+	#If the user has logged out, don't notify
+	if issessionalive(user): return
 	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like:
 	# -bash: !": event not found
 	#Might be good to include these substitutions, if someone doesn't read this warning
@@ -245,7 +246,7 @@ def notify(user, pid, title, message):
 	#Create and send command
 	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (user, dbus, title, message)
 	reply = getcmdoutput(notifycmd)
-	logkpr('notify for '+user+' returned: '+str(reply))
+	logkpr('notify command for '+user+': '+notifycmd)
 	
 	'''The long representations in terminal:
 	# su username -c "DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qwKxIfaWLw,guid=7215562baaa1153521197dc648d7bce7 notify-send \"title\" \"message\""
