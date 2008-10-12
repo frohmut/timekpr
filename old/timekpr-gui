@@ -1,0 +1,350 @@
+#!/usr/bin/env python
+
+import os, os.path, spwd, pwd, getpass, re
+
+#TODO: Make it exclude administrators,sudoers,wheel members etc
+
+#Check if admin
+if getpass.getuser() != "root":
+	exit('Error: You do not have administrative privileges')
+
+#Import GTK/PyGTK/Glade
+try:
+	import pygtk
+	pygtk.require("2.0")
+except:
+	pass
+try:
+	import gtk
+	import gtk.glade
+except:
+	exit(1)
+
+
+# VARIABLES
+configroot = '/var/lib/timekpr'
+
+#Create configuration folder if not existing
+if not os.path.isdir(configroot):
+	os.mkdir(configroot)
+
+
+#Check if it is a regular user, with userid within UID_MIN and UID_MAX.
+def isnormal(username):
+	userid = int(pwd.getpwnam(username)[2])
+	logindefs = open('/etc/login.defs')
+	uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)',re.M).findall(logindefs.read(), 1)
+	if uidminmax[0] < uidminmax[1]:
+		uidmin = int(uidminmax[0])
+		uidmax = int(uidminmax[1])
+	else:
+		uidmin = int(uidminmax[1])
+		uidmax = int(uidminmax[0])
+	if uidmin <= userid <= uidmax:
+		return 1
+	else:
+		return 0
+
+"""
+#Don't really need this, we have UID_MIN and UID_MAX check.
+#Might be useful later for locking usernames by setting !passwords in /etc/shadow
+#Check if a user has a password, not "!" or "*"
+def haspass(pw):
+	if pw != '!' and pw != '*':
+		return 1
+	else:
+		return 0
+"""
+
+class timekprGUI:
+	#This is the PyWine application
+
+	def __init__(self):
+		
+		#Set the Glade file
+		self.gladefile = "/usr/share/timekpr/timekpr.glade"
+		self.wTree = gtk.glade.XML(self.gladefile, "window1")
+		
+		self.get_limit_spin()
+		self.get_from_spin()
+		self.get_to_spin()
+		self.get_labels()
+		
+		self.singleLimits = self.wTree.get_widget("singleLimits")
+		self.singleBoundaries = self.wTree.get_widget("singleBoundaries")
+		self.limitCheck = self.wTree.get_widget("limitCheck")
+		self.boundariesCheck = self.wTree.get_widget("boundariesCheck")
+		self.userSelect = self.wTree.get_widget("userSelect")
+		self.extendLimitsButton = self.wTree.get_widget("extendLimitsButton")
+		self.rewardButton = self.wTree.get_widget("rewardButton")
+		self.rewardSpin = self.wTree.get_widget("rewardSpin")
+		
+		dic = { "on_limitCheck_toggled" : \
+			self.limitCheck_toggled,
+			"on_boundariesCheck_toggled" : \
+			self.boundariesCheck_toggled,
+			"on_rewardButton_clicked" : \
+			self.rewardButton_clicked,
+			"on_extendLimitsButton_clicked" : \
+			self.extendLimitsButton_clicked,
+			"on_apply_clicked" : \
+			self.apply_clicked,
+			"on_singleBoundaries_toggled" : \
+			self.singleBoundariesCheck_toggled,
+			"on_singleLimits_toggled" : \
+			self.singleLimitsCheck_toggled,
+			"on_ok_clicked" : \
+			self.ok_clicked,
+			"on_userSelect_toggled": \
+			self.read_settings,
+			"on_cancel_clicked" : \
+			self.cancel_clicked }
+		
+		self.wTree.signal_autoconnect (dic)
+		""" Deprecated:
+		self.root = "/home/"
+		self.wildcard = "*"
+		for folder in glob.glob( self.root + self.wildcard ):
+			self.userSelect.append_text(folder.replace( self.root, "" ) )
+			self.userSelect.set_active( 0 )
+		"""
+		#Using /etc/shadow spwd module
+		for userinfo in spwd.getspall():
+			if isnormal(userinfo[0]) == 1:
+				self.userSelect.append_text( userinfo[0] )
+				self.userSelect.set_active( 0 )
+		
+		self.read_settings(self)
+		return
+	
+	def get_limit_spin(self):
+		self.limitSpin = list()
+		self.limitSpin.append(self.wTree.get_widget("limitSpin0"))
+		self.limitSpin.append(self.wTree.get_widget("limitSpin1"))
+		self.limitSpin.append(self.wTree.get_widget("limitSpin2"))
+		self.limitSpin.append(self.wTree.get_widget("limitSpin3"))
+		self.limitSpin.append(self.wTree.get_widget("limitSpin4"))
+		self.limitSpin.append(self.wTree.get_widget("limitSpin5"))
+		self.limitSpin.append(self.wTree.get_widget("limitSpin6"))
+	
+	def get_from_spin(self):
+		self.fromSpin = list()
+		self.fromSpin.append(self.wTree.get_widget("fromSpin0"))
+		self.fromSpin.append(self.wTree.get_widget("fromSpin1"))
+		self.fromSpin.append(self.wTree.get_widget("fromSpin2"))
+		self.fromSpin.append(self.wTree.get_widget("fromSpin3"))
+		self.fromSpin.append(self.wTree.get_widget("fromSpin4"))
+		self.fromSpin.append(self.wTree.get_widget("fromSpin5"))
+		self.fromSpin.append(self.wTree.get_widget("fromSpin6"))
+	
+	def get_to_spin(self):
+		self.toSpin = list()
+		self.toSpin.append(self.wTree.get_widget("toSpin0"))
+		self.toSpin.append(self.wTree.get_widget("toSpin1"))
+		self.toSpin.append(self.wTree.get_widget("toSpin2"))
+		self.toSpin.append(self.wTree.get_widget("toSpin3"))
+		self.toSpin.append(self.wTree.get_widget("toSpin4"))
+		self.toSpin.append(self.wTree.get_widget("toSpin5"))
+		self.toSpin.append(self.wTree.get_widget("toSpin6"))
+	
+	def get_labels(self):
+		self.lb = list()
+		self.lb.append(self.wTree.get_widget("lb0"))
+		self.lb.append(self.wTree.get_widget("lb1"))
+		self.lb.append(self.wTree.get_widget("lb2"))
+		self.lb.append(self.wTree.get_widget("lb3"))
+		self.lb.append(self.wTree.get_widget("lb4"))
+		self.lb.append(self.wTree.get_widget("lb5"))
+		self.lb.append(self.wTree.get_widget("lb6"))
+		self.ll = list()
+		self.ll.append(self.wTree.get_widget("ll0"))
+		self.ll.append(self.wTree.get_widget("ll1"))
+		self.ll.append(self.wTree.get_widget("ll2"))
+		self.ll.append(self.wTree.get_widget("ll3"))
+		self.ll.append(self.wTree.get_widget("ll4"))
+		self.ll.append(self.wTree.get_widget("ll5"))
+		self.ll.append(self.wTree.get_widget("ll6"))
+		
+	def ok_clicked(self, widget):
+		self.apply_clicked(self)
+		gtk.main_quit()
+	
+	def cancel_clicked(self, widget):
+		gtk.main_quit()
+		
+	def rewardButton_clicked(self, widget):
+		user = self.userSelect.get_active_text()
+		arg = str(self.rewardSpin.get_value_as_int())
+		cmd = 'timekpr-addtime ' + user + ' ' + arg
+		os.system(cmd)
+	
+	def read_settings(self, widget):
+		user = self.userSelect.get_active_text()
+		configFile = configroot + user
+		if os.path.isfile(configFile):
+			fileHandle = open(configFile)
+			limits = fileHandle.readline()
+			bfrom = fileHandle.readline()
+			bto = fileHandle.readline()
+			limits = limits.replace("limit=( ","")
+			limits = limits.replace(")", "")
+			limits = limits.split(" ")
+			bfrom = bfrom.replace("from=( ", "")
+			bfrom = bfrom.replace(")", "")
+			bfrom = bfrom.split(" ")
+			bto = bto.replace("to=( ", "")
+			bto = bto.replace(")", "")
+			bto = bto.split(" ")
+			
+			for i in range(7):
+				self.limitSpin[i].set_value(float(limits[i])/60)
+				self.fromSpin[i].set_value(float(bfrom[i]))
+				self.toSpin[i].set_value(float(bto[i]))
+			
+			# Single limits?
+			sl = False
+			# Use limits?
+			ul = True
+			# Use boundaries?
+			ub = True
+			# Single boundaries?
+			sb = False
+			
+			for i in range(1, 7):
+				if limits[i] != limits[i-1]:
+					sl = True
+				if (bfrom[i] != bfrom[i-1]) or (bto[i] != bto[i-1]):
+					sb = True
+			
+			if (limits[0] == str(86400)) and (not sl):
+				ul = False
+			
+			if (bfrom[0] == str(0)) and (bto[0] == str(24)) and (not sb):
+				ub = False
+				
+			self.boundariesCheck.set_active(ub)
+			self.singleBoundaries.set_active(sb)
+			self.limitCheck.set_active(ul)
+			self.singleLimits.set_active(sl)
+			
+		else:
+			for i in range(7):
+				self.limitSpin[i].set_value(300)
+				self.fromSpin[i].set_value(7)
+				self.toSpin[i].set_value(22)
+			
+			self.boundariesCheck.set_active(False)
+			self.singleBoundaries.set_active(False)
+			self.limitCheck.set_active(False)
+			self.singleLimits.set_active(False)
+		
+	def extendLimitsButton_clicked(self, widget):
+		user = self.userSelect.get_active_text()
+		cmd = 'timekpr-extend ' + user
+		os.system(cmd)
+	
+	def boundariesCheck_toggled(self, widget):
+		if self.boundariesCheck.get_active():	
+			self.fromSpin[0].set_sensitive(True)	
+			self.toSpin[0].set_sensitive(True)	
+			self.singleBoundaries.set_sensitive(True)
+			self.wTree.get_widget("labelTo").set_sensitive(True)
+			self.wTree.get_widget("labelFrom").set_sensitive(True)
+			self.lb[0].set_sensitive(True)
+		else:
+			self.fromSpin[0].set_sensitive(False)
+			self.toSpin[0].set_sensitive(False)
+			self.singleBoundaries.set_sensitive(False)
+			self.wTree.get_widget("labelTo").set_sensitive(False)
+			self.wTree.get_widget("labelFrom").set_sensitive(False)
+			self.lb[0].set_sensitive(False)
+		self.singleBoundariesCheck_toggled(self)
+	
+	def singleBoundariesCheck_toggled(self, widget):
+		if self.singleBoundaries.get_active() and self.boundariesCheck.get_active():
+			for i in range(1, 7):
+				self.fromSpin[i].set_sensitive(True)
+				self.toSpin[i].set_sensitive(True)
+				self.lb[i].set_sensitive(True)
+			self.lb[0].set_text("    Sun     ")
+		else:
+			for i in range(1, 7):
+				self.fromSpin[i].set_sensitive(False)
+				self.toSpin[i].set_sensitive(False)
+				self.lb[i].set_sensitive(False)
+			self.lb[0].set_text("Every day")
+			
+	
+	def limitCheck_toggled(self, widget):
+		if self.limitCheck.get_active():
+			self.limitSpin[0].set_sensitive(True)
+			self.singleLimits.set_sensitive(True)
+			self.wTree.get_widget("labelMinutes").set_sensitive(True)
+			self.ll[0].set_sensitive(True)
+		else:
+			self.limitSpin[0].set_sensitive(False)
+			self.singleLimits.set_sensitive(False)
+			self.wTree.get_widget("labelMinutes").set_sensitive(False)
+			self.ll[0].set_sensitive(False)
+		self.singleLimitsCheck_toggled(self)
+	
+	def singleLimitsCheck_toggled(self, widget):
+		if self.singleLimits.get_active() and self.limitCheck.get_active():
+			for i in range(1, 7):
+				self.ll[i].set_sensitive(True)
+				self.limitSpin[i].set_sensitive(True)
+			self.ll[0].set_text("    Sun     ")
+		else:
+			for i in range(1, 7):
+				self.ll[i].set_sensitive(False)
+				self.limitSpin[i].set_sensitive(False)
+			self.ll[0].set_text("Every day")
+
+	def apply_clicked(self, widget):
+		print "User=" + self.userSelect.get_active_text()
+		space = " "
+		limit = "limit=( 86400 86400 86400 86400 86400 86400 86400 )"
+		bTo = "to=( 24 24 24 24 24 24 24 )"
+		bFrom = "from=( 0 0 0 0 0 0 0 )"
+		if self.limitCheck.get_active():
+			if self.singleLimits.get_active():
+				limit = "limit=("
+				for i in range(7):
+					limit = limit + space + str(self.limitSpin[i].get_value_as_int() * 60)
+				limit = limit + space + ")"
+			else:
+				limit = "limit=("
+				for i in range(7):
+					limit = limit + space + str(self.limitSpin[0].get_value_as_int() * 60)
+				limit = limit + space + ")"
+		if self.boundariesCheck.get_active():
+			if self.singleBoundaries.get_active():
+				bFrom = "from=("
+				bTo = "to=("
+				for i in range(7):
+					bFrom = bFrom + space + str(self.fromSpin[i].get_value_as_int())
+					bTo = bTo + space + str(self.toSpin[i].get_value_as_int())
+				bFrom = bFrom + space + ")"
+				bTo = bTo + space + ")"
+			else:
+				bFrom = "from=("
+				bTo = "to=("
+				for i in range(7):
+					bFrom = bFrom + space + str(self.fromSpin[0].get_value_as_int())
+					bTo = bTo + space + str(self.toSpin[0].get_value_as_int())
+				bFrom = bFrom + space + ")"
+				bTo = bTo + space + ")"
+		configFile = configroot + self.userSelect.get_active_text()
+		fileHandle = open(configFile, 'w')
+		if self.limitCheck.get_active() or self.boundariesCheck.get_active():
+			fileHandle.write(limit + "\n")
+			fileHandle.write(bFrom + "\n")
+			fileHandle.write(bTo + "\n")
+			fileHandle.close()
+		else:
+			fileHandle.close()
+			os.remove(configFile)
+
+if __name__ == "__main__":
+	tkg = timekprGUI()
+	gtk.main()
