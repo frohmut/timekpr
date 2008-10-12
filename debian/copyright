@@ -7,13 +7,17 @@ COPYRIGHT
     Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
     Further developed by: Even Nedberg <code@nedberg.net>
 
-    The timekpr project and timekpr.py were created based upon that bash script:
+    The timekpr project and timekpr.py is a complete rewrite in
+    python based on that bash script:
     Copyright (c) 2008 Even Nedberg <code@nedberg.net>
     Copyright (c) 2008 Savvas Radevic <vicedar@gmail.com>
 
 LICENSE
+    The logo and artwork used in the timekpr project are released
+    into the Public Domain.
 
-    All parts of this project are licensed under the GNU General Public License:
+    All other parts of this project (except the artwork) are released
+    under the GNU General Public License:
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

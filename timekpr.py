@@ -1,87 +1,64 @@
 #!/usr/bin/env python
-import re, sys
+# Copyright / License: See debian/copyright
+
+import re
+from sys import path
 from getpass import getuser
 from time import strftime, sleep, localtime, mktime, time
 from os.path import split as splitpath, isfile, isdir, getmtime
 from os import popen, mkdir, kill, remove
 from glob import glob
 
-# Import modules
-timekprmodules = '/usr/share/timekpr/'
-sys.path.append(timekprmodules)
-# timekprpam.py
-from timekprpam import *
+#Read timekpr.conf
+TIMEKPRCONF = '/etc/timekpr.conf'
+if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
+import ConfigParser
+conf = ConfigParser.ConfigParser()
+try: conf.read(TIMEKPRCONF)
+except ConfigParser.ParsingError: exit('Could not parse the configuration file properly '+TIMEKPRCONF)
 
-# Copyright / License: See debian/copyright
+#Importing variables GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
+#Sets default if not found
+try: GRACEPERIOD = int(conf.get("variables","graceperiod"))
+except ConfigParser.NoOptionError: GRACEPERIOD = 120
 
-## CONFIGURE START - You can change the following values:
+try: POLLTIME = int(conf.get("variables","polltime"))
+except ConfigParser.NoOptionError: POLLTIME = 45
 
-# This is the grace period, where a notification pops up letting the users
-# know that their time usage will be over soon.
-# Users are given by default 120 seconds to finish up their work.
-# Limit is expressed in seconds, e.g. 120 means 2 minutes
-GRACEPERIOD = 120
+try: LOCKLASTS = conf.get("variables","locklasts")
+except ConfigParser.NoOptionError: LOCKLASTS = '1 hour'
 
-# How often should the script check the timelogs.
-# Setting is expressed in seconds, e.g. 45 means 45 seconds.
-POLLTIME = 45
+try: DEBUGME = conf.get("variables","debugme")
+except ConfigParser.NoOptionError: DEBUGME = 'True'
 
-#Create a log?
-DEBUGME = True
-LOGFILE = '/var/log/timekpr.log'
+try: LOGFILE = conf.get("directories","logfile")
+except ConfigParser.NoOptionError: LOGFILE = '/var/log/timekpr.log'
 
-#Default lock period
-#Setting can be second(s), minute(s), hour(s), day(s), week(s), month(s) (30 days)
-#Example: 5 hours
-LOCKLASTS = '1 hour'
+try: TIMEKPRDIR = conf.get("directories","timekprdir")
+except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
 
-## CONFIGURE END - Do not edit after this line!
+try: TIMEKPRWORK = conf.get("directories","timekprwork")
+except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
+
+#Import modules
+try: TIMEKPRSHARED = conf.get("directories","timekprshared")
+except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
+path.append(TIMEKPRSHARED)
+from timekprpam import * # timekprpam.py
 
 #Check if admin
-if getuser() != "root":
-	exit('Error: You do not have administrative privileges')
-
-#Default directory (for per-user configuration)
-TIMEKPRDIR = '/etc/timekpr'
-
-#Default configuration file (for timekpr variables)
-TIMEKPRCONF = '/etc/timekpr.conf'
-
-#Default working directory (for .logout, .lock, etc. files)
-#I think we will still need them, in case they wish to revert the
-#changes done by timekpr (unlock account, grant time, etc)
-TIMEKPRWORK = '/var/lib/timekpr'
+if getuser() != "root": exit('Error: You do not have administrative privileges')
 
 #Check if it exists, if not, create it
-if not isdir(TIMEKPRDIR):
-	mkdir(TIMEKPRDIR)
-if not isdir(TIMEKPRWORK):
-	mkdir(TIMEKPRWORK)
-if not isfile(TIMEKPRCONF):
-	exit('Error: Could not find configuration file ' + TIMEKPRCONF)
+if not isdir(TIMEKPRDIR): mkdir(TIMEKPRDIR)
+if not isdir(TIMEKPRWORK): mkdir(TIMEKPRWORK)
 
 # Lists keeping track of users who has been latekicked or loggedout
 latekickedusers = list()
 loggedoutusers = list()
+
 # Keep track of todays date
 THISDAY = strftime("%Y%m%d", localtime())
-
-#Read configuration file TIMEKPRCONF (re module)
-#Security note: These values should be read only when running timekpr, not on the fly
-def readconf(conffile):
-	f = open(conffile, 'r')
-	filevars = re.compile('^\s*((?:GRACEPERIOD|POLLTIME|DEBUGME|LOGFILE|LOCKLASTS)\s*=\s*.*)\s*$',re.M).findall( f.read(), 1)
-	f.close()
-	#More secure, variable names or values should not contain characters: ()[]
-	for i in filevars:
-		if re.compile('[()\[\]]').search(i):
-			exit('Error: Found ()[] characters in ' + conffile + ' - ' + i)
-	return filevars
-
-#Import variables
-for i in readconf(TIMEKPRCONF):
-	exec i
-#Imported variables: GRACEPERIOD, POLLTIME, DEBUGME, LOGFILE, LOCKLASTS
 
 #Ubuntu uses alternatives so we look for x-session-manager instead of gnome-session
 SESSION_MANAGER = 'x-session-manager'
@@ -89,6 +66,7 @@ SESSION_MANAGER = 'x-session-manager'
 def logkpr(string,clear=0):
 	#To log: logkpr("Something")
 	#To clear file and log: logkpr("Something",1)
+	if DEBUGME != 'True': return
 	if clear == 1:
 		l = open(LOGFILE, 'w')
 	else:
