@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # Copyright / License: See debian/copyright
 
-import re
-from sys import path
+import re, sys
 from getpass import getuser
 from time import strftime, sleep, localtime, mktime, time
 from os.path import split as splitpath, isfile, isdir, getmtime
@@ -50,7 +49,7 @@ try: TIMEKPRSHARED = conf.get("directories","timekprshared")
 except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
 
 if DEVACTIVE: TIMEKPRSHARED = '.'
-path.append(TIMEKPRSHARED)
+sys.path.append(TIMEKPRSHARED)
 from timekprpam import * # timekprpam.py
 
 #Check if admin
@@ -83,13 +82,13 @@ def logkpr(string,clear=0):
 
 def logOut(user,pid):
 	#Forces the user to log out.
-	if issessionalive(user) == 1:
+	if issessionalive(user):
 		logkpr('logOut: Attempting killing '+user+' (TERM, 15)...')
 		#this is a pretty bad way of killing a gnome-session, but we warned 'em
 		pid = int(pid)
 		kill(pid,15)
 		sleep(5)
-		if issessionalive(user) == 1:
+		if issessionalive(user):
 			logkpr('logOut: Process still there, attempting force-killing '+user+' (KILL, 9)...')
 			kill(pid,9)
 		#logkpr('logOut: touched $username.logout')
@@ -197,11 +196,11 @@ def getsessions():
 def issessionalive(user):
 	# Checking if session process still running
 	# Should it check against username and pid?
-	# Returns:	1 if process is still there (user logged in),
-	#		0 if user has logged out
+	# Returns:	True if process is still there (user logged in),
+	#		False if user has logged out
 	for u,p in getsessions():
-		if u == user: return 1
-	return 0
+		if u == user: return True
+	return False
 
 def getdbus(pid):
 	#Returns DBUS_SESSION_BUS_ADDRESS variable from /proc/pid/environ
@@ -220,16 +219,19 @@ def notify(user, pid, title, message):
 	We will be probably using pynotify module for this, we'll see!
 	'''
 	#If the user has logged out, don't notify
-	if issessionalive(user): return
-	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like:
-	# -bash: !": event not found
+	if issessionalive(user) is False:
+		logkpr('notify called but cancelled, could not find alive session of '+user)
+		return
+	logkpr('notify called for '+user)
+	
+	#WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like: -bash: !": event not found
 	#Might be good to include these substitutions, if someone doesn't read this warning
 	title = re.compile('!').sub('\!', title)
 	message = re.compile('!').sub('\!', message)
 	#Get DBus
 	dbus = getdbus(pid)
 	#Create and send command
-	notifycmd = 'su %s -c "%s notify-send \\"%s\\" \\"%s\\""' % (user, dbus, title, message)
+	notifycmd = 'su %s -c "%s notify-send --icon=gtk-dialog-warning --urgency=critical -t 10000 \\"%s\\" \\"%s\\""' % (user, dbus, title, message)
 	reply = getcmdoutput(notifycmd)
 	logkpr('notify command for '+user+': '+notifycmd)
 	
@@ -281,6 +283,8 @@ def fromtoday(fname):
 	return fdate == today
 
 logkpr('Starting timekpr',1)
+logkpr('Variables: '+str(GRACEPERIOD)+' '+str(POLLTIME)+' '+DEBUGME+' '+LOCKLASTS)
+logkpr('Directories: '+LOGFILE+' '+TIMEKPRDIR+' '+TIMEKPRWORK+' '+TIMEKPRSHARED)
 
 while (True):
 	# Check if any accounts should be unlocked and re-activate them
@@ -373,9 +377,10 @@ while (True):
 			
 			# Is the limit exeeded
 			if (time > limits[index]):
-				logkpr('Exceeded todays limit, user: ' + username)
+				logkpr('Exceeded today\'s access duration, user: ' + username)
 				# Has the user already been kicked out?
 				if isfile(logoutfile):
+					logkpr('Found: ' + username + '.logout')
 					# Was he kicked out today?
 					if fromtoday(logoutfile):
 						logkpr(username + ' has been kicked out today')

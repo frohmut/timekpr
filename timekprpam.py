@@ -68,11 +68,12 @@ def hourize(n):
 	return '%s00' % str(n)
 
 def converttimeline(hfrom,hto):
+	#print str(hfrom),str(hto)
 	#Arguments must be lists and text strings inside, e.g. ['0','0','0','0','0','0','0']
 	if len(hfrom) != 7 or len(hto) != 7: exit('Error: converttimeline accepts from-to lists of 7 items each')
 	#if all same:
-	mfrom = re.compile('^(?:(\d+) ){6}\\1').search(' '.join(hfrom))
-	mto = re.compile('^(?:(\d+) ){6}\\1').search(' '.join(hto))
+	mfrom = re.compile('^(\d+) \\1 \\1 \\1 \\1 \\1 \\1$').search(' '.join(hfrom))
+	mto = re.compile('^(\d+) \\1 \\1 \\1 \\1 \\1 \\1$').search(' '.join(hto))
 	#return Al0700-2400
 	if mfrom and mto: return 'Al' + hourize(mfrom.group(1)) + '-' + hourize(mto.group(1))
 	
@@ -104,7 +105,6 @@ def adduserlimits(username,bfrom,bto,f = '/etc/security/time.conf'):
 	fn.close()
 	fn = open(f,'w')
 	m = re.sub('(## TIMEKPR END)',line+'\\1', s)
-	#print m
 	try: fn.write(m)
 	except: return False
 	return True
@@ -251,4 +251,5 @@ def getuserlimits(u):
 	ls = parseutlist(parsetimeconf())
 	for user,[bfrom,bto] in ls:
 		if u == user: return [bfrom,bto]
+	return []
 

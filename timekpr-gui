@@ -3,6 +3,7 @@
 import spwd, pwd, getpass, re, sys
 from os import remove, mkdir, system
 from os.path import isdir, isfile
+from time import localtime, strftime
 
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = True
@@ -19,8 +20,7 @@ sys.path.append(TIMEKPRSHARED)
 from timekprpam import *
 
 #Check if admin
-if getpass.getuser() != "root":
-	exit('Error: You do not have administrative privileges')
+if getpass.getuser() != "root": exit('Error: You do not have administrative privileges')
 
 #Import GTK/PyGTK/Glade
 import pygtk
@@ -133,7 +133,7 @@ class timekprGUI:
 			#unlock account
 			unlockuser(self.user)
 			#remove .lock file
-			lockfile = TIMEKPRDIR + '/' + user + '.lock'
+			lockfile = TIMEKPRDIR + '/' + self.user + '.lock'
 			rm(lockfile)
 			self.read_settings_nolimits(self)
 	
@@ -147,28 +147,49 @@ class timekprGUI:
 		rm(timef)
 		rm(logoutf)
 		rm(latef)
-		
-		#remove boundaries
+		#Remove boundaries
 		removeuserlimits(self.user)
-		#remove limits
+		#Remove limits
 		configf = TIMEKPRDIR + '/' + self.user
 		rm(configf)
+		#Unlock user
+		unlockuser(self.user)
+		
+		self.read_settings(self)
 	
 	def resettimefile(self, widget):
 		#clear the .time file
 		timefile = TIMEKPRWORK + '/' + self.user + '.time'
 		rm(timefile)
+		self.read_settings_nolimits(self)
 	
 	def rewardButton_clicked(self, widget):
 		#FIXME: Should we use timekpr-addtime or internal python command?
-		arg = str(self.rewardSpin.get_value_as_int())
-		cmd = 'timekpr-addtime ' + self.user + ' ' + arg
-		system(cmd)
+		#cmd = 'timekpr-addtime ' + self.user + ' ' + arg
+		#system(cmd)
+		arg = self.rewardSpin.get_value_as_int()
+		timefile = TIMEKPRWORK + '/' + self.user + '.time'
+		f = open(timefile)
+		tlast = f.read()
+		f.close()
+		f = open(timefile,'w')
+		tnew = f.write(timearg*60)
+		f.close()
 	
 	def extendLimitsButton_clicked(self, widget):
-		#FIXME: Should we use timekpr-extend or internal python command?
-		cmd = 'timekpr-extend ' + self.user
-		system(cmd)
+		#UPDATE: extend limits button is now "Bypass for today"
+		#It now is the same as changing boundaries from 0 to 24 for today's day of the week.
+		#FIXME: .allow might still be useful for user accounts that active and won't be killed
+		#cmd = 'timekpr-extend ' + self.user
+		#system(cmd)
+		index = int(strftime("%w", localtime()))
+		wfrom = self.fromtolimits[0]
+		wto = self.fromtolimits[1]
+		wfrom[index] = '0'
+		wto[index] = '24'
+		removeuserlimits(self.user)
+		adduserlimits(self.user,wfrom,wto)
+		self.read_settings(self)
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
@@ -229,9 +250,8 @@ class timekprGUI:
 		#from-to time limitation (aka boundaries) - time.conf
 		if isuserlimited(self.user) is True:
 			#Get user time limits (boundaries) as lists from-to
-			ulimits = getuserlimits(self.user)
-			bfrom = ulimits[0]
-			bto = ulimits[1]
+			bfrom = self.fromtolimits[0]
+			bto = self.fromtolimits[1]
 			
 			for i in range(7):
 				self.fromSpin[i].set_value(float(bfrom[i]))
@@ -324,12 +344,20 @@ class timekprGUI:
 			self.rewardSpin.set_sensitive(False)
 			self.labelrewardspin.set_sensitive(False)
 		
-		if self.boundariesCheck.get_active(): self.extendLimitsButton.set_sensitive(True)
+		if self.boundariesCheck.get_active():
+			index = int(strftime("%w", localtime()))
+			wfrom = self.fromtolimits[0]
+			wto = self.fromtolimits[1]
+			if wfrom[index] != '0' or wto[index] != '24':
+				self.extendLimitsButton.set_sensitive(True)
+			else:
+				self.extendLimitsButton.set_sensitive(False)
 		else: self.extendLimitsButton.set_sensitive(False)
 	
 	def read_settings(self, widget):
 		self.user = self.userSelect.get_active_text()
 		uislocked = isuserlocked(self.user)
+		self.fromtolimits = getuserlimits(self.user)
 		self.readfromtolimit(self)
 		self.readdurationlimit(self)
 		self.labeluserstatus.set_label('Status for <span weight="bold">'+self.user+'</span>')
@@ -444,6 +472,8 @@ class timekprGUI:
 		#Add new limits (boundaries)
 		ab = adduserlimits(self.user,bFrom,bTo)
 		if ab is False: exit('Could not add (new) user boundaries')
+		
+		self.read_settings(self)
 
 if __name__ == "__main__":
 	tkg = timekprGUI()
