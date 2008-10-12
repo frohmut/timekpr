@@ -9,8 +9,13 @@ from os.path import split as splitpath, isfile, isdir, getmtime
 from os import popen, mkdir, kill, remove
 from glob import glob
 
+#If DEVACTIVE is true, it uses files from local directory
+DEVACTIVE = True
+
 #Read timekpr.conf
 TIMEKPRCONF = '/etc/timekpr.conf'
+if DEVACTIVE: TIMEKPRCONF = './timekpr.conf'
+
 if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
 import ConfigParser
 conf = ConfigParser.ConfigParser()
@@ -43,6 +48,8 @@ except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
 #Import modules
 try: TIMEKPRSHARED = conf.get("directories","timekprshared")
 except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
+
+if DEVACTIVE: TIMEKPRSHARED = '.'
 path.append(TIMEKPRSHARED)
 from timekprpam import * # timekprpam.py
 

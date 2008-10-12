@@ -1,20 +1,21 @@
 #!/usr/bin/env python
-#TODO: Make it exclude administrators,sudoers,wheel members etc
+
 import spwd, pwd, getpass, re, sys
 from os import remove, mkdir, system
 from os.path import isdir, isfile
 
+#If DEVACTIVE is true, it uses files from local directory
+DEVACTIVE = True
+
 #VARIABLES
 version = '0.2.0'
-gladefile = 'timekpr.glade'
 TIMEKPRDIR = '/etc/timekpr'
 TIMEKPRWORK = '/var/lib/timekpr'
 TIMEKPRSHARED = '/usr/share/timekpr'
+if DEVACTIVE: TIMEKPRSHARED = '.'
 
 #IMPORT
-#timekprmodules = '/usr/share/timekpr/'
-timekprmodules = '../'
-sys.path.append(timekprmodules)
+sys.path.append(TIMEKPRSHARED)
 from timekprpam import *
 
 #Check if admin
@@ -27,8 +28,9 @@ try: import gtk, gtk.glade
 except: exit(1)
 
 #Create configuration folder if not existing
-if not isdir(TIMEKPRDIR):
-	mkdir(TIMEKPRDIR)
+if not isdir(TIMEKPRDIR): mkdir(TIMEKPRDIR)
+if not isdir(TIMEKPRWORK): mkdir(TIMEKPRWORK)
+if not isdir(TIMEKPRSHARED): exit('Error: Could not find the shared directory '+TIMEKPRSHARED)
 
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
@@ -53,7 +55,7 @@ def rm(f):
 class timekprGUI:
 	#This is the PyWine application
 	def __init__(self):
-		self.wTree = gtk.glade.XML(gladefile,'mainwindow')
+		self.wTree = gtk.glade.XML(TIMEKPRSHARED + '/timekpr.glade','mainwindow')
 		
 		self.get_limit_spin()
 		self.get_from_spin()
@@ -115,7 +117,7 @@ class timekprGUI:
 	
 	def showaboutdialog(self, widget):
 		gtk.about_dialog_set_url_hook(self.urlhook)
-		self.aboutdialog = gtk.glade.XML(gladefile,'aboutdialog')
+		self.aboutdialog = gtk.glade.XML(TIMEKPRSHARED + '/timekpr.glade','aboutdialog')
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
 		self.aboutd.set_version(version)
 		self.aboutd.show_all()
