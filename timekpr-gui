@@ -1,22 +1,42 @@
 #!/usr/bin/env python
 
-import spwd, pwd, getpass, re, sys
+import spwd, pwd, getpass, re
+from sys import path
 from os import remove, mkdir, system
 from os.path import isdir, isfile
-from time import localtime, strftime
+from time import strftime, sleep
 
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = True
 
+#Read timekpr.conf
+TIMEKPRCONF = '/etc/timekpr.conf'
+if DEVACTIVE: TIMEKPRCONF = './timekpr.conf'
+
+if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
+import ConfigParser
+conf = ConfigParser.ConfigParser()
+try: conf.read(TIMEKPRCONF)
+except ConfigParser.ParsingError: exit('Could not parse the configuration file properly '+TIMEKPRCONF)
+
 #VARIABLES
-version = '0.2.0'
-TIMEKPRDIR = '/etc/timekpr'
-TIMEKPRWORK = '/var/lib/timekpr'
-TIMEKPRSHARED = '/usr/share/timekpr'
+#VERSION TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
+#Exits or sets default if not found
+try: VERSION = conf.get("general","version")
+except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file '+TIMEKPRCONF)
+
+try: TIMEKPRDIR = conf.get("directories","timekprdir")
+except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
+
+try: TIMEKPRWORK = conf.get("directories","timekprwork")
+except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
+
+try: TIMEKPRSHARED = conf.get("directories","timekprshared")
+except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
 if DEVACTIVE: TIMEKPRSHARED = '.'
 
 #IMPORT
-sys.path.append(TIMEKPRSHARED)
+path.append(TIMEKPRSHARED)
 from timekprpam import *
 
 #Check if admin
@@ -82,6 +102,9 @@ class timekprGUI:
 		self.resettimeButton = self.wTree.get_widget("ResetTimeButton")
 		self.lockLabel = self.wTree.get_widget("labelunlockbutton")
 		
+		self.statusbar = self.wTree.get_widget("statusbar")
+		self.statusbarCID = self.statusbar.get_context_id("timekprstatus")
+		
 		dic = { "on_limitCheck_toggled": self.limitCheck_toggled,
 			"on_boundariesCheck_toggled": self.boundariesCheck_toggled,
 			"on_rewardButton_clicked": self.rewardButton_clicked,
@@ -99,7 +122,6 @@ class timekprGUI:
 			"on_aboutmenuitem_select": self.showaboutdialog,
 			'gtk_main_quit': gtk.main_quit
 		}
-		
 		self.wTree.signal_autoconnect(dic)
 		
 		#Using /etc/shadow spwd module
@@ -111,6 +133,10 @@ class timekprGUI:
 		self.read_settings(self)
 		return
 	
+	def statusmessage(self, widget, message):
+		msgid = self.statusbar.push(self.statusbarCID, strftime("%Y-%m-%d %H:%M:%S") + ' ' + message)
+		#need timer or thread
+	
 	def urlhook(self, widget, url):
 		import webbrowser
 		webbrowser.open(url,0)
@@ -119,7 +145,7 @@ class timekprGUI:
 		gtk.about_dialog_set_url_hook(self.urlhook)
 		self.aboutdialog = gtk.glade.XML(TIMEKPRSHARED + '/timekpr.glade','aboutdialog')
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
-		self.aboutd.set_version(version)
+		self.aboutd.set_version(VERSION)
 		self.aboutd.show_all()
 		self.aboutd.run()
 		self.aboutd.destroy()
@@ -169,12 +195,17 @@ class timekprGUI:
 		#system(cmd)
 		arg = self.rewardSpin.get_value_as_int()
 		timefile = TIMEKPRWORK + '/' + self.user + '.time'
-		f = open(timefile)
-		tlast = f.read()
-		f.close()
+		if isfile(timefile):
+			f = open(timefile)
+			tlast = int(f.read())
+			f.close()
+		else: tlast = 0
+		tnew = tlast - arg*60
 		f = open(timefile,'w')
-		tnew = f.write(timearg*60)
+		f.write(str(tnew))
 		f.close()
+		self.statusmessage(self,"Applied reward of " + str(arg) + " minute(s) to "+self.user)
+		self.read_settings_nolimits(self)
 	
 	def extendLimitsButton_clicked(self, widget):
 		#UPDATE: extend limits button is now "Bypass for today"
@@ -182,7 +213,7 @@ class timekprGUI:
 		#FIXME: .allow might still be useful for user accounts that active and won't be killed
 		#cmd = 'timekpr-extend ' + self.user
 		#system(cmd)
-		index = int(strftime("%w", localtime()))
+		index = int(strftime("%w"))
 		wfrom = self.fromtolimits[0]
 		wto = self.fromtolimits[1]
 		wfrom[index] = '0'
@@ -190,6 +221,13 @@ class timekprGUI:
 		removeuserlimits(self.user)
 		adduserlimits(self.user,wfrom,wto)
 		self.read_settings(self)
+	
+	def ok_clicked(self, widget):
+		self.apply_clicked(self)
+		gtk.main_quit()
+	
+	def cancel_clicked(self, widget):
+		gtk.main_quit()
 	
 	def get_limit_spin(self):
 		self.limitSpin = list()
@@ -238,13 +276,6 @@ class timekprGUI:
 		self.ll.append(self.wTree.get_widget("ll4"))
 		self.ll.append(self.wTree.get_widget("ll5"))
 		self.ll.append(self.wTree.get_widget("ll6"))
-	
-	def ok_clicked(self, widget):
-		self.apply_clicked(self)
-		gtk.main_quit()
-	
-	def cancel_clicked(self, widget):
-		gtk.main_quit()
 	
 	def readfromtolimit(self, widget):
 		#from-to time limitation (aka boundaries) - time.conf
@@ -345,7 +376,7 @@ class timekprGUI:
 			self.labelrewardspin.set_sensitive(False)
 		
 		if self.boundariesCheck.get_active():
-			index = int(strftime("%w", localtime()))
+			index = int(strftime("%w"))
 			wfrom = self.fromtolimits[0]
 			wto = self.fromtolimits[1]
 			if wfrom[index] != '0' or wto[index] != '24':

@@ -149,24 +149,80 @@
                         <property name="column_spacing">20</property>
                         <property name="row_spacing">2</property>
                         <child>
-                          <widget class="GtkButton" id="extendLimitsButton">
+                          <widget class="GtkLabel" id="labeluserstatus">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="xpad">5</property>
+                            <property name="label" translatable="yes">Status for &lt;span weight="bold"&gt;username&lt;/span&gt;</property>
+                            <property name="use_markup">True</property>
+                            <property name="justify">GTK_JUSTIFY_CENTER</property>
+                          </widget>
+                          <packing>
+                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="labelislocked">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="xpad">20</property>
+                            <property name="label" translatable="yes">Account locked:</property>
+                          </widget>
+                          <packing>
+                            <property name="top_attach">4</property>
+                            <property name="bottom_attach">5</property>
+                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkAlignment" id="alignment45">
+                            <property name="visible">True</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkImage" id="imagelocked">
+                            <property name="visible">True</property>
+                            <property name="pixbuf">Padlock-green.png</property>
+                          </widget>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">4</property>
+                            <property name="bottom_attach">5</property>
+                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="UnlockButton">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="response_id">0</property>
-                            <signal name="clicked" handler="on_extendLimitsButton_clicked"/>
+                            <signal name="clicked" handler="on_UnlockButton_clicked"/>
                             <child>
-                              <widget class="GtkAlignment" id="alignment11">
+                              <widget class="GtkAlignment" id="alignment21">
                                 <property name="visible">True</property>
                                 <property name="xscale">0</property>
                                 <property name="yscale">0</property>
                                 <child>
-                                  <widget class="GtkHBox" id="hbox10">
+                                  <widget class="GtkHBox" id="hbox14">
                                     <property name="visible">True</property>
                                     <property name="spacing">2</property>
                                     <child>
-                                      <widget class="GtkImage" id="image2">
+                                      <widget class="GtkImage" id="image3">
                                         <property name="visible">True</property>
-                                        <property name="stock">gtk-strikethrough</property>
+                                        <property name="stock">gtk-dialog-authentication</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -174,9 +230,9 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="label8">
+                                      <widget class="GtkLabel" id="labelunlockbutton">
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Bypass for today</property>
+                                        <property name="label" translatable="yes">Unlock Account</property>
                                         <property name="use_underline">True</property>
                                       </widget>
                                       <packing>
@@ -193,6 +249,69 @@
                           <packing>
                             <property name="left_attach">2</property>
                             <property name="right_attach">3</property>
+                            <property name="top_attach">4</property>
+                            <property name="bottom_attach">5</property>
+                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="ClearAllRestrictionsButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="response_id">0</property>
+                            <signal name="clicked" handler="on_ClearAllRestrictionsButton_clicked"/>
+                            <child>
+                              <widget class="GtkAlignment" id="alignment25">
+                                <property name="visible">True</property>
+                                <property name="xscale">0</property>
+                                <property name="yscale">0</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox17">
+                                    <property name="visible">True</property>
+                                    <property name="spacing">2</property>
+                                    <child>
+                                      <widget class="GtkImage" id="image5">
+                                        <property name="visible">True</property>
+                                        <property name="stock">gtk-clear</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label11">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Clear all restrictions</property>
+                                        <property name="use_underline">True</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
+                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="labelislimited2">
+                            <property name="visible">True</property>
+                            <property name="xalign">0</property>
+                            <property name="xpad">20</property>
+                            <property name="label" translatable="yes">Limited by time frame (any day):</property>
+                          </widget>
+                          <packing>
                             <property name="top_attach">3</property>
                             <property name="bottom_attach">4</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
@@ -200,28 +319,27 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="labelisallowedtoday">
+                          <widget class="GtkImage" id="imagelimited2">
                             <property name="visible">True</property>
-                            <property name="xalign">0</property>
-                            <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Able to login all day today:
-(Also active bypass)</property>
+                            <property name="pixbuf">Padlock-green.png</property>
                           </widget>
                           <packing>
-                            <property name="top_attach">1</property>
-                            <property name="bottom_attach">2</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">3</property>
+                            <property name="bottom_attach">4</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                             <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="labelislimited1">
+                          <widget class="GtkImage" id="imagelimited1">
                             <property name="visible">True</property>
-                            <property name="xalign">0</property>
-                            <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Limited by access duration (any day):</property>
+                            <property name="pixbuf">Padlock-green.png</property>
                           </widget>
                           <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
                             <property name="top_attach">2</property>
                             <property name="bottom_attach">3</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
@@ -229,15 +347,13 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkAlignment" id="alignment51">
+                          <widget class="GtkImage" id="imagealldaylogin">
                             <property name="visible">True</property>
-                            <child>
-                              <placeholder/>
-                            </child>
+                            <property name="icon_name">gtk-no</property>
                           </widget>
                           <packing>
-                            <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
@@ -374,13 +490,15 @@ Reward</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkImage" id="imagealldaylogin">
+                          <widget class="GtkAlignment" id="alignment51">
                             <property name="visible">True</property>
-                            <property name="icon_name">gtk-no</property>
+                            <child>
+                              <placeholder/>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
+                            <property name="left_attach">2</property>
+                            <property name="right_attach">3</property>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
@@ -388,13 +506,13 @@ Reward</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkImage" id="imagelimited1">
+                          <widget class="GtkLabel" id="labelislimited1">
                             <property name="visible">True</property>
-                            <property name="pixbuf">Padlock-green.png</property>
+                            <property name="xalign">0</property>
+                            <property name="xpad">20</property>
+                            <property name="label" translatable="yes">Limited by access duration (any day):</property>
                           </widget>
                           <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
                             <property name="top_attach">2</property>
                             <property name="bottom_attach">3</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
@@ -402,52 +520,39 @@ Reward</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkImage" id="imagelimited2">
-                            <property name="visible">True</property>
-                            <property name="pixbuf">Padlock-green.png</property>
-                          </widget>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
-                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="labelislimited2">
+                          <widget class="GtkLabel" id="labelisallowedtoday">
                             <property name="visible">True</property>
                             <property name="xalign">0</property>
                             <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Limited by time frame (any day):</property>
+                            <property name="label" translatable="yes">Able to login all day today:
+(Also active bypass)</property>
                           </widget>
                           <packing>
-                            <property name="top_attach">3</property>
-                            <property name="bottom_attach">4</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                             <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="ClearAllRestrictionsButton">
+                          <widget class="GtkButton" id="extendLimitsButton">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="response_id">0</property>
-                            <signal name="clicked" handler="on_ClearAllRestrictionsButton_clicked"/>
+                            <signal name="clicked" handler="on_extendLimitsButton_clicked"/>
                             <child>
-                              <widget class="GtkAlignment" id="alignment25">
+                              <widget class="GtkAlignment" id="alignment11">
                                 <property name="visible">True</property>
                                 <property name="xscale">0</property>
                                 <property name="yscale">0</property>
                                 <child>
-                                  <widget class="GtkHBox" id="hbox17">
+                                  <widget class="GtkHBox" id="hbox10">
                                     <property name="visible">True</property>
                                     <property name="spacing">2</property>
                                     <child>
-                                      <widget class="GtkImage" id="image5">
+                                      <widget class="GtkImage" id="image2">
                                         <property name="visible">True</property>
-                                        <property name="stock">gtk-clear</property>
+                                        <property name="stock">gtk-strikethrough</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -455,9 +560,9 @@ Reward</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="label11">
+                                      <widget class="GtkLabel" id="label8">
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Clear all restrictions</property>
+                                        <property name="label" translatable="yes">Bypass for today</property>
                                         <property name="use_underline">True</property>
                                       </widget>
                                       <packing>
@@ -474,113 +579,8 @@ Reward</property>
                           <packing>
                             <property name="left_attach">2</property>
                             <property name="right_attach">3</property>
-                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkButton" id="UnlockButton">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="response_id">0</property>
-                            <signal name="clicked" handler="on_UnlockButton_clicked"/>
-                            <child>
-                              <widget class="GtkAlignment" id="alignment21">
-                                <property name="visible">True</property>
-                                <property name="xscale">0</property>
-                                <property name="yscale">0</property>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox14">
-                                    <property name="visible">True</property>
-                                    <property name="spacing">2</property>
-                                    <child>
-                                      <widget class="GtkImage" id="image3">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-dialog-authentication</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="labelunlockbutton">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Unlock Account</property>
-                                        <property name="use_underline">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                </child>
-                              </widget>
-                            </child>
-                          </widget>
-                          <packing>
-                            <property name="left_attach">2</property>
-                            <property name="right_attach">3</property>
-                            <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkImage" id="imagelocked">
-                            <property name="visible">True</property>
-                            <property name="pixbuf">Padlock-green.png</property>
-                          </widget>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkAlignment" id="alignment45">
-                            <property name="visible">True</property>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </widget>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="labelislocked">
-                            <property name="visible">True</property>
-                            <property name="xalign">0</property>
-                            <property name="xpad">20</property>
-                            <property name="label" translatable="yes">Account locked:</property>
-                          </widget>
-                          <packing>
-                            <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                            <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="labeluserstatus">
-                            <property name="visible">True</property>
-                            <property name="xalign">0</property>
-                            <property name="xpad">5</property>
-                            <property name="label" translatable="yes">Status for &lt;span weight="bold"&gt;username&lt;/span&gt;</property>
-                            <property name="use_markup">True</property>
-                            <property name="justify">GTK_JUSTIFY_CENTER</property>
-                          </widget>
-                          <packing>
+                            <property name="top_attach">3</property>
+                            <property name="bottom_attach">4</property>
                             <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                             <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                           </packing>
@@ -682,176 +682,16 @@ Reward</property>
                                 <property name="n_rows">2</property>
                                 <property name="n_columns">8</property>
                                 <child>
-                                  <widget class="GtkAlignment" id="alignment33">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll0">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Every day</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="limitSpin0">
+                                  <widget class="GtkSpinButton" id="limitSpin6">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="adjustment">300 0 1440 1 5 10</property>
                                     <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll1">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Mon</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll2">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Tue</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll3">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Wed</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">4</property>
-                                    <property name="right_attach">5</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll4">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Thu</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">5</property>
-                                    <property name="right_attach">6</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll5">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Fri</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">6</property>
-                                    <property name="right_attach">7</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="ll6">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Sat</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">7</property>
                                     <property name="right_attach">8</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="labelMinutes">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">minutes</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="limitSpin1">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">300 0 1440 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="limitSpin2">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">300 0 1440 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="limitSpin3">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">300 0 1440 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">4</property>
-                                    <property name="right_attach">5</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="limitSpin4">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">300 0 1440 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">5</property>
-                                    <property name="right_attach">6</property>
                                     <property name="top_attach">1</property>
                                     <property name="bottom_attach">2</property>
                                   </packing>
@@ -872,7 +712,7 @@ Reward</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkSpinButton" id="limitSpin6">
+                                  <widget class="GtkSpinButton" id="limitSpin4">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -880,10 +720,170 @@ Reward</property>
                                     <property name="climb_rate">1</property>
                                   </widget>
                                   <packing>
-                                    <property name="left_attach">7</property>
-                                    <property name="right_attach">8</property>
+                                    <property name="left_attach">5</property>
+                                    <property name="right_attach">6</property>
                                     <property name="top_attach">1</property>
                                     <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="limitSpin3">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">300 0 1440 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">4</property>
+                                    <property name="right_attach">5</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="limitSpin2">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">300 0 1440 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">3</property>
+                                    <property name="right_attach">4</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="limitSpin1">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">300 0 1440 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="labelMinutes">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">minutes</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll6">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Sat</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">7</property>
+                                    <property name="right_attach">8</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll5">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Fri</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">6</property>
+                                    <property name="right_attach">7</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll4">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Thu</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">5</property>
+                                    <property name="right_attach">6</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll3">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Wed</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">4</property>
+                                    <property name="right_attach">5</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll2">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Tue</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">3</property>
+                                    <property name="right_attach">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll1">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Mon</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="limitSpin0">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">300 0 1440 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="ll0">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Every day</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkAlignment" id="alignment33">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options">GTK_FILL</property>
                                   </packing>
                                 </child>
                               </widget>
@@ -981,292 +981,16 @@ when user is allowed to login</property>
                                 <property name="n_rows">3</property>
                                 <property name="n_columns">8</property>
                                 <child>
-                                  <widget class="GtkAlignment" id="alignment34">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="labelFrom">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">from</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="labelTo">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">to</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb0">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Every day</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb1">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Mon</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb2">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Tue</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb3">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Wed</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">4</property>
-                                    <property name="right_attach">5</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb4">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Thu</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">5</property>
-                                    <property name="right_attach">6</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb5">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Fri</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">6</property>
-                                    <property name="right_attach">7</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="lb6">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="label" translatable="yes">Sat</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">7</property>
-                                    <property name="right_attach">8</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin0">
+                                  <widget class="GtkSpinButton" id="toSpin6">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin1">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin2">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin3">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">4</property>
-                                    <property name="right_attach">5</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin4">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">5</property>
-                                    <property name="right_attach">6</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin5">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">6</property>
-                                    <property name="right_attach">7</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="fromSpin6">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="adjustment">22 0 24 1 5 10</property>
                                     <property name="climb_rate">1</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">7</property>
                                     <property name="right_attach">8</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="toSpin0">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">22 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="toSpin1">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">22 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="toSpin2">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">22 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="toSpin3">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">22 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">4</property>
-                                    <property name="right_attach">5</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkSpinButton" id="toSpin4">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="adjustment">22 0 24 1 5 10</property>
-                                    <property name="climb_rate">1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">5</property>
-                                    <property name="right_attach">6</property>
                                     <property name="top_attach">2</property>
                                     <property name="bottom_attach">3</property>
                                   </packing>
@@ -1287,7 +1011,7 @@ when user is allowed to login</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkSpinButton" id="toSpin6">
+                                  <widget class="GtkSpinButton" id="toSpin4">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -1295,10 +1019,286 @@ when user is allowed to login</property>
                                     <property name="climb_rate">1</property>
                                   </widget>
                                   <packing>
-                                    <property name="left_attach">7</property>
-                                    <property name="right_attach">8</property>
+                                    <property name="left_attach">5</property>
+                                    <property name="right_attach">6</property>
                                     <property name="top_attach">2</property>
                                     <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="toSpin3">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">22 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">4</property>
+                                    <property name="right_attach">5</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="toSpin2">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">22 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">3</property>
+                                    <property name="right_attach">4</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="toSpin1">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">22 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="toSpin0">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">22 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin6">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">7</property>
+                                    <property name="right_attach">8</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin5">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">6</property>
+                                    <property name="right_attach">7</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin4">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">5</property>
+                                    <property name="right_attach">6</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin3">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">4</property>
+                                    <property name="right_attach">5</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin2">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">3</property>
+                                    <property name="right_attach">4</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin1">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkSpinButton" id="fromSpin0">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">7 0 24 1 5 10</property>
+                                    <property name="climb_rate">1</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb6">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Sat</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">7</property>
+                                    <property name="right_attach">8</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb5">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Fri</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">6</property>
+                                    <property name="right_attach">7</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb4">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Thu</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">5</property>
+                                    <property name="right_attach">6</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb3">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Wed</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">4</property>
+                                    <property name="right_attach">5</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb2">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Tue</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">3</property>
+                                    <property name="right_attach">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb1">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Mon</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="lb0">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">Every day</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="labelTo">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">to</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="labelFrom">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="label" translatable="yes">from</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkAlignment" id="alignment34">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options">GTK_FILL</property>
                                   </packing>
                                 </child>
                               </widget>
@@ -1403,6 +1403,16 @@ when user is allowed to login</property>
                 <property name="position">3</property>
               </packing>
             </child>
+            <child>
+              <widget class="GtkStatusbar" id="statusbar">
+                <property name="visible">True</property>
+                <property name="homogeneous">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
           </widget>
         </child>
       </widget>
@@ -1418,7 +1428,8 @@ when user is allowed to login</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="program_name">timekpr</property>
-    <property name="copyright" translatable="yes">Copyright (c) 2008 Evan Nedberg, Savvas Radevic</property>
+    <property name="copyright" translatable="yes">Copyright (c) 2008 Evan Nedberg
+Copyright (c) 2008 Savvas Radevic</property>
     <property name="comments" translatable="yes">Keep control of computer usage</property>
     <property name="website">http://launchpad.net/timekpr</property>
     <property name="website_label" translatable="yes">http://launchpad.net/timekpr</property>

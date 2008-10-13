@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # Copyright / License: See debian/copyright
 
-import re, sys
+import re
+from sys import path
 from getpass import getuser
 from time import strftime, sleep, localtime, mktime, time
 from os.path import split as splitpath, isfile, isdir, getmtime
@@ -21,8 +22,12 @@ conf = ConfigParser.ConfigParser()
 try: conf.read(TIMEKPRCONF)
 except ConfigParser.ParsingError: exit('Could not parse the configuration file properly '+TIMEKPRCONF)
 
-#Importing variables GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
-#Sets default if not found
+#VARIABLES
+#VERSION GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
+#Exits or sets default if not found
+try: VERSION = conf.get("general","version")
+except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file '+TIMEKPRCONF)
+
 try: GRACEPERIOD = int(conf.get("variables","graceperiod"))
 except ConfigParser.NoOptionError: GRACEPERIOD = 120
 
@@ -44,12 +49,12 @@ except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
 try: TIMEKPRWORK = conf.get("directories","timekprwork")
 except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
 
-#Import modules
 try: TIMEKPRSHARED = conf.get("directories","timekprshared")
 except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
 
+#IMPORT
 if DEVACTIVE: TIMEKPRSHARED = '.'
-sys.path.append(TIMEKPRSHARED)
+path.append(TIMEKPRSHARED)
 from timekprpam import * # timekprpam.py
 
 #Check if admin
@@ -282,9 +287,9 @@ def fromtoday(fname):
 	today = strftime("%Y%m%d", localtime())
 	return fdate == today
 
-logkpr('Starting timekpr',1)
-logkpr('Variables: '+str(GRACEPERIOD)+' '+str(POLLTIME)+' '+DEBUGME+' '+LOCKLASTS)
-logkpr('Directories: '+LOGFILE+' '+TIMEKPRDIR+' '+TIMEKPRWORK+' '+TIMEKPRSHARED)
+logkpr('Starting timekpr version '+VERSION,1)
+logkpr('Variables: '+str(GRACEPERIOD)+', '+str(POLLTIME)+', '+DEBUGME+', '+LOCKLASTS)
+logkpr('Directories: '+LOGFILE+', '+TIMEKPRDIR+', '+TIMEKPRWORK+', '+TIMEKPRSHARED)
 
 while (True):
 	# Check if any accounts should be unlocked and re-activate them
