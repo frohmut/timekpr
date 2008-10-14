@@ -43,8 +43,7 @@ from timekprpam import *
 if getpass.getuser() != "root": exit('Error: You do not have administrative privileges')
 
 #Import GTK/PyGTK/Glade
-import pygtk
-try: import gtk, gtk.glade
+try: import pygtk, gtk, gtk.glade, gobject
 except: exit(1)
 
 #Create configuration folder if not existing
@@ -73,7 +72,6 @@ def rm(f):
 	except OSError: pass
 
 class timekprGUI:
-	#This is the PyWine application
 	def __init__(self):
 		self.wTree = gtk.glade.XML(TIMEKPRSHARED + '/timekpr.glade','mainwindow')
 		
@@ -133,9 +131,12 @@ class timekprGUI:
 		self.read_settings(self)
 		return
 	
+	def statusrefresh(self, widget, msgid):
+		self.statusbar.remove(self.statusbarCID,msgid)
+	
 	def statusmessage(self, widget, message):
 		msgid = self.statusbar.push(self.statusbarCID, strftime("%Y-%m-%d %H:%M:%S") + ' ' + message)
-		#need timer or thread
+		timeoutid = gobject.timeout_add(3000, self.statusrefresh, self, msgid)
 	
 	def urlhook(self, widget, url):
 		import webbrowser
@@ -507,5 +508,5 @@ class timekprGUI:
 		self.read_settings(self)
 
 if __name__ == "__main__":
-	tkg = timekprGUI()
+	timekprGUI()
 	gtk.main()
