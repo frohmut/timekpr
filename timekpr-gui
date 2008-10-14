@@ -5,6 +5,10 @@ from sys import path
 from os import remove, mkdir, system
 from os.path import isdir, isfile
 from time import strftime, sleep
+from webbrowser import open as webopen
+#Import GTK/PyGTK/Glade
+try: import pygtk, gtk, gtk.glade, gobject
+except: exit(1)
 
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = True
@@ -41,10 +45,6 @@ from timekprpam import *
 
 #Check if admin
 if getpass.getuser() != "root": exit('Error: You do not have administrative privileges')
-
-#Import GTK/PyGTK/Glade
-try: import pygtk, gtk, gtk.glade, gobject
-except: exit(1)
 
 #Create configuration folder if not existing
 if not isdir(TIMEKPRDIR): mkdir(TIMEKPRDIR)
@@ -113,9 +113,8 @@ class timekprGUI:
 			"on_apply_clicked": self.apply_clicked,
 			"on_singleBoundaries_toggled": self.singleBoundariesCheck_toggled,
 			"on_singleLimits_toggled": self.singleLimitsCheck_toggled,
-			"on_ok_clicked": self.ok_clicked,
 			"on_userSelect_toggled": self.read_settings,
-			"on_refresh_clicked": self.read_settings,
+			"on_refresh_clicked": self.refreshButton_clicked,
 			"on_cancel_clicked": self.cancel_clicked,
 			"on_aboutmenuitem_select": self.showaboutdialog,
 			'gtk_main_quit': gtk.main_quit
@@ -135,12 +134,11 @@ class timekprGUI:
 		self.statusbar.remove(self.statusbarCID,msgid)
 	
 	def statusmessage(self, widget, message):
-		msgid = self.statusbar.push(self.statusbarCID, strftime("%Y-%m-%d %H:%M:%S") + ' ' + message)
-		timeoutid = gobject.timeout_add(3000, self.statusrefresh, self, msgid)
+		msgid = self.statusbar.push(self.statusbarCID, strftime("%Y-%m-%d %H:%M:%S ") + message)
+		timeoutid = gobject.timeout_add(6000, self.statusrefresh, self, msgid)
 	
 	def urlhook(self, widget, url):
-		import webbrowser
-		webbrowser.open(url,0)
+		webopen(url,0)
 	
 	def showaboutdialog(self, widget):
 		gtk.about_dialog_set_url_hook(self.urlhook)
@@ -155,6 +153,8 @@ class timekprGUI:
 		if self.lockLabel.get_label() == 'Lock account':
 			#lock account
 			lockuser(self.user)
+			statusmsg = "Locked account %s" % (self.user)
+			self.statusmessage(self,statusmsg)
 			self.read_settings_nolimits(self)
 		else:
 			#unlock account
@@ -162,6 +162,8 @@ class timekprGUI:
 			#remove .lock file
 			lockfile = TIMEKPRDIR + '/' + self.user + '.lock'
 			rm(lockfile)
+			statusmsg = "Unlocked account %s" % (self.user)
+			self.statusmessage(self,statusmsg)
 			self.read_settings_nolimits(self)
 	
 	def clearallrestrictions(self, widget):
@@ -182,12 +184,16 @@ class timekprGUI:
 		#Unlock user
 		unlockuser(self.user)
 		
+		statusmsg = "Removed all restrictions for account %s" % (self.user)
+		self.statusmessage(self,statusmsg)
 		self.read_settings(self)
 	
 	def resettimefile(self, widget):
 		#clear the .time file
 		timefile = TIMEKPRWORK + '/' + self.user + '.time'
 		rm(timefile)
+		statusmsg = "Cleared used up time for account %s" % (self.user)
+		self.statusmessage(self,statusmsg)
 		self.read_settings_nolimits(self)
 	
 	def rewardButton_clicked(self, widget):
@@ -205,7 +211,8 @@ class timekprGUI:
 		f = open(timefile,'w')
 		f.write(str(tnew))
 		f.close()
-		self.statusmessage(self,"Applied reward of " + str(arg) + " minute(s) to "+self.user)
+		statusmsg = "Applied reward of %s minute(s) to account %s" % (str(arg),self.user)
+		self.statusmessage(self,statusmsg)
 		self.read_settings_nolimits(self)
 	
 	def extendLimitsButton_clicked(self, widget):
@@ -221,11 +228,14 @@ class timekprGUI:
 		wto[index] = '24'
 		removeuserlimits(self.user)
 		adduserlimits(self.user,wfrom,wto)
+		statusmsg = "Set access hours to 00-24 on %s for account %s" % (strftime("%A"),self.user)
+		self.statusmessage(self,statusmsg)
 		self.read_settings(self)
 	
-	def ok_clicked(self, widget):
-		self.apply_clicked(self)
-		gtk.main_quit()
+	def refreshButton_clicked(self, widget):
+		statusmsg = "Refreshed setting values from account %s" % (self.user)
+		self.statusmessage(self,statusmsg)
+		self.read_settings(self)
 	
 	def cancel_clicked(self, widget):
 		gtk.main_quit()
@@ -460,9 +470,7 @@ class timekprGUI:
 	def apply_clicked(self, widget):
 		space = " "
 		limit = "limit=( 86400 86400 86400 86400 86400 86400 86400 )"
-		#bTo = "to=( 24 24 24 24 24 24 24 )"
-		#bFrom = "from=( 0 0 0 0 0 0 0 )"
-		#timekprpam.py adduserlimits() takes lists
+		#timekprpam.py adduserlimits() uses lists with numbers as strings
 		bFrom = ['0']*7
 		bTo = ['24']*7
 		
@@ -505,6 +513,8 @@ class timekprGUI:
 		ab = adduserlimits(self.user,bFrom,bTo)
 		if ab is False: exit('Could not add (new) user boundaries')
 		
+		statusmsg = "Applied limit changes for account %s" % (self.user)
+		self.statusmessage(self,statusmsg)
 		self.read_settings(self)
 
 if __name__ == "__main__":
