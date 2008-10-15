@@ -80,3 +80,5 @@ else
   touch $tfile
   sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $tfile
 fi
+
+#DEBHELPER#

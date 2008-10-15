@@ -6,6 +6,6 @@ timekprpam.py usr/share/python-support/timekpr/
 gui/padlock-green.png usr/share/timekpr/
 gui/padlock-red.png usr/share/timekpr/
 gui/timekpr.glade usr/share/timekpr/
-icons/timekpr100x100.png usr/share/timekpr/
-icons/timekpr32x32.png usr/share/timekpr/
-debian/timekpr.desktop usr/share/applications/
+gui/timekpr100x100.png usr/share/timekpr/
+gui/timekpr32x32.png usr/share/timekpr/
+debian/timekpr.xpm usr/share/pixmaps/

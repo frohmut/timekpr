@@ -3,7 +3,7 @@ Section: admin
 Priority: extra
 Maintainer: Savvas Radevic <vicedar@gmail.com>
 Uploaders: Even Nedberg <code@nedberg.net>, Savvas Radevic <vicedar@gmail.com>
-Build-Depends: debhelper (>= 5.0.38), python, po-debconf
+Build-Depends: debhelper (>= 7), python, po-debconf
 Build-Depends-Indep: python-support (>= 0.5.3)
 Standards-Version: 3.8.0
 Vcs-Bzr: https://code.edge.launchpad.net/~timekpr-maintainers/timekpr/trunk
