@@ -65,9 +65,10 @@ if getuser() != "root": exit('Error: You do not have administrative privileges')
 if not isdir(TIMEKPRDIR): mkdir(TIMEKPRDIR)
 if not isdir(TIMEKPRWORK): mkdir(TIMEKPRWORK)
 
-# Lists keeping track of users who has been latekicked or loggedout
-latekickedusers = list()
-loggedoutusers = list()
+# Lists keeping track of users who has been latekicked or loggedout or already notified
+latekickedusers = []
+loggedoutusers = []
+notifiedusers = []
 
 # Keep track of todays date
 THISDAY = strftime("%Y%m%d")
@@ -292,6 +293,23 @@ def threadit(sleeptime,command, *args):
 	t = Timer(sleeptime, command, args)
 	t.start()
 
+def addnotified(u):
+	#Adds username to notifiedusers list, so it does not re-notify them
+	try: notifiedusers.index(u)
+	except ValueError: notifiedusers.append(u)
+
+def isnotified(u):
+	#Checks if username is already in notifiedusers list
+	try: notifiedusers.index(u)
+	except ValueError: return False
+	return True
+
+def removenotified(u):
+	#Removes username from notifiedusers list, so it does not re-notify them
+	try: notifiedusers.index(u)
+	except ValueError: return
+	notifiedusers.remove(u)
+
 logkpr('Starting timekpr version '+VERSION,1)
 logkpr('Variables: '+str(GRACEPERIOD)+', '+str(POLLTIME)+', '+DEBUGME+', '+LOCKLASTS)
 logkpr('Directories: '+LOGFILE+', '+TIMEKPRDIR+', '+TIMEKPRWORK+', '+TIMEKPRSHARED)
@@ -309,8 +327,8 @@ while (True):
 	# Get the usernames and PIDs of sessions
 	for username, pid in getsessions():
 		conffile = TIMEKPRDIR + '/' + username
-		# Check if user configfile exists, if it doesn't the user is unrestricted and we need not check any more
-		if isfile(conffile):
+		# Check if user configfile exists and if user was not already notified
+		if isfile(conffile) and not isnotified(username):
 			logkpr('configuration file for %s exists' % username)
 			# Read lists: from, to and limit
 			limits, bfrom, bto = readusersettings(username, conffile)
@@ -366,6 +384,8 @@ while (True):
 								threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD/2)))
 								threadit(float(GRACEPERIOD), logOut, username, pid, latefile)
 								threadit(float(GRACEPERIOD), remove, allowfile)
+								addnotified(username)
+								threadit(GRACEPERIOD,removenotified,username)
 					else:
 						logkpr('Extended login hours detected - %s.allow is from today' % username)
 				else:
@@ -383,6 +403,8 @@ while (True):
 						notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD)))
 						threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD/2)))
 						threadit(float(GRACEPERIOD), logOut, username, pid, latefile)
+						addnotified(username)
+						threadit(GRACEPERIOD,removenotified,username)
 			
 			# Is the limit exeeded
 			if (time > limits[index]):
@@ -404,6 +426,8 @@ while (True):
 						notify(username, pid, nttl, nmsg % str(GRACEPERIOD))
 						threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % str(GRACEPERIOD/2))
 						threadit(float(GRACEPERIOD), logOut, username, pid, logoutfile)
+						addnotified(username)
+						threadit(GRACEPERIOD,removenotified,username)
 				else:
 					# The user has not been kicked out before
 					logkpr('Not found: %s.logout' % username)
@@ -412,6 +436,8 @@ while (True):
 					notify(username, pid, nttl, nmsg % str(GRACEPERIOD))
 					threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % str(GRACEPERIOD/2))
 					threadit(float(GRACEPERIOD), logOut, username, pid, logoutfile)
+					addnotified(username)
+					threadit(GRACEPERIOD,removenotified,username)
 	
 	# Done checking all users, sleeping
 	logkpr('Finished checking all users, sleeping for ' + str(POLLTIME) + ' seconds')
