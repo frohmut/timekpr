@@ -1,13 +1,19 @@
 [Desktop Entry]
-Name=Timekpr
-Name[en_CA]=Timekpr
-Name[en_GB]=Timekpr
+Version=1.0
+Encoding=UTF-8
+Name=Timekpr Control Panel
+Name[en_CA]=Timekpr Control Panel
+Name[en_GB]=Timekpr Control Panel
+GenericName=Keep control of computer usage
+GenericName[en_CA]=Keep control of computer usage
+GenericName[en_GB]=Keep control of computer usage
 Comment=Keep control of computer usage
 Comment[en_CA]=Keep control of computer usage
 Comment[en_GB]=Keep control of computer usage
-Exec=su-to-root -X -c /usr/share/python-support/timekpr/timekpr-gui.py
-Icon=/usr/share/timekpr/timekpr32x32.png
+Exec=su-to-root -X -c /usr/bin/timekpr-gui
+Icon=timekpr.xpm
 Terminal=false
 Type=Application
 Categories=System;Settings;GTK;
 StartupNotify=true
+

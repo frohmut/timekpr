@@ -1,3 +1,10 @@
+timekpr (0.2.0) UNRELEASED; urgency=low
+
+  * Testing deb package
+  * Revision #108
+
+ -- Savvas Radevic <vicedar@gmail.com>  Wed, 15 Oct 2008 21:58:04 +0200
+
 timekpr (0.1.9) UNRELEASED; urgency=low
 
   * Testing deb package
@@ -5,19 +12,19 @@ timekpr (0.1.9) UNRELEASED; urgency=low
 
  -- Savvas Radevic <vicedar@gmail.com>  Wed, 15 Oct 2008 19:36:01 +0200
 
-timekpr (0.1.0ubuntu10) experimental; urgency=low
+timekpr (0.1.0ubuntu10) UNRELEASED; urgency=low
 
   * Testing pythonized package install/remove/purge
 
  -- Savvas Radevic <vicedar@gmail.com>  Sun, 28 Sep 2008 20:20:59 +0200
 
-timekpr (0.1.0ubuntu9) experimental; urgency=low
+timekpr (0.1.0ubuntu9) UNRELEASED; urgency=low
 
   * Testing
 
  -- Savvas Radevic <vicedar@gmail.com>  Tue, 23 Sep 2008 17:28:46 +0200
 
-timekpr (0.1.0ubuntu8) experimental; urgency=low
+timekpr (0.1.0ubuntu8) UNRELEASED; urgency=low
 
   * Revision #30:
   * More fixes to timekpr, kicking and locking after allowed hours also
@@ -28,7 +35,7 @@ timekpr (0.1.0ubuntu8) experimental; urgency=low
 
  -- Savvas Radevic <vicedar@gmail.com>  Sun, 21 Sep 2008 17:39:31 +0200
 
-timekpr (0.1.0ubuntu7) experimental; urgency=low
+timekpr (0.1.0ubuntu7) UNRELEASED; urgency=low
 
   * Old timekpr: timekpr.old (not in deb package)
   * Fixed timekpr, tested working
@@ -41,14 +48,14 @@ timekpr (0.1.0ubuntu7) experimental; urgency=low
 
  -- Savvas Radevic <vicedar@gmail.com>  Sat, 20 Sep 2008 14:11:56 +0200
 
-timekpr (0.1.0ubuntu6) experimental; urgency=low
+timekpr (0.1.0ubuntu6) UNRELEASED; urgency=low
 
   * Removed exclamation marks which caused problems to timekpr
   * Cleaned up timekpr script
 
  -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 23:35:45 +0200
 
-timekpr (0.1.0ubuntu5) experimental; urgency=low
+timekpr (0.1.0ubuntu5) UNRELEASED; urgency=low
 
   * Cleaned up timekpr and timekpr-gui
   * timekpr-gui shows users with userid within UID_MIN and UID_MAX
@@ -58,31 +65,31 @@ timekpr (0.1.0ubuntu5) experimental; urgency=low
 
  -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 19:35:41 +0200
 
-timekpr (0.1.0ubuntu4) experimental; urgency=low
+timekpr (0.1.0ubuntu4) UNRELEASED; urgency=low
 
   * GUI: Fixed users list, removed sys and glob modules
 
  -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 13:35:03 +0200
 
-timekpr (0.1.0ubuntu3) experimental; urgency=low
+timekpr (0.1.0ubuntu3) UNRELEASED; urgency=low
 
   * Added init.d script and various changes from source
 
  -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 04:56:33 +0200
 
-timekpr (0.1.0ubuntu2) experimental; urgency=low
+timekpr (0.1.0ubuntu2) UNRELEASED; urgency=low
 
   * Changed to license GPLv3
 
  -- Savvas Radevic <vicedar@gmail.com>  Wed, 17 Sep 2008 12:34:42 +0200
 
-timekpr (0.1.0ubuntu1) experimental; urgency=low
+timekpr (0.1.0ubuntu1) UNRELEASED; urgency=low
 
   * Added menu shortcut
 
  -- Savvas Radevic <vicedar@gmail.com>  Wed, 17 Sep 2008 12:11:42 +0200
 
-timekpr (0.1.0) experimental; urgency=low
+timekpr (0.1.0) UNRELEASED; urgency=low
 
   * Initial Release.
 

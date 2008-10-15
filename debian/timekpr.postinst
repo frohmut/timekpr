@@ -1,9 +1,4 @@
 #!/bin/sh
-#Remove old .desktop menu item
-if [ -e /usr/share/applications/timekpr.desktop ] ; then
-  rm /usr/share/applications/timekpr.desktop
-fi
-
 #Prepare gdm and login in /etc/pam.d/
 gfile='/etc/pam.d/gdm'
 lfile='/etc/pam.d/login'

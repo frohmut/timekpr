@@ -11,7 +11,7 @@ try: import pygtk, gtk, gtk.glade, gobject
 except: exit(1)
 
 #If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = True
+DEVACTIVE = False
 
 #Read timekpr.conf
 TIMEKPRCONF = '/etc/timekpr.conf'
@@ -349,8 +349,8 @@ class timekprGUI:
 	
 	def statusicons(self, widget, uislocked):
 		#Set icons in status gtk-yes or gtk-no
-		lockgreen = 'padlock-green.png'
-		lockred = 'padlock-red.png'
+		lockgreen = TIMEKPRSHARED + '/padlock-green.png'
+		lockred = TIMEKPRSHARED + '/padlock-red.png'
 		iconyes = gtk.STOCK_YES
 		iconno = gtk.STOCK_NO
 		iconsize = gtk.ICON_SIZE_BUTTON

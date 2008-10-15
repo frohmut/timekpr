@@ -11,7 +11,7 @@ from glob import glob
 from threading import Timer
 
 #If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = True
+DEVACTIVE = False
 
 #Read timekpr.conf
 TIMEKPRCONF = '/etc/timekpr.conf'
@@ -49,6 +49,9 @@ except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
 
 try: TIMEKPRWORK = conf.get("directories","timekprwork")
 except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
+
+try: TIMEKPRSHARED = conf.get("directories","timekprshared")
+except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
 
 #IMPORT
 if DEVACTIVE: path.append('.')

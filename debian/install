@@ -1,4 +1,6 @@
 etc/timekpr.conf etc/
+timekpr usr/bin/
+timekpr-gui usr/bin/
 timekprpam.py usr/share/python-support/timekpr/
 timekpr.py usr/share/python-support/timekpr/
 timekpr-gui.py usr/share/python-support/timekpr/
@@ -8,4 +10,5 @@ gui/padlock-red.png usr/share/timekpr/
 gui/timekpr.glade usr/share/timekpr/
 gui/timekpr100x100.png usr/share/timekpr/
 gui/timekpr32x32.png usr/share/timekpr/
+debian/timekpr.desktop usr/share/applications/
 debian/timekpr.xpm usr/share/pixmaps/

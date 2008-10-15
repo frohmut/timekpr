@@ -1,11 +1,9 @@
 #! /bin/sh
-#TODO: Not tested yet!
 #TODO: default-start add to start on 1 ("recovery" mode)?
 #TODO: stop - start-stop-daemon --stop --name timekpr
 #TODO: start - start-stop-daemon --start --name timekpr -b -m --exec /usr/bin/timekpr
 #TODO: reload - ?
 #TODO: use upstart and /etc/event.d/timekpr ? http://www.linux.com/feature/125977
-#TODO: checkout gnugk solution
 
 ### BEGIN INIT INFO
 # Provides:          timekpr
