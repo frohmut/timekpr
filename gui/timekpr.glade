@@ -7,7 +7,7 @@
     <property name="title" translatable="yes">timekpr</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">timekpr-logo-tiny.png</property>
+    <property name="icon">timekpr32x32.png</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <signal name="destroy_event" handler="gtk_main_quit"/>
     <child>
@@ -56,7 +56,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="xpad">50</property>
-                        <property name="pixbuf">timekpr-logo.png</property>
+                        <property name="pixbuf">timekpr100x100.png</property>
                       </widget>
                     </child>
                     <child>
@@ -193,7 +193,7 @@
                         <child>
                           <widget class="GtkImage" id="imagelocked">
                             <property name="visible">True</property>
-                            <property name="pixbuf">Padlock-green.png</property>
+                            <property name="pixbuf">padlock-green.png</property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -321,7 +321,7 @@
                         <child>
                           <widget class="GtkImage" id="imagelimited2">
                             <property name="visible">True</property>
-                            <property name="pixbuf">Padlock-green.png</property>
+                            <property name="pixbuf">padlock-green.png</property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -335,7 +335,7 @@
                         <child>
                           <widget class="GtkImage" id="imagelimited1">
                             <property name="visible">True</property>
-                            <property name="pixbuf">Padlock-green.png</property>
+                            <property name="pixbuf">padlock-green.png</property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1424,7 +1424,7 @@ when user is allowed to login</property>
     <property name="title" translatable="yes">About timekpr</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">timekpr-logo-tiny.png</property>
+    <property name="icon">timekpr32x32.png</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="program_name">timekpr</property>
@@ -1442,7 +1442,7 @@ You should have received a copy of the GNU General Public License along with thi
 Savvas Radevic &lt;vicedar@gmail.com&gt;</property>
     <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">translator-credits</property>
     <property name="artists">Savvas Radevic</property>
-    <property name="logo">timekpr-logo.png</property>
+    <property name="logo">timekpr100x100.png</property>
     <property name="wrap_license">True</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">

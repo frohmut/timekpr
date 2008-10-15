@@ -15,7 +15,7 @@ DEVACTIVE = True
 
 #Read timekpr.conf
 TIMEKPRCONF = '/etc/timekpr.conf'
-if DEVACTIVE: TIMEKPRCONF = './timekpr.conf'
+if DEVACTIVE: TIMEKPRCONF = './etc/timekpr.conf'
 
 if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
 import ConfigParser
@@ -50,12 +50,8 @@ except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
 try: TIMEKPRWORK = conf.get("directories","timekprwork")
 except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
 
-try: TIMEKPRSHARED = conf.get("directories","timekprshared")
-except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
-
 #IMPORT
-if DEVACTIVE: TIMEKPRSHARED = '.'
-path.append(TIMEKPRSHARED)
+if DEVACTIVE: path.append('.')
 from timekprpam import * # timekprpam.py
 
 #Check if admin

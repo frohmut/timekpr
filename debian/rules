@@ -1,3 +1,5 @@
 #!/usr/bin/make -f
+DEB_PYTHON_SYSTEM=pysupport
+
 %:
 	dh $@

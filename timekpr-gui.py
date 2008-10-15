@@ -15,7 +15,7 @@ DEVACTIVE = True
 
 #Read timekpr.conf
 TIMEKPRCONF = '/etc/timekpr.conf'
-if DEVACTIVE: TIMEKPRCONF = './timekpr.conf'
+if DEVACTIVE: TIMEKPRCONF = './etc/timekpr.conf'
 
 if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
 import ConfigParser
@@ -37,10 +37,10 @@ except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
 
 try: TIMEKPRSHARED = conf.get("directories","timekprshared")
 except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
-if DEVACTIVE: TIMEKPRSHARED = '.'
+if DEVACTIVE: TIMEKPRSHARED = './gui'
 
 #IMPORT
-path.append(TIMEKPRSHARED)
+if DEVACTIVE: path.append('.')
 from timekprpam import *
 
 #Check if admin
@@ -349,8 +349,8 @@ class timekprGUI:
 	
 	def statusicons(self, widget, uislocked):
 		#Set icons in status gtk-yes or gtk-no
-		lockgreen = 'Padlock-green.png'
-		lockred = 'Padlock-red.png'
+		lockgreen = 'padlock-green.png'
+		lockred = 'padlock-red.png'
 		iconyes = gtk.STOCK_YES
 		iconno = gtk.STOCK_NO
 		iconsize = gtk.ICON_SIZE_BUTTON
@@ -508,10 +508,8 @@ class timekprGUI:
 		#No need to check if boundaries are active or not, apply the default or custom limits
 		#Remove old user limits (boundaries)
 		rb = removeuserlimits(self.user)
-		if rb is False: exit('Could not remove (old) user boundaries')
 		#Add new limits (boundaries)
 		ab = adduserlimits(self.user,bFrom,bTo)
-		if ab is False: exit('Could not add (new) user boundaries')
 		
 		statusmsg = "Applied limit changes for account %s" % (self.user)
 		self.statusmessage(self,statusmsg)
