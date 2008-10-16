@@ -2,8 +2,6 @@
 # Copyright / License: See debian/copyright
 
 import re
-from sys import path
-from getpass import getuser
 from time import strftime, sleep, localtime, mktime, time as timenow
 from os.path import split as splitpath, isfile, isdir, getmtime
 from os import popen, mkdir, kill, remove
@@ -13,56 +11,22 @@ from threading import Timer
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = False
 
-#Read timekpr.conf
-TIMEKPRCONF = '/etc/timekpr.conf'
-if DEVACTIVE: TIMEKPRCONF = './etc/timekpr.conf'
-if not isfile(TIMEKPRCONF): exit('Could not find configuration file %s' % TIMEKPRCONF)
-
-import ConfigParser
-conf = ConfigParser.ConfigParser()
-try: conf.read(TIMEKPRCONF)
-except ConfigParser.ParsingError: exit('Could not parse the configuration file properly %s' % TIMEKPRCONF)
-
-#VARIABLES
-#VERSION GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
-#Exits or sets default if not found
-try: VERSION = conf.get("general","version")
-except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file %s' % TIMEKPRCONF)
-
-try: GRACEPERIOD = int(conf.get("variables","graceperiod"))
-except ConfigParser.NoOptionError: GRACEPERIOD = 120
-
-try: POLLTIME = int(conf.get("variables","polltime"))
-except ConfigParser.NoOptionError: POLLTIME = 45
-
-try: LOCKLASTS = conf.get("variables","locklasts")
-except ConfigParser.NoOptionError: LOCKLASTS = '1 hour'
-
-try: DEBUGME = conf.get("variables","debugme")
-except ConfigParser.NoOptionError: DEBUGME = 'True'
-
-try: LOGFILE = conf.get("directories","logfile")
-except ConfigParser.NoOptionError: LOGFILE = '/var/log/timekpr.log'
-
-try: TIMEKPRDIR = conf.get("directories","timekprdir")
-except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
-
-try: TIMEKPRWORK = conf.get("directories","timekprwork")
-except ConfigParser.NoOptionError: TIMEKPRWORK = '/var/lib/timekpr'
-
-try: TIMEKPRSHARED = conf.get("directories","timekprshared")
-except ConfigParser.NoOptionError: TIMEKPRSHARED = '/usr/share/timekpr'
-
 #IMPORT
-if DEVACTIVE: path.append('.')
+if DEVACTIVE:
+	from sys import path
+	path.append('.')
 from timekprpam import * # timekprpam.py
+from timekprcommon import * # timekprcommon.py
+
+#timekpr.conf variables (dictionary variable)
+VAR = getvariables(DEVACTIVE)
 
 #Check if admin
-if getuser() != "root": exit('Error: You do not have administrative privileges')
+checkifadmin()
 
 #Check if it exists, if not, create it
-if not isdir(TIMEKPRDIR): mkdir(TIMEKPRDIR)
-if not isdir(TIMEKPRWORK): mkdir(TIMEKPRWORK)
+if not isdir(VAR['TIMEKPRDIR']): mkdir(VAR['TIMEKPRDIR'])
+if not isdir(VAR['TIMEKPRWORK']): mkdir(VAR['TIMEKPRWORK'])
 
 # Lists keeping track of users who has been latekicked or loggedout or already notified
 latekickedusers = []
@@ -78,11 +42,11 @@ SESSION_MANAGER = 'x-session-manager'
 def logkpr(string,clear=0):
 	#To log: logkpr("Something")
 	#To clear file and log: logkpr("Something",1)
-	if DEBUGME != 'True': return
+	if VAR['DEBUGME'] != 'True': return
 	if clear == 1:
-		l = open(LOGFILE, 'w')
+		l = open(VAR['LOGFILE'], 'w')
 	else:
-		l = open(LOGFILE, 'a')
+		l = open(VAR['LOGFILE'], 'a')
 	nowtime = strftime('%Y-%m-%d %H:%M:%S ')
 	l.write(nowtime + string +'\n')
 
@@ -110,9 +74,9 @@ def logOut(user,pid,somefile = ''):
 
 ## Using Linux-PAM to lock and disable users
 def getlocklasts():
-	#Returns the LOCKLASTS variable in seconds
-	t=re.compile('(\d+) (second|minute|hour|day|week|month|year)s?').match(LOCKLASTS)
-	if not t: exit('Error: LOCKLASTS is badly formatted, should be something like "1 week" or "2 hours"')
+	#Returns the VAR['LOCKLASTS'] variable in seconds
+	t=re.compile('(\d+) (second|minute|hour|day|week|month|year)s?').match(VAR['LOCKLASTS'])
+	if not t: exit('Error: locklasts value "%s" is badly formatted, should be something like "1 week" or "2 hours"' % VAR['LOCKLASTS'])
 	#n = time length
 	#m = second|minute|hour|day|week|month|year
 	(n,m)=(int(t.group(1)),t.group(2))
@@ -131,7 +95,7 @@ def getlocklasts():
 def lockacct(u):
 	#Locks user and sets the date in a file
 	logkpr('lockacct called for user %s' % u)
-	lockfile = TIMEKPRDIR + '/' + u + '.lock'
+	lockfile = VAR['TIMEKPRDIR'] + '/' + u + '.lock'
 	f = open(lockfile, 'w')
 	f.close()
 	lockuser(u) # timekprpam.py
@@ -139,8 +103,8 @@ def lockacct(u):
 def checklockacct():
 	#Check if user should be unlocked and unlock them
 	logkpr('checklockacct called')
-	#Find *.lock in TIMEKPRDIR
-	s = TIMEKPRDIR + '/' + '*.lock'
+	#Find *.lock in VAR['TIMEKPRDIR']
+	s = VAR['TIMEKPRDIR'] + '/' + '*.lock'
 	l = glob(s)
 	for f in l:
 		#Get username from filename - os.path.split
@@ -184,11 +148,6 @@ def readusersettings(user, conffile):
 	#for i in range(len(limits)):
 	#	lims.append(int(limits[i]))
 	return lims, bfrom, bto
-
-def getcmdoutput(cmd):
-	#Execute a command, returns its output
-	out = popen(cmd)
-	return out.read()
 
 def getsessions():
 	#Returns sessions that run x-session-manager: ['username', 'pid']
@@ -251,10 +210,10 @@ def gettime(tfile):
 	if fileisok(tfile):
 		logkpr('This day\'s ' + username + '.time file exists, adding time')
 		t = open(tfile)
-		newtime = int(t.readline()) + POLLTIME
+		newtime = int(t.readline()) + VAR['POLLTIME']
 	else:
 		t = open(tfile, 'w')
-		newtime = POLLTIME
+		newtime = VAR['POLLTIME']
 	t.close()
 	writetime(tfile, newtime)
 	return newtime
@@ -309,9 +268,9 @@ def removenotified(u):
 	except ValueError: return
 	notifiedusers.remove(u)
 
-logkpr('Starting timekpr version '+VERSION,1)
-logkpr('Variables: '+str(GRACEPERIOD)+', '+str(POLLTIME)+', '+DEBUGME+', '+LOCKLASTS)
-logkpr('Directories: '+LOGFILE+', '+TIMEKPRDIR+', '+TIMEKPRWORK+', '+TIMEKPRSHARED)
+logkpr('Starting timekpr version %s' % getversion(),1)
+logkpr('Variables: GRACEPERIOD: %s POLLTIME: %s DEBUGME: %s LOCKLASTS: %s' % (VAR['GRACEPERIOD'],VAR['POLLTIME'],VAR['DEBUGME'],VAR['LOCKLASTS']))
+logkpr('Directories: LOGFILE: %s TIMEKPRDIR: %s TIMEKPRWORK: %s TIMEKPRSHARED: %s' % (VAR['LOGFILE'],VAR['TIMEKPRDIR'],VAR['TIMEKPRWORK'],VAR['TIMEKPRSHARED']))
 
 while (True):
 	# Check if any accounts should be unlocked and re-activate them
@@ -325,16 +284,16 @@ while (True):
 	
 	# Get the usernames and PIDs of sessions
 	for username, pid in getsessions():
-		conffile = TIMEKPRDIR + '/' + username
+		conffile = VAR['TIMEKPRDIR'] + '/' + username
 		# Check if user configfile exists and if user was not already notified
 		if isfile(conffile) and not isnotified(username):
 			logkpr('configuration file for %s exists' % username)
 			# Read lists: from, to and limit
 			limits, bfrom, bto = readusersettings(username, conffile)
-			timefile = TIMEKPRWORK + '/' + username + '.time'
-			allowfile = TIMEKPRWORK + '/' + username + '.allow'
-			latefile = TIMEKPRWORK + '/' + username + '.late'
-			logoutfile = TIMEKPRWORK + '/' + username + '.logout'
+			timefile = VAR['TIMEKPRWORK'] + '/' + username + '.time'
+			allowfile = VAR['TIMEKPRWORK'] + '/' + username + '.allow'
+			latefile = VAR['TIMEKPRWORK'] + '/' + username + '.late'
+			logoutfile = VAR['TIMEKPRWORK'] + '/' + username + '.logout'
 			
 			time = int(gettime(timefile))
 			'''Is the user allowed to be logged in at this time?
@@ -379,12 +338,12 @@ while (True):
 								logkpr('User %s has NOT been late-kicked today' % username)
 								nttl = 'It is getting late'
 								nmsg = 'You are only allowed to login between %s and %s. You will be logged out in %s seconds.'
-								notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD)))
-								threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD/2)))
-								threadit(float(GRACEPERIOD), logOut, username, pid, latefile)
-								threadit(float(GRACEPERIOD), remove, allowfile)
+								notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD'])))
+								threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD']/2)))
+								threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, latefile)
+								threadit(float(VAR['GRACEPERIOD']), remove, allowfile)
 								addnotified(username)
-								threadit(GRACEPERIOD,removenotified,username)
+								threadit(VAR['GRACEPERIOD'],removenotified,username)
 					else:
 						logkpr('Extended login hours detected - %s.allow is from today' % username)
 				else:
@@ -399,11 +358,11 @@ while (True):
 						logkpr('User %s has NOT been late-kicked today' % username)
 						nttl = 'It is getting late'
 						nmsg = 'You are only allowed to login between %s and %s. You will be logged out in %s seconds.'
-						notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD)))
-						threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(GRACEPERIOD/2)))
-						threadit(float(GRACEPERIOD), logOut, username, pid, latefile)
+						notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD'])))
+						threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD']/2)))
+						threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, latefile)
 						addnotified(username)
-						threadit(GRACEPERIOD,removenotified,username)
+						threadit(VAR['GRACEPERIOD'],removenotified,username)
 			
 			# Is the limit exeeded
 			if (time > limits[index]):
@@ -422,23 +381,23 @@ while (True):
 						logkpr('%s has been kicked out, but not today' % username)
 						nttl = 'Passed limit'
 						nmsg = 'You have exeeded your daily time limit. You will be logged out in %s seconds'
-						notify(username, pid, nttl, nmsg % str(GRACEPERIOD))
-						threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % str(GRACEPERIOD/2))
-						threadit(float(GRACEPERIOD), logOut, username, pid, logoutfile)
+						notify(username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']))
+						threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']/2))
+						threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, logoutfile)
 						addnotified(username)
-						threadit(GRACEPERIOD,removenotified,username)
+						threadit(VAR['GRACEPERIOD'],removenotified,username)
 				else:
 					# The user has not been kicked out before
 					logkpr('Not found: %s.logout' % username)
 					nttl = 'Passed limit'
 					nmsg = 'You have exeeded your daily time limit. You will be logged out in %s seconds'
-					notify(username, pid, nttl, nmsg % str(GRACEPERIOD))
-					threadit(float(GRACEPERIOD/2), notify, username, pid, nttl, nmsg % str(GRACEPERIOD/2))
-					threadit(float(GRACEPERIOD), logOut, username, pid, logoutfile)
+					notify(username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']))
+					threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']/2))
+					threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, logoutfile)
 					addnotified(username)
-					threadit(GRACEPERIOD,removenotified,username)
+					threadit(VAR['GRACEPERIOD'],removenotified,username)
 	
 	# Done checking all users, sleeping
-	logkpr('Finished checking all users, sleeping for ' + str(POLLTIME) + ' seconds')
-	sleep(POLLTIME)
+	logkpr('Finished checking all users, sleeping for ' + str(VAR['POLLTIME']) + ' seconds')
+	sleep(VAR['POLLTIME'])
 

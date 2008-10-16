@@ -6,6 +6,8 @@ timekpr.py usr/share/python-support/timekpr/
 timekpr-gui.py usr/share/python-support/timekpr/
 timekprpam.py usr/share/python-support/timekpr/
 timekprpam.pyc usr/share/python-support/timekpr/
+timekprcommon.py usr/share/python-support/timekpr/
+timekprcommon.pyc usr/share/python-support/timekpr/
 gui/padlock-green.png usr/share/timekpr/
 gui/padlock-red.png usr/share/timekpr/
 gui/timekpr.glade usr/share/timekpr/
