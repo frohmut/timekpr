@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright / License: See debian/copyright
 import re
 from time import strftime
 
