@@ -2,13 +2,12 @@
 
 import spwd, pwd, getpass, re
 from sys import path
-from os import remove, mkdir, system
+from os import remove, mkdir, popen
 from os.path import isdir, isfile
 from time import strftime, sleep
-from webbrowser import open as webopen
+
 #Import GTK/PyGTK/Glade
-try: import pygtk, gtk, gtk.glade, gobject
-except: exit(1)
+import pygtk, gtk, gtk.glade, gobject
 
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = False
@@ -17,17 +16,17 @@ DEVACTIVE = False
 TIMEKPRCONF = '/etc/timekpr.conf'
 if DEVACTIVE: TIMEKPRCONF = './etc/timekpr.conf'
 
-if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
+if not isfile(TIMEKPRCONF): exit('Could not find configuration file %s' % TIMEKPRCONF)
 import ConfigParser
 conf = ConfigParser.ConfigParser()
 try: conf.read(TIMEKPRCONF)
-except ConfigParser.ParsingError: exit('Could not parse the configuration file properly '+TIMEKPRCONF)
+except ConfigParser.ParsingError: exit('Could not parse the configuration file properly %s' % TIMEKPRCONF)
 
 #VARIABLES
 #VERSION TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
 #Exits or sets default if not found
 try: VERSION = conf.get("general","version")
-except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file '+TIMEKPRCONF)
+except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file %s' % TIMEKPRCONF)
 
 try: TIMEKPRDIR = conf.get("directories","timekprdir")
 except ConfigParser.NoOptionError: TIMEKPRDIR = '/etc/timekpr'
@@ -49,7 +48,7 @@ if getpass.getuser() != "root": exit('Error: You do not have administrative priv
 #Create configuration folder if not existing
 if not isdir(TIMEKPRDIR): mkdir(TIMEKPRDIR)
 if not isdir(TIMEKPRWORK): mkdir(TIMEKPRWORK)
-if not isdir(TIMEKPRSHARED): exit('Error: Could not find the shared directory '+TIMEKPRSHARED)
+if not isdir(TIMEKPRSHARED): exit('Error: Could not find the shared directory %s' % TIMEKPRSHARED)
 
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
@@ -70,6 +69,12 @@ def isnormal(username):
 def rm(f):
 	try: remove(f)
 	except OSError: pass
+
+def getcmdoutput(cmd):
+	#TODO: Use it for "/etc/init.d/timekpr status" and a button enable/disable
+	#Execute a command, returns its output
+	out = popen(cmd)
+	return out.read()
 
 class timekprGUI:
 	def __init__(self):
@@ -137,11 +142,7 @@ class timekprGUI:
 		msgid = self.statusbar.push(self.statusbarCID, strftime("%Y-%m-%d %H:%M:%S ") + message)
 		timeoutid = gobject.timeout_add(6000, self.statusrefresh, self, msgid)
 	
-	def urlhook(self, widget, url):
-		webopen(url,0)
-	
 	def showaboutdialog(self, widget):
-		gtk.about_dialog_set_url_hook(self.urlhook)
 		self.aboutdialog = gtk.glade.XML(TIMEKPRSHARED + '/timekpr.glade','aboutdialog')
 		self.aboutd = self.aboutdialog.get_widget('aboutdialog')
 		self.aboutd.set_version(VERSION)
@@ -197,9 +198,6 @@ class timekprGUI:
 		self.read_settings_nolimits(self)
 	
 	def rewardButton_clicked(self, widget):
-		#FIXME: Should we use timekpr-addtime or internal python command?
-		#cmd = 'timekpr-addtime ' + self.user + ' ' + arg
-		#system(cmd)
 		arg = self.rewardSpin.get_value_as_int()
 		timefile = TIMEKPRWORK + '/' + self.user + '.time'
 		if isfile(timefile):
@@ -218,9 +216,7 @@ class timekprGUI:
 	def extendLimitsButton_clicked(self, widget):
 		#UPDATE: extend limits button is now "Bypass for today"
 		#It now is the same as changing boundaries from 0 to 24 for today's day of the week.
-		#FIXME: .allow might still be useful for user accounts that active and won't be killed
-		#cmd = 'timekpr-extend ' + self.user
-		#system(cmd)
+		#.allow can still be useful - active (logged in user accounts) won't be killed
 		index = int(strftime("%w"))
 		wfrom = self.fromtolimits[0]
 		wto = self.fromtolimits[1]
@@ -228,6 +224,8 @@ class timekprGUI:
 		wto[index] = '24'
 		removeuserlimits(self.user)
 		adduserlimits(self.user,wfrom,wto)
+		allowfile = TIMEKPRWORK + '/' + self.user + '.allow'
+		f = open(allowfile,'w').close()
 		statusmsg = "Set access hours to 00-24 on %s for account %s" % (strftime("%A"),self.user)
 		self.statusmessage(self,statusmsg)
 		self.read_settings(self)
@@ -338,7 +336,8 @@ class timekprGUI:
 			
 			for i in range(1, 7):
 				if limits[i] != limits[i-1]:
-					sl = True			
+					sl = True
+			
 			if limits[0] == '86400' and not sl: ul = False
 			self.limitCheck.set_active(ul)
 			self.singleLimits.set_active(sl)

@@ -16,18 +16,18 @@ DEVACTIVE = False
 #Read timekpr.conf
 TIMEKPRCONF = '/etc/timekpr.conf'
 if DEVACTIVE: TIMEKPRCONF = './etc/timekpr.conf'
+if not isfile(TIMEKPRCONF): exit('Could not find configuration file %s' % TIMEKPRCONF)
 
-if not isfile(TIMEKPRCONF): exit('Could not find configuration file '+TIMEKPRCONF)
 import ConfigParser
 conf = ConfigParser.ConfigParser()
 try: conf.read(TIMEKPRCONF)
-except ConfigParser.ParsingError: exit('Could not parse the configuration file properly '+TIMEKPRCONF)
+except ConfigParser.ParsingError: exit('Could not parse the configuration file properly %s' % TIMEKPRCONF)
 
 #VARIABLES
 #VERSION GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
 #Exits or sets default if not found
 try: VERSION = conf.get("general","version")
-except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file '+TIMEKPRCONF)
+except ConfigParser.NoOptionError: exit('Could not detect variable version in configuration file %s' % TIMEKPRCONF)
 
 try: GRACEPERIOD = int(conf.get("variables","graceperiod"))
 except ConfigParser.NoOptionError: GRACEPERIOD = 120
@@ -95,7 +95,7 @@ def logOut(user,pid,somefile = ''):
 		kill(pid,15)
 		sleep(5)
 		if issessionalive(user):
-			logkpr('logOut: Process still there, attempting force-killing '+user+' (KILL, 9)...')
+			logkpr('logOut: Process still there, attempting force-killing %s (KILL, 9)...' % user)
 			kill(pid,9)
 		#changing file's time (.logout or .late)
 		if somefile != '': f = open(somefile,'w').close()
@@ -130,7 +130,7 @@ def getlocklasts():
 
 def lockacct(u):
 	#Locks user and sets the date in a file
-	logkpr('lockacct called with user: ' + u)
+	logkpr('lockacct called for user %s' % u)
 	lockfile = TIMEKPRDIR + '/' + u + '.lock'
 	f = open(lockfile, 'w')
 	f.close()
@@ -151,9 +151,9 @@ def checklockacct():
 		dtnow = float(timenow())
 		#If time now is great than or equal to the time when lock should be lifted
 		if dtnow >= dtlock:
-			logkpr('checklockacct: ' + u + ' should be unlocked, unlocking..')
+			logkpr('checklockacct: %s should be unlocked, unlocking..' % u)
 			unlockuser(u)
-			logkpr('checklockacct: removing ' + u + '.lock file..')
+			logkpr('checklockacct: removing %s.lock file..' % u)
 			remove(f)
 
 ## File defs
@@ -345,11 +345,11 @@ while (True):
 			index = int(strftime("%w"))
 			hour = int(strftime("%H"))
 			
-			logkpr('User ' + username + ' PID ' + str(pid) + ' Day-Index: ' + str(index) + ' Seconds-passed: ' + str(time))
+			logkpr('User: %s PID: %s Day-Index: %s Seconds-passed: %s' % (username, str(pid), str(index), str(time)))
 			
 			# Compare: is current hour less than the one in bfrom list?
 			if (hour < bfrom[index]):
-				logkpr('Current hour less than the defined hour in conffile for user: ' + username)
+				logkpr('Current hour less than the defined hour in conffile for user %s' % username)
 				if isfile(allowfile):
 					if not fromtoday(allowfile):
 						logkpr('Extended login hours detected from %s.allow, but not from today' % username)
@@ -419,7 +419,7 @@ while (True):
 						lockacct(username)
 					else:
 						# The user has not been kicked out today
-						logkpr(username + ' has been kicked out, but not today')
+						logkpr('%s has been kicked out, but not today' % username)
 						nttl = 'Passed limit'
 						nmsg = 'You have exeeded your daily time limit. You will be logged out in %s seconds'
 						notify(username, pid, nttl, nmsg % str(GRACEPERIOD))

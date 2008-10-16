@@ -1,9 +1,4 @@
 #! /bin/sh
-#TODO: default-start add to start on 1 ("recovery" mode)?
-#TODO: stop - start-stop-daemon --stop --name timekpr
-#TODO: start - start-stop-daemon --start --name timekpr -b -m --exec /usr/bin/timekpr
-#TODO: reload - ?
-#TODO: use upstart and /etc/event.d/timekpr ? http://www.linux.com/feature/125977
 
 ### BEGIN INIT INFO
 # Provides:          timekpr
@@ -21,10 +16,9 @@
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="time-controlled computer usage"
+DESC="computer usage control daemon"
 NAME=timekpr
 DAEMON=/usr/bin/$NAME
-DAEMON_ARGS=""
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -102,20 +96,27 @@ do_reload() {
 
 case "$1" in
   start)
-	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+	log_daemon_msg "Starting $DESC" "$NAME"
 	do_start
 	case "$?" in
-		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
-		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+		0|1) log_end_msg 0 ;;
+		2) log_end_msg 1 ;;
 	esac
 	;;
   stop)
-	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+	log_daemon_msg "Stopping $DESC" "$NAME"
 	do_stop
 	case "$?" in
-		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
-		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+		0|1) log_end_msg 0 ;;
+		2) log_end_msg 1 ;;
 	esac
+	;;
+  status)
+	if [ -f $PIDFILE ]; then
+		echo "$NAME is started"
+	else
+		echo "$NAME is stopped"
+	fi
 	;;
   #reload|force-reload)
 	#
@@ -149,7 +150,7 @@ case "$1" in
 	esac
 	;;
   *)
-	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
 	exit 3
 	;;
 esac
