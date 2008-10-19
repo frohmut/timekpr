@@ -18,7 +18,7 @@ Provides: timekpr
 Conflicts: timekpr
 Replaces: timekpr
 Recommends: gdm
-Description: Timekeeper - Keep control of computer usage
+Description: timekpr - Keep control of computer usage
  This program will track and control the computer usage of
  your user accounts. You can limit their daily usage based
  on a timed access duration and configure periods of day

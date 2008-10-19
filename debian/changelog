@@ -1,5 +1,14 @@
+timekpr (0.2.2~b1) UNRELEASED; urgency=low
+
+  * Pushed version 0.2.2 (so I could set it as beta 1 release)
+  * Testing deb package
+  * Revision #111
+
+ -- Savvas Radevic <vicedar@gmail.com>  Sun, 19 Oct 2008 16:25:16 +0200
+
 timekpr (0.2.1) UNRELEASED; urgency=low
 
+  * Testing deb package
   * Revision #110
 
  -- Savvas Radevic <vicedar@gmail.com>  Thu, 16 Oct 2008 17:49:58 +0200
