@@ -12,13 +12,13 @@ Homepage: http://launchpad.net/timekpr/
 
 Package: timekpr
 Architecture: all
-Pre-Depends: sed, grep
+Pre-Depends: sed, grep, menu
 Depends:  ${misc:Depends}, ${python:Depends}, python2.5-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules
 Provides: timekpr
 Conflicts: timekpr
 Replaces: timekpr
 Recommends: gdm
-Description: timekpr - Keep control of computer usage
+Description: Keep control of computer usage
  This program will track and control the computer usage of
  your user accounts. You can limit their daily usage based
  on a timed access duration and configure periods of day

@@ -1,31 +1,20 @@
-
-for developpers
+For developers
 ===============
 
-currently the project REQUIRES python >= 2.5
+Currently the project REQUIRES python >= 2.5
+If you want to see other dependencies, check out the file debian/control at the branch
 
-I was new to bazaar and launch pad. this is a reminder to myself and might prove useful for others as well
+Install bazaar:
+- fedora: yum install bzr
+- ubuntu: sudo apt-get install bzr
+- debian (debian-based): apt-get install bzr
 
-install bazaar :
-I'm on fedora
-#yum install bzr
+If you want to learn how to use bazaar, please read:
+http://doc.bazaar-vcs.org/latest/en/mini-tutorial/index.html
 
-get a working copy of the project
+Please note that the timekpr branch is NOT a testbed for launchpad testing!
+If you want to test functions of the launchpad, please register a personal "junk" branch:
+https://code.launchpad.net/~yourusername/+addbranch
+(where yourusername is your launchpad account username)
 
-bzr whoami "Nicolas Laurance <nlaurance@zindep.com>"
-bzr launchpad-login nlaurance
-bzr branch lp:timekpr
-cd timekpr
-
-do some editing ...
-
-bzr ci -m"testing bazar checkin" 
-Committing to: /home/.../timekpr/
-modified TODO
-Committed revision 112.
-
-then push back to launchpad
-
-bzr push lp:/timekpr
-
-should definitely work on branch
+When you are editing and adding new stuff, please be clear as to _every detail_ you have changed (summarize them in topics if there are a lot of changes).

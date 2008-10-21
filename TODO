@@ -40,6 +40,8 @@
 
 * testing/timekpr.glade - we need easily understandable tooltips!
 
-less script, more objects ?
+* timekpr.py: Setting to disable/enable limiting users in groups admin/wheel? (or just disable them by default?)
+  http://bugs.launchpad.net/timekpr/+bug/286529
 
-sorry, need to understand merging process
+less script, more objects ?
+^ Nicolas, what do you mean? Please edit the line and explain a bit more
