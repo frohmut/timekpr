@@ -43,5 +43,9 @@
 * timekpr.py: Setting to disable/enable limiting users in groups admin/wheel? (or just disable them by default?)
   http://bugs.launchpad.net/timekpr/+bug/286529
 
+* timekprpam.py: blacklist hours in between - this should use a time.conf line such as:
+  *;*;username;Mo0800-2230&!1200-1500 & Tu0800-2230
+  for the gui of such an improvement, we should add a gtk.DrawingArea box for each day, one box per half an hour
+
 less script, more objects ?
 ^ Nicolas, what do you mean? Please edit the line and explain a bit more

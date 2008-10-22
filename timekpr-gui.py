@@ -33,6 +33,8 @@ if not isdir(VAR['TIMEKPRSHARED']): exit('Error: Could not find the shared direc
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
 	userid = int(pwd.getpwnam(username)[2])
+	#FIXME: Temporary fix for: https://bugs.launchpad.net/bugs/286529
+	if userid == "1000" or userid == "500": return 0
 	logindefs = open('/etc/login.defs')
 	uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)',re.M).findall(logindefs.read())
 	if uidminmax[0] < uidminmax[1]:
