@@ -183,6 +183,13 @@ def notify(user, pid, title, message):
     Usage: notify( "youruser", "pid", "your title", "your message")
     We will be probably using pynotify module for this, we'll see!
     '''
+    
+    # REMOVE ME! Hack to get timekpr working on hardy
+    # Get the pid of gnome-settings-daemon
+    pids = getcmdoutput('ps -ef | grep %s | awk \'/gnome-settings-daemon/ {print $2}\'' % (user))
+    pid = re.match('(\d+)', pids).group()
+    logkpr('Pid for %s: %s' % (user, pid))
+    
     #If the user has logged out, don't notify
     if issessionalive(user) is False:
         logkpr('notify called but cancelled, could not find alive session of '+user)
