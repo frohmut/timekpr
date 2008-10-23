@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-import spwd, pwd, re
-from os import remove, mkdir, popen
+import re
+from os import remove, mkdir
 from os.path import isdir, isfile
 from time import strftime, sleep
+from pwd import getpwnam
+from spwd import getspall
 
 #Import GTK/PyGTK/Glade
 import pygtk, gtk, gtk.glade, gobject
@@ -32,9 +34,7 @@ if not isdir(VAR['TIMEKPRSHARED']): exit('Error: Could not find the shared direc
 
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
-    userid = int(pwd.getpwnam(username)[2])
-    #FIXME: Temporary fix for: https://bugs.launchpad.net/bugs/286529
-    if userid == "1000" or userid == "500": return 0
+    userid = int(getpwnam(username)[2])
     logindefs = open('/etc/login.defs')
     uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)',re.M).findall(logindefs.read())
     if uidminmax[0] < uidminmax[1]:
@@ -43,10 +43,15 @@ def isnormal(username):
     else:
         uidmin = int(uidminmax[1])
         uidmax = int(uidminmax[0])
-    if uidmin <= userid <= uidmax:
-        return 1
+
+    #FIXME: Temporary fix for: https://bugs.launchpad.net/bugs/286529
+    if userid == uidmin:
+        print username, userid
+        return False
+    elif uidmin < userid <= uidmax:
+        return True
     else:
-        return 0
+        return False
 
 def rm(f):
     try: remove(f)
@@ -103,8 +108,8 @@ class timekprGUI:
         self.wTree.signal_autoconnect(dic)
         
         #Using /etc/shadow spwd module
-        for userinfo in spwd.getspall():
-            if isnormal(userinfo[0]) == 1:
+        for userinfo in getspall():
+            if isnormal(userinfo[0]):
                 self.userSelect.append_text( userinfo[0] )
                 self.userSelect.set_active( 0 )
         
