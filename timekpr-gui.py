@@ -9,7 +9,7 @@ from time import strftime, sleep
 import pygtk, gtk, gtk.glade, gobject
 
 #If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = False
+DEVACTIVE = True
 
 #IMPORT
 if DEVACTIVE:
@@ -51,12 +51,6 @@ def isnormal(username):
 def rm(f):
     try: remove(f)
     except OSError: pass
-
-def getcmdoutput(cmd):
-    #TODO: Use it for "/etc/init.d/timekpr status" and a button enable/disable
-    #Execute a command, returns its output
-    out = popen(cmd)
-    return out.read()
 
 class timekprGUI:
     def __init__(self):
