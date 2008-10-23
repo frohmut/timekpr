@@ -60,6 +60,7 @@ def getvariables(DEVACTIVE):
     return var
 
 def getcmdoutput(cmd):
+    #TODO: timekpr-gui.py: Use it for "/etc/init.d/timekpr status" and a button enable/disable
     from os import popen
     #Execute a command, returns its output
     out = popen(cmd)
