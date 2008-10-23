@@ -13,7 +13,7 @@ Homepage: http://launchpad.net/timekpr/
 Package: timekpr
 Architecture: all
 Pre-Depends: sed, grep, menu
-Depends:  ${misc:Depends}, ${python:Depends}, python2.5-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules
+Depends:  ${misc:Depends}, ${python:Depends}, python2.5-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules, menu
 Provides: timekpr
 Conflicts: timekpr
 Replaces: timekpr

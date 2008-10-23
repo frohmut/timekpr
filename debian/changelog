@@ -1,3 +1,13 @@
+timekpr (0.2.2~b2) UNRELEASED; urgency=low
+
+  * Rev #120
+  * Works in Ubuntu Hardy Heron 8.04.1 now (Bug #287012)
+  * Added menu package to pre-depends (Bug #286527)
+  * First user with UserID 1000 or 500 is now hidden from the user
+    list (Bug #286529)
+
+ -- Savvas Radevic <vicedar@gmail.com>  Thu, 23 Oct 2008 20:51:18 +0200
+
 timekpr (0.2.2~b1) UNRELEASED; urgency=low
 
   * Pushed version 0.2.2 (so I could set it as beta 1 release)
