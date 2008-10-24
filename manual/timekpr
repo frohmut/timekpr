@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
-<book>
-	<title>timekpr</title>
-	<chapter>
-		<title>Introduction</title>
-		<para>timekpr is a useful tool with which an administrator can limit the daily usage of the computer, based on either time of day or by length each day.</para>
-	</chapter>
-</book>
