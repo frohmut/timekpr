@@ -285,8 +285,16 @@ def removenotified(u):
     notifiedusers.remove(u)
 
 logkpr('Starting timekpr version %s' % getversion(), 1)
-logkpr('Variables: GRACEPERIOD: %s POLLTIME: %s DEBUGME: %s LOCKLASTS: %s' % (VAR['GRACEPERIOD'], VAR['POLLTIME'], VAR['DEBUGME'], VAR['LOCKLASTS']))
-logkpr('Directories: LOGFILE: %s TIMEKPRDIR: %s TIMEKPRWORK: %s TIMEKPRSHARED: %s' % (VAR['LOGFILE'], VAR['TIMEKPRDIR'], VAR['TIMEKPRWORK'], VAR['TIMEKPRSHARED']))
+logkpr('Variables: GRACEPERIOD: %s POLLTIME: %s DEBUGME: %s LOCKLASTS: %s' % (\
+        VAR['GRACEPERIOD'],
+        VAR['POLLTIME'],
+        VAR['DEBUGME'],
+        VAR['LOCKLASTS']))
+logkpr('Directories: LOGFILE: %s TIMEKPRDIR: %s TIMEKPRWORK: %s TIMEKPRSHARED: %s' % (\
+        VAR['LOGFILE'],
+        VAR['TIMEKPRDIR'],
+        VAR['TIMEKPRWORK'],
+        VAR['TIMEKPRSHARED']))
 
 while (True):
     # Check if any accounts should be unlocked and re-activate them
@@ -320,7 +328,7 @@ while (True):
             index = int(strftime("%w"))
             hour = int(strftime("%H"))
             
-            logkpr('User: %s PID: %s Day-Index: %s Seconds-passed: %s' % (username, str(pid), str(index), str(time)))
+            logkpr('User: %s PID: %s Day-Index: %s Seconds-passed: %s' % (username, pid, index, time))
             
             # Compare: is current hour less than the one in bfrom list?
             if (hour < bfrom[index]):
@@ -354,8 +362,14 @@ while (True):
                                 logkpr('User %s has NOT been late-kicked today' % username)
                                 nttl = 'It is getting late'
                                 nmsg = 'You are only allowed to login between %s and %s. You will be logged out in %s seconds.'
-                                notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD'])))
-                                threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD']/2)))
+                                notify(username, pid, nttl, nmsg % (\
+                                    bfrom[index],
+                                    bto[index],
+                                    VAR['GRACEPERIOD']))
+                                threadit(float(VAR['GRACEPERIOD'] / 2), notify, username, pid, nttl, nmsg % (\
+                                    bfrom[index],
+                                    bto[index],
+                                    VAR['GRACEPERIOD'] / 2))
                                 threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, latefile)
                                 threadit(float(VAR['GRACEPERIOD']), remove, allowfile)
                                 addnotified(username)
@@ -364,7 +378,7 @@ while (True):
                         logkpr('Extended login hours detected - %s.allow is from today' % username)
                 else:
                     # User has not been given extended login hours
-                    logkpr('Extended hours and %s.allow file not detected, %s not in allowed period from-to' % (username,username))
+                    logkpr('Extended hours and %s.allow file not detected, %s not in allowed period from-to' % (username, username))
                     if isfile(latefile) and fromtoday(latefile):
                         logkpr('User %s has been late-kicked today' % username)
                         threadit(0.5, logOut, username, pid)
@@ -374,8 +388,14 @@ while (True):
                         logkpr('User %s has NOT been late-kicked today' % username)
                         nttl = 'It is getting late'
                         nmsg = 'You are only allowed to login between %s and %s. You will be logged out in %s seconds.'
-                        notify(username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD'])))
-                        threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % (str(bfrom[index]),str(bto[index]),str(VAR['GRACEPERIOD']/2)))
+                        notify(username, pid, nttl, nmsg % (\
+                            bfrom[index],
+                            bto[index],
+                            VAR['GRACEPERIOD']))
+                        threadit(float(VAR['GRACEPERIOD'] / 2), notify, username, pid, nttl, nmsg % (\
+                            bfrom[index],
+                            bto[index],
+                            VAR['GRACEPERIOD'] / 2))
                         threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, latefile)
                         addnotified(username)
                         threadit(VAR['GRACEPERIOD'], removenotified, username)
@@ -397,8 +417,8 @@ while (True):
                         logkpr('%s has been kicked out, but not today' % username)
                         nttl = 'Passed limit'
                         nmsg = 'You have exeeded your daily time limit. You will be logged out in %s seconds'
-                        notify(username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']))
-                        threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']/2))
+                        notify(username, pid, nttl, nmsg % VAR['GRACEPERIOD'])
+                        threadit(float(VAR['GRACEPERIOD'] / 2), notify, username, pid, nttl, nmsg % str(VAR['GRACEPERIOD'] / 2))
                         threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, logoutfile)
                         addnotified(username)
                         threadit(VAR['GRACEPERIOD'], removenotified, username)
@@ -407,8 +427,8 @@ while (True):
                     logkpr('Not found: %s.logout' % username)
                     nttl = 'Passed limit'
                     nmsg = 'You have exeeded your daily time limit. You will be logged out in %s seconds'
-                    notify(username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']))
-                    threadit(float(VAR['GRACEPERIOD']/2), notify, username, pid, nttl, nmsg % str(VAR['GRACEPERIOD']/2))
+                    notify(username, pid, nttl, nmsg % VAR['GRACEPERIOD'])
+                    threadit(float(VAR['GRACEPERIOD'] / 2), notify, username, pid, nttl, nmsg % str(VAR['GRACEPERIOD'] / 2))
                     threadit(float(VAR['GRACEPERIOD']), logOut, username, pid, logoutfile)
                     addnotified(username)
                     threadit(VAR['GRACEPERIOD'], removenotified, username)

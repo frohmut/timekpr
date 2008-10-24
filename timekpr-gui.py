@@ -65,7 +65,8 @@ def rm(f):
 
 class timekprGUI:
     def __init__(self):
-        self.wTree = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade', 'mainwindow')
+        gladefile = VAR['TIMEKPRSHARED'] + '/timekpr.glade'
+        self.wTree = gtk.glade.XML(gladefile, 'mainwindow')
         
         self.get_limit_spin()
         self.get_from_spin()
@@ -117,8 +118,8 @@ class timekprGUI:
         #Using /etc/shadow spwd module
         for userinfo in getspall():
             if isnormal(userinfo[0]):
-                self.userSelect.append_text( userinfo[0] )
-                self.userSelect.set_active( 0 )
+                self.userSelect.append_text(userinfo[0])
+                self.userSelect.set_active(0)
         
         self.read_settings(self)
         return
@@ -179,7 +180,7 @@ class timekprGUI:
         #Unlock user
         unlockuser(self.user)
         
-        statusmsg = "Removed all restrictions for account %s" % (self.user)
+        statusmsg = "Removed all restrictions for account %s" % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings(self)
     
@@ -187,7 +188,7 @@ class timekprGUI:
         #clear the .time file
         timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         rm(timefile)
-        statusmsg = "Cleared used up time for account %s" % (self.user)
+        statusmsg = "Cleared used up time for account %s" % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings_nolimits(self)
     
@@ -226,7 +227,7 @@ class timekprGUI:
         self.read_settings(self)
     
     def refreshButton_clicked(self, widget):
-        statusmsg = "Refreshed setting values from account %s" % (self.user)
+        statusmsg = "Refreshed setting values from account %s" % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings(self)
     
@@ -300,7 +301,7 @@ class timekprGUI:
             if [bfrom[0]] * 7 != bfrom or [bto[0]] * 7 != bto:
                 sb = True
             #Even if boundaries are Al0000-2400, return False
-            if not sb and bfrom[0] == str(0) and bto[0] == str(24):
+            if not sb and bfrom[0] == '0' and bto[0] == '24':
                 ub = False
             self.boundariesCheck.set_active(ub)
             self.singleBoundaries.set_active(sb)
@@ -317,12 +318,12 @@ class timekprGUI:
         if isfile(configFile):
             fileHandle = open(configFile)
             limits = fileHandle.readline()
-            limits = limits.replace("limit=( ","")
+            limits = limits.replace("limit=( ", "")
             limits = limits.replace(")", "")
             limits = limits.split(" ")
             
             for i in range(7):
-                self.limitSpin[i].set_value(float(limits[i])/60)
+                self.limitSpin[i].set_value(float(limits[i]) / 60)
             
             # Single limits? (set per day)
             sl = False
@@ -353,9 +354,9 @@ class timekprGUI:
         #limitSpin status is already set, so we can use it
         #self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
         if not isuserlimitedtoday(self.user) and not uislocked:
-            self.alldayloginicon.set_from_stock(iconyes,iconsize)
+            self.alldayloginicon.set_from_stock(iconyes, iconsize)
         else:
-            self.alldayloginicon.set_from_stock(iconno,iconsize)
+            self.alldayloginicon.set_from_stock(iconno, iconsize)
         
         if self.limitCheck.get_active():
             self.limiticon.set_from_file(lockred)
@@ -411,7 +412,7 @@ class timekprGUI:
         self.fromtolimits = getuserlimits(self.user)
         self.readfromtolimit(self)
         self.readdurationlimit(self)
-        self.labeluserstatus.set_label('Status for <span weight="bold">'+self.user+'</span>')
+        self.labeluserstatus.set_label('Status for <span weight="bold">' + self.user + '</span>')
         self.statusicons(self, uislocked)
         self.buttonstates(self, uislocked)
     
@@ -480,8 +481,8 @@ class timekprGUI:
         space = " "
         limit = "limit=( 86400 86400 86400 86400 86400 86400 86400 )"
         #timekprpam.py adduserlimits() uses lists with numbers as strings
-        bFrom = ['0']*7
-        bTo = ['24']*7
+        bFrom = ['0'] * 7
+        bTo = ['24'] * 7
         
         if self.limitCheck.get_active():
             if self.singleLimits.get_active():
