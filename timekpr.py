@@ -183,6 +183,12 @@ def notify(user, pid, title, message):
     Usage: notify( "youruser", "pid", "your title", "your message")
     We will be probably using pynotify module for this, we'll see!
     '''
+    #If the user has logged out, don't notify
+    if issessionalive(user) is False:
+        logkpr('notify called but cancelled, could not find alive session of '+user)
+        return
+    logkpr('notify called for '+user)
+    
     # REMOVE ME! Hack to get timekpr working on hardy
     # Get the pid of gnome-settings-daemon
     pids = getcmdoutput('ps --no-headers -fC gnome-settings-daemon')
@@ -190,12 +196,6 @@ def notify(user, pid, title, message):
     #returns the 1st match in () brackets
     pid = re.compile(restr,re.M).search(pids).group(1)
     logkpr('Pid for %s: %s' % (user, pid))
-    
-    #If the user has logged out, don't notify
-    if issessionalive(user) is False:
-        logkpr('notify called but cancelled, could not find alive session of '+user)
-        return
-    logkpr('notify called for '+user)
     
     #WARNING: Don't use the exclamation mark ("!") in the message or title, otherwise bash will return something like: -bash: !": event not found
     #Might be good to include these substitutions, if someone doesn't read this warning

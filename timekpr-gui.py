@@ -46,7 +46,6 @@ def isnormal(username):
 
     #FIXME: Temporary fix for: https://bugs.launchpad.net/bugs/286529
     if userid == uidmin:
-        print username, userid
         return False
     elif uidmin < userid <= uidmax:
         return True
@@ -158,10 +157,12 @@ class timekprGUI:
         timef = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         logoutf = VAR['TIMEKPRWORK'] + '/' + self.user + '.logout'
         latef = VAR['TIMEKPRWORK'] + '/' + self.user + '.late'
+        allowf = VAR['TIMEKPRWORK'] + '/' + self.user + '.allow'
         #Should remove .allow file? It's not a restriction
         rm(timef)
         rm(logoutf)
         rm(latef)
+        rm(allowf)
         #Remove boundaries
         removeuserlimits(self.user)
         #Remove limits
