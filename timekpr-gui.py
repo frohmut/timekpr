@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright / License: See debian/copyright
 
 import re
 from os import remove, mkdir
@@ -7,8 +8,9 @@ from time import strftime, sleep
 from pwd import getpwnam
 from spwd import getspall
 
-#Import GTK/PyGTK/Glade
-import pygtk, gtk, gtk.glade, gobject
+import pygtk
+import gtk, gtk.glade
+import gobject
 
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = True
@@ -24,19 +26,22 @@ from timekprcommon import *
 VAR = getvariables(DEVACTIVE)
 version = getversion()
 
-#Check if admin
+#Check if admin/root
 checkifadmin()
 
 #Create configuration folder if not existing
-if not isdir(VAR['TIMEKPRDIR']): mkdir(VAR['TIMEKPRDIR'])
-if not isdir(VAR['TIMEKPRWORK']): mkdir(VAR['TIMEKPRWORK'])
-if not isdir(VAR['TIMEKPRSHARED']): exit('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED'])
+if not isdir(VAR['TIMEKPRDIR']):
+    mkdir(VAR['TIMEKPRDIR'])
+if not isdir(VAR['TIMEKPRWORK']):
+    mkdir(VAR['TIMEKPRWORK'])
+if not isdir(VAR['TIMEKPRSHARED']):
+    exit('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED'])
 
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
     userid = int(getpwnam(username)[2])
     logindefs = open('/etc/login.defs')
-    uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)',re.M).findall(logindefs.read())
+    uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)', re.M).findall(logindefs.read())
     if uidminmax[0] < uidminmax[1]:
         uidmin = int(uidminmax[0])
         uidmax = int(uidminmax[1])
@@ -53,12 +58,14 @@ def isnormal(username):
         return False
 
 def rm(f):
-    try: remove(f)
-    except OSError: pass
+    try:
+        remove(f)
+    except OSError:
+        pass
 
 class timekprGUI:
     def __init__(self):
-        self.wTree = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade','mainwindow')
+        self.wTree = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade', 'mainwindow')
         
         self.get_limit_spin()
         self.get_from_spin()
@@ -88,7 +95,8 @@ class timekprGUI:
         self.statusbar = self.wTree.get_widget("statusbar")
         self.statusbarCID = self.statusbar.get_context_id("timekprstatus")
         
-        dic = { "on_limitCheck_toggled": self.limitCheck_toggled,
+        dic = {
+            "on_limitCheck_toggled": self.limitCheck_toggled,
             "on_boundariesCheck_toggled": self.boundariesCheck_toggled,
             "on_rewardButton_clicked": self.rewardButton_clicked,
             "on_extendLimitsButton_clicked": self.extendLimitsButton_clicked,
@@ -116,14 +124,14 @@ class timekprGUI:
         return
     
     def statusrefresh(self, widget, msgid):
-        self.statusbar.remove(self.statusbarCID,msgid)
+        self.statusbar.remove(self.statusbarCID, msgid)
     
     def statusmessage(self, widget, message):
         msgid = self.statusbar.push(self.statusbarCID, strftime("%Y-%m-%d %H:%M:%S ") + message)
         timeoutid = gobject.timeout_add(6000, self.statusrefresh, self, msgid)
     
     def showaboutdialog(self, widget):
-        self.aboutdialog = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade','aboutdialog')
+        self.aboutdialog = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade', 'aboutdialog')
         self.aboutd = self.aboutdialog.get_widget('aboutdialog')
         self.aboutd.set_version(version)
         self.aboutd.show_all()
@@ -135,7 +143,7 @@ class timekprGUI:
             #lock account
             lockuser(self.user)
             statusmsg = "Locked account %s" % (self.user)
-            self.statusmessage(self,statusmsg)
+            self.statusmessage(self, statusmsg)
             self.read_settings_nolimits(self)
         else:
             #unlock account
@@ -148,7 +156,7 @@ class timekprGUI:
             latef = VAR['TIMEKPRWORK'] + '/' + self.user + '.late'
             rm(latef)
             statusmsg = "Unlocked account %s" % (self.user)
-            self.statusmessage(self,statusmsg)
+            self.statusmessage(self, statusmsg)
             self.read_settings_nolimits(self)
     
     def clearallrestrictions(self, widget):
@@ -172,7 +180,7 @@ class timekprGUI:
         unlockuser(self.user)
         
         statusmsg = "Removed all restrictions for account %s" % (self.user)
-        self.statusmessage(self,statusmsg)
+        self.statusmessage(self, statusmsg)
         self.read_settings(self)
     
     def resettimefile(self, widget):
@@ -180,7 +188,7 @@ class timekprGUI:
         timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         rm(timefile)
         statusmsg = "Cleared used up time for account %s" % (self.user)
-        self.statusmessage(self,statusmsg)
+        self.statusmessage(self, statusmsg)
         self.read_settings_nolimits(self)
     
     def rewardButton_clicked(self, widget):
@@ -190,13 +198,14 @@ class timekprGUI:
             f = open(timefile)
             tlast = int(f.read())
             f.close()
-        else: tlast = 0
-        tnew = tlast - arg*60
-        f = open(timefile,'w')
+        else:
+            tlast = 0
+        tnew = tlast - arg * 60
+        f = open(timefile, 'w')
         f.write(str(tnew))
         f.close()
-        statusmsg = "Applied reward of %s minute(s) to account %s" % (str(arg),self.user)
-        self.statusmessage(self,statusmsg)
+        statusmsg = "Applied reward of %s minute(s) to account %s" % (arg, self.user)
+        self.statusmessage(self, statusmsg)
         self.read_settings_nolimits(self)
     
     def extendLimitsButton_clicked(self, widget):
@@ -209,16 +218,16 @@ class timekprGUI:
         wfrom[index] = '0'
         wto[index] = '24'
         removeuserlimits(self.user)
-        adduserlimits(self.user,wfrom,wto)
+        adduserlimits(self.user, wfrom, wto)
         allowfile = VAR['TIMEKPRWORK'] + '/' + self.user + '.allow'
-        f = open(allowfile,'w').close()
-        statusmsg = "Set access hours to 00-24 on %s for account %s" % (strftime("%A"),self.user)
-        self.statusmessage(self,statusmsg)
+        f = open(allowfile, 'w').close()
+        statusmsg = "Set access hours to 00-24 on %s for account %s" % (strftime("%A"), self.user)
+        self.statusmessage(self, statusmsg)
         self.read_settings(self)
     
     def refreshButton_clicked(self, widget):
         statusmsg = "Refreshed setting values from account %s" % (self.user)
-        self.statusmessage(self,statusmsg)
+        self.statusmessage(self, statusmsg)
         self.read_settings(self)
     
     def cancel_clicked(self, widget):
@@ -274,7 +283,7 @@ class timekprGUI:
     
     def readfromtolimit(self, widget):
         #from-to time limitation (aka boundaries) - time.conf
-        if isuserlimited(self.user) is True:
+        if isuserlimited(self.user):
             #Get user time limits (boundaries) as lists from-to
             bfrom = self.fromtolimits[0]
             bto = self.fromtolimits[1]
@@ -288,10 +297,10 @@ class timekprGUI:
             sb = False
             #Are all boundaries the same?
             #If they're not same, activate single (per day) boundaries
-            if ([bfrom[0]]*7) != (bfrom) or ([bto[0]]*7) != (bto):
+            if [bfrom[0]] * 7 != bfrom or [bto[0]] * 7 != bto:
                 sb = True
             #Even if boundaries are Al0000-2400, return False
-            if sb is False and bfrom[0] == str(0) and bto[0] == str(24):
+            if not sb and bfrom[0] == str(0) and bto[0] == str(24):
                 ub = False
             self.boundariesCheck.set_active(ub)
             self.singleBoundaries.set_active(sb)
@@ -324,11 +333,13 @@ class timekprGUI:
                 if limits[i] != limits[i-1]:
                     sl = True
             
-            if limits[0] == '86400' and not sl: ul = False
+            if limits[0] == '86400' and not sl:
+                ul = False
             self.limitCheck.set_active(ul)
             self.singleLimits.set_active(sl)
         else:
-            for i in range(7): self.limitSpin[i].set_value(300)
+            for i in range(7):
+                self.limitSpin[i].set_value(300)
             self.limitCheck.set_active(False)
             self.singleLimits.set_active(False)
     
@@ -341,26 +352,38 @@ class timekprGUI:
         iconsize = gtk.ICON_SIZE_BUTTON
         #limitSpin status is already set, so we can use it
         #self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
-        if not isuserlimitedtoday(self.user) and not uislocked: self.alldayloginicon.set_from_stock(iconyes,iconsize)
-        else: self.alldayloginicon.set_from_stock(iconno,iconsize)
+        if not isuserlimitedtoday(self.user) and not uislocked:
+            self.alldayloginicon.set_from_stock(iconyes,iconsize)
+        else:
+            self.alldayloginicon.set_from_stock(iconno,iconsize)
         
-        if self.limitCheck.get_active(): self.limiticon.set_from_file(lockred)
-        else: self.limiticon.set_from_file(lockgreen)
+        if self.limitCheck.get_active():
+            self.limiticon.set_from_file(lockred)
+        else:
+            self.limiticon.set_from_file(lockgreen)
         
-        if self.boundariesCheck.get_active(): self.boundariesicon.set_from_file(lockred)
-        else: self.boundariesicon.set_from_file(lockgreen)
+        if self.boundariesCheck.get_active():
+            self.boundariesicon.set_from_file(lockred)
+        else:
+            self.boundariesicon.set_from_file(lockgreen)
         
-        if uislocked: self.lockedicon.set_from_file(lockred)
-        else: self.lockedicon.set_from_file(lockgreen)
+        if uislocked:
+            self.lockedicon.set_from_file(lockred)
+        else:
+            self.lockedicon.set_from_file(lockgreen)
     
     def buttonstates(self,widget, uislocked):
-        if uislocked: self.lockLabel.set_label('Unlock account')
-        else: self.lockLabel.set_label('Lock account')
+        if uislocked:
+            self.lockLabel.set_label('Unlock account')
+        else:
+            self.lockLabel.set_label('Lock account')
         
         if self.limitCheck.get_active():
             timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
-            if isfile(timefile): self.resettimeButton.set_sensitive(True)
-            else: self.resettimeButton.set_sensitive(False)
+            if isfile(timefile):
+                self.resettimeButton.set_sensitive(True)
+            else:
+                self.resettimeButton.set_sensitive(False)
             #Reward button should add time even if .time is not there?
             self.rewardButton.set_sensitive(True)
             self.rewardSpin.set_sensitive(True)
@@ -379,7 +402,8 @@ class timekprGUI:
                 self.extendLimitsButton.set_sensitive(True)
             else:
                 self.extendLimitsButton.set_sensitive(False)
-        else: self.extendLimitsButton.set_sensitive(False)
+        else:
+            self.extendLimitsButton.set_sensitive(False)
     
     def read_settings(self, widget):
         self.user = self.userSelect.get_active_text()
@@ -488,18 +512,20 @@ class timekprGUI:
             fH = open(configFile, 'w')
             fH.write(limit + "\n")
             fH.close()
-        else: rm(configFile)
+        else:
+            rm(configFile)
         
         #No need to check if boundaries are active or not, apply the default or custom limits
         #Remove old user limits (boundaries)
         rb = removeuserlimits(self.user)
         #Add new limits (boundaries)
-        ab = adduserlimits(self.user,bFrom,bTo)
+        ab = adduserlimits(self.user, bFrom, bTo)
         
         statusmsg = "Applied limit changes for account %s" % (self.user)
-        self.statusmessage(self,statusmsg)
+        self.statusmessage(self, statusmsg)
         self.read_settings(self)
 
 if __name__ == "__main__":
     timekprGUI()
     gtk.main()
+
