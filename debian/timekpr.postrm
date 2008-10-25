@@ -1,11 +1,16 @@
 #!/bin/sh
 afile='/etc/security/access.conf'
 tfile='/etc/security/time.conf'
+timekprwork=/var/lib/timekpr
+timekprdir=/etc/timekpr
 
 if [ "$1" = "purge" ] ; then
-  #This will clear the default working directory
-  if [ -d /var/lib/timekpr ] ; then
-    rm -rf /var/lib/timekpr
+  #This will clear default directories
+  if [ -d $timekprwork ] ; then
+    rm -rf $timekprwork
+  fi
+  if [ -d $timekprdir ] ; then
+    rm -rf $timekprdir
   fi
   #This will uncomment the commented areas and remove the lines
   echo "Removing timekpr section from $afile"
