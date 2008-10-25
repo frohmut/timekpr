@@ -4,17 +4,18 @@ Authors:
     Nicolas Laurance <nlaurance@zindep.com>
 
 Package maintainers:
-    Savvas Radevic <vicedar@gmail.com>
+    Savvas Radevic
 
 Lead testers, Bug reporters:
+    Even Nedberg
     Charles Jackson <crjackson@carolina.rr.com>
 
 Lead planners (Blueprints):
-    Charles Jackson <crjackson@carolina.rr.com>
+    Charles Jackson
 
 Documenters:
-    Savvas Radevic <vicedar@gmail.com>
+    Savvas Radevic
 
 Artwork:
-    Savvas Radevic <vicedar@gmail.com>
+    Savvas Radevic
 
