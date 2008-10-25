@@ -2,15 +2,15 @@
 # Copyright / License: See debian/copyright
 import ConfigParser
 from os.path import isfile
-from os import getuid
-from pwd import getpwuid
+from os import geteuid
+from sys import exit
 
 def getversion(): 
     return '0.2.2'
 
 def checkifadmin():
-    if getpwuid(getuid())[0] != "root":
-        exit('Error: You do not have administrative privileges')
+    if geteuid() != 0:
+        exit('Error: You need to have administrative privileges to run timekpr')
 
 def getvariables(DEVACTIVE):
     #Read timekpr.conf

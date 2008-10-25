@@ -2,6 +2,7 @@
 # Copyright / License: See debian/copyright
 import re
 from time import strftime
+from sys import exit
 
 #TODO: Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
 

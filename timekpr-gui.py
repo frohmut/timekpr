@@ -2,14 +2,17 @@
 # Copyright / License: See debian/copyright
 
 import re
-from os import remove, mkdir
+from sys import exit
+from os import remove, mkdir, geteuid
 from os.path import isdir, isfile
 from time import strftime, sleep
 from pwd import getpwnam
 from spwd import getspall
 
 import pygtk
-import gtk, gtk.glade
+pygtk.require('2.0')
+import gtk
+import gtk.glade
 import gobject
 
 #If DEVACTIVE is true, it uses files from local directory
@@ -27,7 +30,16 @@ VAR = getvariables(DEVACTIVE)
 version = getversion()
 
 #Check if admin/root
-checkifadmin()
+def checkifadmingui():
+    if geteuid() != 0:
+        dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, 
+                                "You need to have administrative privileges to run timekpr-gui")
+        dlg.set_default_response(gtk.RESPONSE_CLOSE)
+        dlg.run()
+        dlg.destroy()
+        exit("Error: You need to have administrative privileges to run timekpr")
+
+checkifadmingui()
 
 #Create configuration folder if not existing
 if not isdir(VAR['TIMEKPRDIR']):
