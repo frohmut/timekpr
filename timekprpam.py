@@ -8,8 +8,12 @@ from sys import exit
 
 ## COMMON
 def getconfsection(conffile):
-    #Argument: string
-    #Returns the section of the timekpr in a file
+    """Returns the content of the timekpr section in a file (access.conf or time.conf)
+
+    Also used to check if the timekpr section is set up.
+    Arguments: conffile (string)
+
+    """
     s = open(conffile).read()
     m = re.compile('## TIMEKPR START\n(.*)## TIMEKPR END', re.S).findall(s)
     if not m:
@@ -18,9 +22,12 @@ def getconfsection(conffile):
     return m[0]
 
 ## Read/Write access.conf
-def parseaccessconf(f = '/etc/security/access.conf'):
-    #Parses the timekpr section in access.conf
-    #Returns a list with the disabled usernames: ['niania','wawa']
+def parseaccessconf(f='/etc/security/access.conf'):
+    """Parses the timekpr section in access.conf
+
+    Returns a list with the (locked) usernames: ['niania','wawa']
+
+    """
     s = getconfsection(f)
     m = re.compile('^-:([^:\s]+):ALL$', re.M).findall(s)
     #If no matches (or bad format?), m = []
@@ -36,52 +43,66 @@ def isuserlocked(u):
         return False
     return True
 
-def unlockuser(u, f = '/etc/security/access.conf'):
-    #Argument: username
-    #Removes access.conf line of user (Unblocks)
-    #Returns True (even if user is not locked) or False (if not possible)
+def unlockuser(u, f='/etc/security/access.conf'):
+    """Removes access.conf line of user (Unblocks)
+
+    Argument: username
+    Returns:
+        True (even if user is not listed/locked)
+        False (if no write permission)
+
+    """
     if not isuserlocked(u):
         return True
     fn = open(f, 'r')
     s = fn.read()
     fn.close()
-    fn = open(f, 'w')
-    m = re.compile('(## TIMEKPR START\n.*)-:' + u + ':ALL\n', re.S).sub('\\1', s)
     try:
-        fn.write(m)
-    except:
+        fn = open(f, 'w')
+    except IOError:
         return False
+    m = re.compile('(## TIMEKPR START\n.*)-:' + u + ':ALL\n', re.S).sub('\\1', s)
+    fn.write(m)
     fn.close()
     return True
 
-def lockuser(u, f = '/etc/security/access.conf'):
-    #Argument: username
-    #Adds access.conf line of user (Blocks)
-    #Returns True (even if user is already locked) or False
+def lockuser(u, f='/etc/security/access.conf'):
+    """Adds access.conf line of user
+
+    timekpr uses access.conf to lock/disable user accounts from logging in.
+    Arguments: username
+    Returns True (even if user is already locked) or False
+
+    """
     if isuserlocked(u):
         return True
     fn = open(f, 'r')
     s = fn.read()
     fn.close()
-    fn = open(f, 'w')
-    m = re.sub('(## TIMEKPR END)', '-:' + u + ':ALL\n\\1', s)
     try:
-        fn.write(m)
-    except:
+        fn = open(f, 'w')
+    except IOError:
         return False
+    m = re.sub('(## TIMEKPR END)', '-:' + u + ':ALL\n\\1', s)
+    fn.write(m)
     fn.close()
     return True
 
 ## Read/write time.conf
 def hourize(n):
-    #make 7 into 0700, or 22 into 2200
+    """Makes integers, e.g. 7 into 0700, or 22 into 2200 - used in converttimeline()"""
     if int(n) < 10:
         return '0%s00' % n
     return '%s00' % n
 
-def converttimeline(hfrom,hto):
-    #print str(hfrom),str(hto)
-    #Arguments must be lists and text strings inside, e.g. ['0','0','0','0','0','0','0']
+def converttimeline(hfrom, hto):
+    """Converts a list of hours (from and to limits) into a time.conf line
+
+    Arguments hfrom and hto MUST be lists and text strings inside, e.g.
+     ['0','0','0','0','0','0','0']
+    Does NOT support all of the features of time.conf, e.g. negation!
+
+    """
     if len(hfrom) != 7 or len(hto) != 7:
         exit('Error: converttimeline accepts from-to lists of 7 items each')
     #if all same:
@@ -101,57 +122,71 @@ def converttimeline(hfrom,hto):
     sa = 'Sa' + hourize(hfrom[6]) + '-' + hourize(hto[6])
     return ' | '.join([su, mo, tu, we, th, fr, sa])
 
-#Makes the time.conf line
-def mktimeconfline(u, hfrom, hto):
-    return '*;*;' + u + ';' + converttimeline(hfrom, hto)
-    ''' Example:
-    hfrom = ['7', '7', '7', '7', '7', '7', '7']
-    hto = ['22', '22', '22', '22', '22', '22', '22']
-    mktimeconfline("username",hfrom,hto)
-    '''
 
-def adduserlimits(username, bfrom, bto, f = '/etc/security/time.conf'):
-    #Adds a line with the username and their time limits in time.conf
-    #Returns True or False (if it can't write to file)
+def mktimeconfline(u, hfrom, hto):
+    """Makes the time.conf line - uses converttimeline()
+
+    Example:
+        hfrom = ['7', '7', '7', '7', '7', '7', '7']
+        hto = ['22', '22', '22', '22', '22', '22', '22']
+        mktimeconfline("maria",hfrom,hto)
+    Example return:
+        '*;*;maria;Al0700-2200'
+
+    """
+    return '*;*;' + u + ';' + converttimeline(hfrom, hto)
+
+def adduserlimits(username, bfrom, bto, f='/etc/security/time.conf'):
+    """Adds a line with the username and their from and to time limits in time.conf
+
+    Arguments: username, bfrom (list), bto (list)
+    Returns True or False (if no write permission)
+
+    """
     getconfsection(f) #Check if timekpr section exists
     line = mktimeconfline(username, bfrom, bto) + "\n"
     fn = open(f, 'r')
     s = fn.read()
     fn.close()
-    fn = open(f, 'w')
-    m = re.sub('(## TIMEKPR END)', line + '\\1', s)
     try:
-        fn.write(m)
-    except:
+        fn = open(f, 'w')
+    except IOError:
         return False
+    m = re.sub('(## TIMEKPR END)', line + '\\1', s)
+    fn.write(m)
     return True
 
-def removeuserlimits(username, f = '/etc/security/time.conf'):
-    #Removes a line with the username in time.conf
-    #Returns True or False (if it can't write to file)
-    getconfsection(f) #Check if timekpr section exists
+def removeuserlimits(username, f='/etc/security/time.conf'):
+    """Removes a line with the username in time.conf
+
+    Returns True or False (if no write permission)
+
+    """
+    getconfsection(f) # Check if timekpr section exists
     fn = open(f, 'r')
     s = fn.read()
     fn.close()
-    fn = open(f, 'w')
-    m = re.compile('(## TIMEKPR START\n.*)\*;\*;' + username + ';[^\n]*\n', re.S).sub('\\1', s)
-    #print m
     try:
-        fn.write(m)
-    except:
+        fn = open(f, 'w')
+    except IOError:
         return False
+    m = re.compile('(## TIMEKPR START\n.*)\*;\*;' + username + ';[^\n]*\n', re.S).sub('\\1', s)
+    fn.write(m)
+    fn.close()
     return True
 
-def isuserlimited(u, f = '/etc/security/time.conf'):
-    #Argument: username
-    #Checks if user is in time.conf
-    #Returns: True/False
+def isuserlimited(u, f='/etc/security/time.conf'):
+    """Checks if user is in time.conf (if account has limited access hours)
+
+    Argument: username
+    Returns: True/False
+
+    """
     s = getconfsection(f)
-    #Check if Al0000-2400 present
+    #Check if Al0000-2400 present:
     x = re.compile('^\*;\*;' + u + ';Al0000-2400$', re.M).search(s)
     if x:
         return False
-    #if not, proceed
     m = re.compile('^\*;\*;([^;]+);', re.M).findall(s)
     try:
         i = m.index(u)
@@ -159,11 +194,14 @@ def isuserlimited(u, f = '/etc/security/time.conf'):
         return False
     return True
 
-def isuserlimitednow(u, f = '/etc/security/time.conf'):
-    #Argument: username
-    #Checks if username should be limited as defined in time.conf
-    #If this is True and the user is logged in, they should be killed
-    #Returns: True or False (even if user is not in time.conf)
+def isuserlimitednow(u, f='/etc/security/time.conf'):
+    """Checks if username should be limited as defined in time.conf
+
+    Argument: username
+    If this is True and the user is logged in, they should be killed
+    Returns: True or False (even if user is not in time.conf)
+
+    """
     if not isuserlimited(u):
         return False
     s = getconfsection(f)
@@ -186,7 +224,7 @@ def isuserlimitednow(u, f = '/etc/security/time.conf'):
             return False
     return True
 
-def isuserlimitedtoday(u, f = '/etc/security/time.conf'):
+def isuserlimitedtoday(u, f='/etc/security/time.conf'):
     #Argument: username
     #Checks if username has limitations for this day
     #Returns: True or False (even if user is not in time.conf)
@@ -210,11 +248,15 @@ def strint(x):
     #makes '08' into '8' and '10' as '10'
     return str(int(x))
 
-def converttconf(tfrom, tto, mode = 0):
-    ''' In short, it removes the unnecessary 0 and multiplies tfrom,tto if necessary
+def converttconf(tfrom, tto, mode=0):
+    """Removes the unnecessary 0 and multiplies from and to lists if necessary
+
     If mode=0 (default), it converts tfrom = ['08','08','13','14','15','01','09'], tto = ['22','14','19','20','21','23','25'] into ['8','8','13','14','15','1','9'] and ['22','14','19','20','21','23','25'] respectively
     If mode=1, it converts tfrom = '08', tto = '22' into ['8','8','8','8','8','8','8'] and ['22','22','22','22','22','22','22'] respectively
-    '''
+
+    WARNING: Will NOT distinguish if tfrom is a list or string if mode is not properly defined!
+
+    """
     if mode == 0:
         ffrom = map(strint, tfrom)
         fto = map(strint, tto)
@@ -224,27 +266,40 @@ def converttconf(tfrom, tto, mode = 0):
         fto = [strint(tto)] * 7
     return ffrom, fto
 
-def parsetimeconf(f = '/etc/security/time.conf'):
-    #Returns a list with usernames and from/to configurations from the time.conf file
+def parsetimeconf(f='/etc/security/time.conf'):
+    """Returns a list with usernames with from and to limits from the time.conf file
+
+    Return example:
+    [('niania', 'Al0000-2400'), ('wawa', 'Su0700-2200 | Mo0700-2200 | Tu0700-2200 | We0700-2200 | Th0700-2200 | Fr0700-2200 | Sa0900-2200')]
+
+    """
     c = getconfsection(f)
     utlist = re.compile('^\*;\*;([^;]+);(.*)$', re.M).findall(c)
     return utlist
-    #example: [('niania', 'Al0000-2400'),('wawa', 'Su0700-2200 | Mo0700-2200 | Tu0700-2200 | We0700-2200 | Th0700-2200 | Fr0700-2200 | Sa0900-2200')]
 
 def parseutlist(utlist):
-    #Parses the list from parsetimeconf()
+    """Parses the list from parsetimeconf()
+
+    Example: ['niania', 'Al0000-2400']
+    Returns a list (retlist):
+        [0] = first item:
+            [0] = username niania
+            [1] = fromto:
+                [0] = from ['0', '0', '0', '0', '0', '0', '0']
+                [1] = to ['24', '24', '24', '24', '24', '24', '24']
+    Example usage:
+        parseutlist(utlist)[0][1][0]
+        ['0', '0', '0', '0', '0', '0', '0']
+
+    """
     retlist = []
     for u,t in utlist:
-        #('niania', 'Al0000-2400')
-        #u = 'niania' and t = 'Al0000-2400'
-        
         #Check if Al is used
         checkAl = re.compile('^Al(\d{2})00-(\d{2})00$').search(t)
         if checkAl:
             final = converttconf(checkAl.group(1), checkAl.group(2), 1)
         else:
-            #Break time in pieces
-            pieces = re.split(' \| ', t)
+            pieces = re.split(' \| ', t) #Break time in 'pieces'
             if len(pieces) != 7:
                 exit('Error: Unsupported format detected (should have 7 time items): "%s"' % t)
             if not re.search('^Su\d{2}00-\d{2}00$', pieces[0]):
@@ -261,26 +316,21 @@ def parseutlist(utlist):
             final = converttconf([su[0], mo[0], tu[0], we[0], th[0], fr[0], sa[0]], \
                                 [su[1], mo[1],tu[1],we[1],th[1],fr[1],sa[1]])
         retlist.append([u, final])
-        #Append example:
-        #user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
-        #user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
+        """utlist processing - retlist.append example:
+        user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
+        user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
+        """
     return retlist
-    '''Returns a list (retlist):
-    [0] = first item:
-        [0] = username niania
-        [1] = fromto:
-            [0] = from ['0', '0', '0', '0', '0', '0', '0']
-            [1] = to ['24', '24', '24', '24', '24', '24', '24']
-    Example: parseutlist(utlist)[0][1][0]
-        ['0', '0', '0', '0', '0', '0', '0']
-    '''
 
 def getuserlimits(u):
-    '''Gets user's from-to time limits in
+    """Gets user from-to time limitations defined in time.conf
+
     Argument: username
-    [0] = from ['0', '0', '0', '0', '0', '0', '0']
-    [1] = to ['24', '24', '24', '24', '24', '24', '24']
-    '''
+    Return example:
+        [0] = from ['0', '0', '0', '0', '0', '0', '0']
+        [1] = to ['24', '24', '24', '24', '24', '24', '24']
+
+    """
     ls = parseutlist(parsetimeconf())
     for user, [bfrom, bto] in ls:
         if u == user:
