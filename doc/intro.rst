@@ -2,20 +2,26 @@
 .. Reference: http://docutils.sf.net/docs/user/rst/quickref.html
 .. _intro:
 
-============
-Introduction
-============
-NAME
-----
-timekpr - Keep control of computer usage
+=========
+ timekpr
+=========
+
+Keep control of computer usage
+==============================
+
+INTRODUCTION
+############
 
 EXECUTABLES
 -----------
+
 1. timekpr
    The daemon service
     
 2. timekpr-gui
    The user interface (gtk)
+
+Note: Both executables require administrator/root privileges.
 
 MODULES
 -------
@@ -28,6 +34,7 @@ MODULES
 
 DESCRIPTION
 -----------
+
 timekpr is a useful tool with which an administrator can
 limit the daily usage of the computer, either by access 
 duration or limiting by access hours each day.
@@ -45,6 +52,7 @@ The timekpr daemon/service does a round every 45 seconds
 
 DEPENDENCIES
 ------------
+
 timekpr depends on:
 
 1. python >= 2.5
@@ -72,6 +80,7 @@ timekpr depends on:
 
 FILES
 -----
+
 /etc/timekpr.conf
   Global timekpr variables, such as directories and grace
   period variables.
@@ -89,15 +98,27 @@ FILES
 
 TODO
 ----
+
 - Support KDE and XFCE desktop managers
 
 - Use timekpr-client to properly notify the users
 
 - Code (executables and modules) clean-up to match the Python 
-    standards.
+  standards.
+
+CONTRIBUTORS
+------------
+
+In branch, see: CONTRIBUTORS.txt
+or if installed, see: /usr/share/doc/timekpr/CONTRIBUTORS.txt
 
 LEGAL
 -----
-See: /usr/share/doc/timekpr/copyright
 
-In source, see: debian/copyright
+In branch, see: COPYRIGHT.txt
+or if installed, see: /usr/share/doc/timekpr/COPYRIGHT.txt
+
+:Author: vicedar@gmail.com
+:Date: 2008-10-27
+:Copyright: GNU FDL
+:Version: 0.2.0
