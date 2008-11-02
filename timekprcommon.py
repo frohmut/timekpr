@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-# Copyright / License: See debian/copyright
+""" Common variables and definitions for timekpr.
+    Copyright / License: See COPYRIGHT.txt
+"""
+
 import ConfigParser
 from os.path import isfile
 from os import geteuid

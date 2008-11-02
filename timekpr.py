@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-# Copyright / License: See debian/copyright
+""" The "daemon service" for timekpr.
+    Copyright / License: See COPYRIGHT.txt
+"""
 
 import re
 from sys import exit

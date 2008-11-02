@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-# Copyright / License: See debian/copyright
+""" The graphical user interface for timekpr configuration.
+    Copyright / License: See COPYRIGHT.txt
+"""
 
 import re
 from sys import exit
@@ -61,7 +63,7 @@ def isnormal(username):
         uidmin = int(uidminmax[1])
         uidmax = int(uidminmax[0])
 
-    #FIXME: Temporary fix for: https://bugs.launchpad.net/bugs/286529
+    #FIXME: Bug #286529
     if userid == uidmin:
         return False
     elif uidmin < userid <= uidmax:

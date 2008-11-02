@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-# Copyright / License: See debian/copyright
+""" A library timekpr uses to read/edit Linux-PAM configuration files.
+    Currently using modules: time, access
+    Warning: Not all Linux-PAM possibilities are supported!
+    Copyright / License: See COPYRIGHT.txt
+"""
+
 import re
 from time import strftime
 from sys import exit
@@ -10,15 +15,21 @@ from sys import exit
 def getconfsection(conffile):
     """Returns the content of the timekpr section in a file (access.conf or time.conf)
 
-    Also used to check if the timekpr section is set up.
+    Also used to check if the timekpr section is set correctly.
     Arguments: conffile (string)
 
     """
     s = open(conffile).read()
+    check = re.compile('## TIMEKPR START|## TIMEKPR END').findall(s)
+    
+    # If the timekpr section lines '## TIMEKPR START' or '## TIMEKPR END' are not
+    # found, exit with an error.
+    if not len(check):
+        exit("Error: Could not find timekpr section in '%s'" % conffile)
+    elif len(check) != 2:
+        exit("Error: Incorrect format of timekpr section in '%s'" % conffile)
+    # Otherwise, get and return the content between the section lines.
     m = re.compile('## TIMEKPR START\n(.*)## TIMEKPR END', re.S).findall(s)
-    if not m:
-        exit("Error: Could not find timekpr section: '%s'" % conffile)
-    if len(m) > 1: exit("Error: More than one timekpr sections found(?): '%s'" % conffile)
     return m[0]
 
 ## Read/Write access.conf
@@ -34,9 +45,12 @@ def parseaccessconf(f='/etc/security/access.conf'):
     return m
 
 def isuserlocked(u):
-    #Argument: username
-    #Checks if user is in access.conf
-    #Returns: True/False
+    """Checks if user is in access.conf
+
+    Argument: username
+    Returns: True/False
+
+    """
     try:
         i = parseaccessconf().index(u)
     except ValueError:
@@ -251,8 +265,11 @@ def strint(x):
 def converttconf(tfrom, tto, mode=0):
     """Removes the unnecessary 0 and multiplies from and to lists if necessary
 
-    If mode=0 (default), it converts tfrom = ['08','08','13','14','15','01','09'], tto = ['22','14','19','20','21','23','25'] into ['8','8','13','14','15','1','9'] and ['22','14','19','20','21','23','25'] respectively
-    If mode=1, it converts tfrom = '08', tto = '22' into ['8','8','8','8','8','8','8'] and ['22','22','22','22','22','22','22'] respectively
+    If mode = 0 (default), it converts tfrom = ['08','08','13','14','15','01','09'], 
+    tto = ['22','14','19','20','21','23','25'] into ['8','8','13','14','15','1','9']
+    and ['22','14','19','20','21','23','25'] respectively
+    If mode = 1, it converts tfrom = '08', tto = '22' into ['8','8','8','8','8','8','8']
+    and ['22','22','22','22','22','22','22'] respectively
 
     WARNING: Will NOT distinguish if tfrom is a list or string if mode is not properly defined!
 
@@ -316,10 +333,10 @@ def parseutlist(utlist):
             final = converttconf([su[0], mo[0], tu[0], we[0], th[0], fr[0], sa[0]], \
                                 [su[1], mo[1],tu[1],we[1],th[1],fr[1],sa[1]])
         retlist.append([u, final])
-        """utlist processing - retlist.append example:
-        user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
-        user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
-        """
+        # Internal example - retlist.append appends like so:
+        # user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
+        # user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
+    
     return retlist
 
 def getuserlimits(u):
