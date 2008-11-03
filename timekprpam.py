@@ -7,7 +7,6 @@
 
 import re
 from time import strftime
-from sys import exit
 
 #TODO: Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
 
@@ -334,8 +333,10 @@ def parseutlist(utlist):
                                 [su[1], mo[1],tu[1],we[1],th[1],fr[1],sa[1]])
         retlist.append([u, final])
         # Internal example - retlist.append appends like so:
-        # user: [niania,(['0', '0', '0', '0', '0', '0', '0'], ['24', '24', '24', '24', '24', '24', '24'])]
-        # user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], ['22', '22', '22', '22', '22', '22', '22'])]
+        # user: [niania,(['0', '0', '0', '0', '0', '0', '0'], 
+        #       ['24', '24', '24', '24', '24', '24', '24'])]
+        # user: [wawa,(['7', '7', '7', '7', '7', '7', '9'], 
+        #        ['22', '22', '22', '22', '22', '22', '22'])]
     
     return retlist
 

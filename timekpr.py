@@ -4,7 +4,6 @@
 """
 
 import re
-from sys import exit
 from time import strftime, sleep, localtime, mktime, time as timenow
 from os.path import split as splitpath, isfile, isdir, getmtime
 from os import popen, mkdir, kill, remove

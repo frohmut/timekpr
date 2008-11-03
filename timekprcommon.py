@@ -6,7 +6,6 @@
 import ConfigParser
 from os.path import isfile
 from os import geteuid
-from sys import exit
 
 def getversion(): 
     return '0.2.2'

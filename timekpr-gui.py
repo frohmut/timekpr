@@ -4,7 +4,6 @@
 """
 
 import re
-from sys import exit
 from os import remove, mkdir, geteuid
 from os.path import isdir, isfile
 from time import strftime, sleep
