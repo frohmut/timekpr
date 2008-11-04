@@ -1,3 +1,9 @@
+* Move most of the logic in the while-loop of timekpr.py into timekprcommon.py
+  That way it can be used by timekpr-client.py without the need to rewrite the code
+
+* Lock users at first logout
+  Remove .lock from the while-loop
+
 * PAM time and access modules:
   add to /etc/pam.d/gdm and /etc/pam.d/login
 
