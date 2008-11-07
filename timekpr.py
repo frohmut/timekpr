@@ -253,12 +253,6 @@ def loggedout(user):
     if not isloggedout(user):
         loggedoutusers.append(user)
 
-def fromtoday(fname):
-    # Returns True if a file was last modified today
-    fdate = strftime("%Y%m%d", localtime(getmtime(fname)))
-    today = strftime("%Y%m%d")
-    return fdate == today
-
 def threadit(sleeptime, command, *args):
     t = Timer(sleeptime, command, args)
     t.start()

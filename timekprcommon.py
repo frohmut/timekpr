@@ -6,6 +6,7 @@
 import ConfigParser
 from os.path import isfile
 from os import geteuid
+from time import strftime
 
 def getversion(): 
     return '0.2.2'
@@ -91,4 +92,47 @@ def getcmdoutput(cmd):
     #Execute a command, returns its output
     out = popen(cmd)
     return out.read()
+
+def fromtoday(fname):
+    # Returns True if a file was last modified today
+    fdate = strftime("%Y%m%d", localtime(getmtime(fname)))
+    today = strftime("%Y%m%d")
+    return fdate == today
+
+def islate(bto, allowfile):
+    # Get current day index and hour of day
+    index = int(strftime("%w"))
+    hour = int(strftime("%H"))
+    if (hour > bto[index]):
+        if isfile(allowfile):
+            if not fromtoday(allowfile):
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
+
+def ispasttime(limits, time):
+    index = int(strftime("%w"))
+    if (time > limits[index]):
+        return True
+    else:
+        return False
+
+def isearly(bfrom, allowfile):
+    # Get current day index and hour of day
+    index = int(strftime("%w"))
+    hour = int(strftime("%H"))
+    if (hour < bfrom[index]):
+        if isfile(allowfile):
+            if not fromtoday(allowfile):
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
 
