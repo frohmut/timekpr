@@ -19,6 +19,7 @@ class TimekprClient:
         self.tray.connect('popup-menu', self.on_popup_menu)
         self.username = os.getenv('USER')
         self.timefile = VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
+        self.allowfile = VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
         self.conffile = '/etc/timekpr/' + self.username
         self.limits, self.bfrom, self.bto = self.readusersettings(self.username, self.conffile)
         self.timer = None
@@ -75,18 +76,20 @@ class TimekprClient:
     Run every checkInterval seconds, check if user has run out of time
     '''
     def checkLimits(self):
-        print 'Check limits'
-        self.notifier('notify-send --icon=gtk-dialog-warning --urgency=critical -t 2000 title message')
-        index = int(strftime("%w"))
         time = self.gettime(self.timefile)
-        print time
-        print self.limits[index]
-        print self.bfrom[index]
-        print self.bto[index]
+        if isearly(self.bfrom, self.allowfile):
+            self.notifier('You are early.')
+        
+        if islate(self.bto, self.allowfile):
+            self.notifier('You are late.')
+        
+        if ispasttime(self.limits, time):
+            self.notifier('Your time is up')
+        self.notifier('checkLimits ran')
 	return True
 
-    def notifier(self, cmd):
-        getcmdoutput(cmd)
+    def notifier(self, message):
+        getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 2000 title ' + '"' + message + '"')
     
     def main(self):
         gtk.main()
