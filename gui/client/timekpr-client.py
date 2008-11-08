@@ -25,13 +25,31 @@ class TimekprClient:
         self.timer = None
         #Add a gobject loop to check limits:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
+        #Add a notifier every 15 minutes
+        self.pn = gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
 
+    def fractSec(s):
+        m, s = divmod(s, 60)
+        h, m = divmod(m, 60)
+        return h, m, s
 
     def gettime(self, tfile):
         t = open(tfile)
         time = int(t.readline())
         t.close()
         return time
+    
+    def get_de():
+        '''
+        Detect desktop environment
+        '''
+    
+        if os.environ.has_key("KDE_FULL_SESSION") or os.environ.has_key("KDE_MULTIHEAD"):
+            return "KDE"
+        elif os.environ.has_key("GNOME_DESKTOP_SESSION_ID") or os.environ.has_key("GNOME_KEYRING_SOCKET"):
+            return "GNOME"
+        elif getcmdoutput("xprop -root _DT_SAVE_MODE").strip().endswith(' = "xfce4"'):
+            return "XFCE"
 
 
     '''
@@ -85,11 +103,29 @@ class TimekprClient:
         
         if ispasttime(self.limits, time):
             self.notifier('Your time is up')
-        self.notifier('checkLimits ran')
 	return True
 
+    def pnotifier(self):
+        time = self.gettime(self.timefile)
+        index = int(strftime("%w"))
+        left = self.limits[index] - time
+        h, m, s = self.fractSec(left)
+        self.notifier('You have %s hour(s), %s minute(s) and %s seconds left' % (h, m, s))
+        
+        # if time left is less than 15 minutes, notify every 5 minutes
+        if time < 900:
+            self.pn = gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
+        
+        # if time left is less than 5 minutes, notify every minute
+        if time < 300:
+            self.pn = gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
+        return True
+
     def notifier(self, message):
-        getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 2000 title ' + '"' + message + '"')
+        if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
+            getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 2000 "' + title + '" "' + message + '"')
+        else:
+            getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
     
     def main(self):
         gtk.main()
