@@ -26,20 +26,23 @@ class TimekprClient:
         #Add a gobject loop to check limits:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
         #Add a notifier every 15 minutes
-        self.pn = gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
+        gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
 
-    def fractSec(s):
+    def fractSec(self, s):
         m, s = divmod(s, 60)
         h, m = divmod(m, 60)
         return h, m, s
 
     def gettime(self, tfile):
+        if not os.path.isfile(tfile):
+            self.tray.set_from_file("../padlock-green.png")
+            return False
         t = open(tfile)
         time = int(t.readline())
         t.close()
         return time
     
-    def get_de():
+    def get_de(self):
         '''
         Detect desktop environment
         '''
@@ -94,6 +97,9 @@ class TimekprClient:
     Run every checkInterval seconds, check if user has run out of time
     '''
     def checkLimits(self):
+        if not self.gettime(self.timefile):
+            return True
+        
         time = self.gettime(self.timefile)
         if isearly(self.bfrom, self.allowfile):
             self.notifier('You are early.')
@@ -106,24 +112,46 @@ class TimekprClient:
 	return True
 
     def pnotifier(self):
+        if not self.gettime(self.timefile):
+            return True
+        
         time = self.gettime(self.timefile)
         index = int(strftime("%w"))
         left = self.limits[index] - time
         h, m, s = self.fractSec(left)
-        self.notifier('You have %s hour(s), %s minute(s) and %s seconds left' % (h, m, s))
-        
-        # if time left is less than 15 minutes, notify every 5 minutes
-        if time < 900:
-            self.pn = gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
+        message = 'You have '
+        if h > 0:
+            message = message + '%s' %h + ' hour'
+            if h > 1:
+                message = message + 's'
+            if m > 0:
+                message = message + ', '
+            else:
+                message = message + ' and '
+        if m > 0:
+            message = message + ' %s' %m + ' minute'
+            if m > 1:
+                message = message + 's'
+            message = message + ' and '
+        message = message + '%s' %s + ' seconds left'
+        self.notifier(message)
         
         # if time left is less than 5 minutes, notify every minute
         if time < 300:
-            self.pn = gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
+            gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
+            return False        
+        
+        # if time left is less than 15 minutes, notify every 5 minutes
+        if time < 900:
+            gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
+            return False
+
         return True
 
     def notifier(self, message):
+        title = "Timekpr"
         if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
-            getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 2000 "' + title + '" "' + message + '"')
+            getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')
         else:
             getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
     

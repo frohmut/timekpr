@@ -4,9 +4,9 @@
 """
 
 import ConfigParser
-from os.path import isfile
+from os.path import isfile, getmtime
 from os import geteuid
-from time import strftime
+from time import strftime, localtime
 
 def getversion(): 
     return '0.2.2'

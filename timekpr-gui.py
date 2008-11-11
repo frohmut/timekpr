@@ -17,7 +17,7 @@ import gtk.glade
 import gobject
 
 #If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = True
+DEVACTIVE = False
 
 #IMPORT
 if DEVACTIVE:
