@@ -3,7 +3,7 @@
 import gtk
 import gobject
 import os
-from time import strftime
+from time import strftime, sleep
 from timekprpam import *
 from timekprcommon import *
 
@@ -53,6 +53,8 @@ class TimekprClient:
         elif getcmdoutput("xprop -root _DT_SAVE_MODE").strip().endswith(' = "xfce4"'):
             return "XFCE"
 
+    def kde_version(self):
+        return 4
 
     '''
     Copied from timekpr.py, should this be placed in timekprcommon.py?
@@ -154,7 +156,15 @@ class TimekprClient:
         if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
             getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')
         else:
-            getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
+            if self.kde_version() == 4:
+                import sys
+                import dbus
+                kn = dbus.SessionBus().get_object("org.kde.knotify", "/Notify")
+                i = kn.event("warning", "kde", [], message, [0,0,0,0], [], 0, dbus_interface="org.kde.KNotify")
+                sleep(10)
+                kn.closeNotification(i)
+            else:
+                getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
     
     def main(self):
         gtk.main()
