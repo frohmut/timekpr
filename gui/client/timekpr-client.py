@@ -9,24 +9,26 @@ from timekprcommon import *
 
 class TimekprClient:
     def __init__(self):
-        VAR = getvariables(False)
+        self.VAR = getvariables(False)
         self.checkInterval = 5
         self.tray = gtk.StatusIcon()
-        self.tray.set_from_file(VAR['TIMEKPRSHARED'] + 'timekpr32x32.png')
+        self.red = self.VAR['TIMEKPRSHARED'] + '/timekpr32x32.png'
+        self.tray.set_from_file(self.red)
         self.tray.set_tooltip('Timekpr-client')
         self.tray.set_visible(True)
         self.tray.connect('activate', self.on_activate)
         self.tray.connect('popup-menu', self.on_popup_menu)
         self.username = os.getenv('USER')
-        self.timefile = VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
-        self.allowfile = VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
+        self.timefile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
+        self.allowfile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
         self.conffile = '/etc/timekpr/' + self.username
         self.limits, self.bfrom, self.bto = self.readusersettings(self.username, self.conffile)
         self.timer = None
         #Add a gobject loop to check limits:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
         #Add a notifier every 15 minutes
-        gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
+        # Changed to 2 minutes for testing
+        gobject.timeout_add(2 * 60 * 1000, self.pnotifier)
 
     def fractSec(self, s):
         m, s = divmod(s, 60)
@@ -34,9 +36,6 @@ class TimekprClient:
         return h, m, s
 
     def gettime(self, tfile):
-        if not os.path.isfile(tfile):
-            self.tray.set_from_file(VAR['TIMEKPRSHARED'] + 'padlock-green.png')
-            return False
         t = open(tfile)
         time = int(t.readline())
         t.close()
@@ -82,7 +81,7 @@ class TimekprClient:
     We can use this to display the time left
     '''
     def on_activate(self, data):
-        print 'active'
+        self.pnotifier()
 
     '''
     Right click
@@ -91,7 +90,7 @@ class TimekprClient:
     Perhaps a menu that can be used to request extra time? How could we do that?
     '''
     def on_popup_menu(self, status, button, time):
-        print 'popup menu'
+        self.pnotifier()
 
     '''
     Run every checkInterval seconds, check if user has run out of time
@@ -137,13 +136,15 @@ class TimekprClient:
         self.notifier(message)
         
         # if time left is less than 5 minutes, notify every minute
+        # Changed to 30 seconds for testing
         if time < 300:
-            gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
+            gobject.timeout_add(1 * 30 * 1000, self.pnotifier)
             return False        
         
         # if time left is less than 15 minutes, notify every 5 minutes
+        # Changed to 1 minute for testing
         if time < 900:
-            gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
+            gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
             return False
 
         return True
