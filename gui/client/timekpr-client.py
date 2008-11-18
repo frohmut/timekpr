@@ -12,7 +12,7 @@ class TimekprClient:
         VAR = getvariables(False)
         self.checkInterval = 5
         self.tray = gtk.StatusIcon()
-        self.tray.set_from_file("../timekpr32x32.png")
+        self.tray.set_from_file(VAR['TIMEKPRSHARED'] + 'timekpr32x32.png')
         self.tray.set_tooltip('Timekpr-client')
         self.tray.set_visible(True)
         self.tray.connect('activate', self.on_activate)
@@ -35,7 +35,7 @@ class TimekprClient:
 
     def gettime(self, tfile):
         if not os.path.isfile(tfile):
-            self.tray.set_from_file("../padlock-green.png")
+            self.tray.set_from_file(VAR['TIMEKPRSHARED'] + 'padlock-green.png')
             return False
         t = open(tfile)
         time = int(t.readline())
