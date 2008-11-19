@@ -54,7 +54,7 @@ class TimekprClient:
             return "XFCE"
 
     def kde_version(self):
-        return 4
+        return getcmdoutput('echo $KDE_SESSION_VERSION')
 
     '''
     Copied from timekpr.py, should this be placed in timekprcommon.py?
