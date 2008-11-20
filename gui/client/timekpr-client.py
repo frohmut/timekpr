@@ -27,8 +27,7 @@ class TimekprClient:
         #Add a gobject loop to check limits:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
         #Add a notifier every 15 minutes
-        # Changed to 2 minutes for testing
-        gobject.timeout_add(2 * 60 * 1000, self.pnotifier)
+        gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
 
     def fractSec(self, s):
         m, s = divmod(s, 60)
@@ -138,15 +137,13 @@ class TimekprClient:
         self.notifier(message)
         
         # if time left is less than 5 minutes, notify every minute
-        # Changed to 30 seconds for testing
         if time < 300:
-            gobject.timeout_add(1 * 30 * 1000, self.pnotifier)
+            gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
             return False        
         
         # if time left is less than 15 minutes, notify every 5 minutes
-        # Changed to 1 minute for testing
         if time < 900:
-            gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
+            gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
             return False
 
         return True
