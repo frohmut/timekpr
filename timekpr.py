@@ -136,9 +136,13 @@ def fileisok(fname):
 
 def readusersettings(user, conffile):
     #Returns limits and from/to allowed hours
-    fhandle = open(conffile)
-    limits = fhandle.readline() #Read 1st line
-    
+    if isfile(conffile):
+        fhandle = open(conffile)
+        limits = fhandle.readline() #Read 1st line
+        limits = re.compile('(\d+)').findall(limits)
+        lims = map(int, limits)
+    else:
+        lims = [ 86400, 86400, 86400, 86400, 86400, 86400, 86400 ]
     bfromandto = getuserlimits(user)
     bfromtemp = bfromandto[0]
     #Using map instead of for i in ...
@@ -146,9 +150,6 @@ def readusersettings(user, conffile):
     
     btotemp = bfromandto[1]
     bto = map(int, btotemp)
-    
-    limits = re.compile('(\d+)').findall(limits)
-    lims = map(int, limits)
     
     return lims, bfrom, bto
 
@@ -306,7 +307,7 @@ while (True):
     for username, pid in getsessions():
         conffile = VAR['TIMEKPRDIR'] + '/' + username
         # Check if user configfile exists and if user was not already notified
-        if isfile(conffile) and not isnotified(username):
+        if not isnotified(username):
             logkpr('configuration file for %s exists' % username)
             # Read lists: from, to and limit
             limits, bfrom, bto = readusersettings(username, conffile)
@@ -340,7 +341,7 @@ while (True):
                     threadit(0.5, logOut, username, pid)
             
             # Compare: is current hour greater/equal to $to array?
-            if (hour > bto[index]):
+            if (hour >= bto[index]):
                 logkpr('Current hour greater than the defined hour in conffile for user %s' % username)
                 # Has the user been given extended login hours?
                 if isfile(allowfile):
