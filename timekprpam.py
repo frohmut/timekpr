@@ -349,9 +349,11 @@ def getuserlimits(u):
         [1] = to ['24', '24', '24', '24', '24', '24', '24']
 
     """
+    bf = ['0', '0', '0', '0', '0', '0', '0']
+    bt =  ['24', '24', '24', '24', '24', '24', '24']
     ls = parseutlist(parsetimeconf())
     for user, [bfrom, bto] in ls:
         if u == user:
             return [bfrom, bto]
-    return []
+    return [bf, bt]
 
