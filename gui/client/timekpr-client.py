@@ -10,7 +10,7 @@ from timekprcommon import *
 class TimekprClient:
     def __init__(self):
         self.VAR = getvariables(False)
-        self.checkInterval = 5
+        self.checkInterval = 30
         self.tray = gtk.StatusIcon()
         self.red = self.VAR['TIMEKPRSHARED'] + '/timekpr32x32.png'
         self.tray.set_from_file(self.red)
@@ -87,7 +87,7 @@ class TimekprClient:
             self.notifier('You are late.')
         
         if ispasttime(self.limits, time):
-            
+            self.notifier('Your time is up')
 	return True
 
     def pnotifier(self):
