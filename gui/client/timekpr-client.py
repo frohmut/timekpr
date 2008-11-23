@@ -22,7 +22,7 @@ class TimekprClient:
         self.timefile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
         self.allowfile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
         self.conffile = '/etc/timekpr/' + self.username
-        self.limits, self.bfrom, self.bto = self.readusersettings(self.username, self.conffile)
+        self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
         self.timer = None
         #Add a gobject loop to check limits:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
@@ -54,27 +54,6 @@ class TimekprClient:
 
     def kde_version(self):
         return getcmdoutput('echo $KDE_SESSION_VERSION')
-
-    '''
-    Copied from timekpr.py, should this be placed in timekprcommon.py?
-    '''
-    def readusersettings(self, user, conffile):
-        #Returns limits and from/to allowed hours
-        fhandle = open(conffile)
-        limits = fhandle.readline() #Read 1st line
-
-        bfromandto = getuserlimits(user)
-        bfromtemp = bfromandto[0]
-        #Using map instead of for i in ...
-        bfrom = map(int, bfromtemp)
-
-        btotemp = bfromandto[1]
-        bto = map(int, btotemp)
-
-        limits = re.compile('(\d+)').findall(limits)
-        lims = map(int, limits)
-
-        return lims, bfrom, bto
 
     '''
     Left click

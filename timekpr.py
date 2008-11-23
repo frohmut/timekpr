@@ -134,25 +134,6 @@ def fileisok(fname):
         return True
     return False
 
-def readusersettings(user, conffile):
-    #Returns limits and from/to allowed hours
-    if isfile(conffile):
-        fhandle = open(conffile)
-        limits = fhandle.readline() #Read 1st line
-        limits = re.compile('(\d+)').findall(limits)
-        lims = map(int, limits)
-    else:
-        lims = [ 86400, 86400, 86400, 86400, 86400, 86400, 86400 ]
-    bfromandto = getuserlimits(user)
-    bfromtemp = bfromandto[0]
-    #Using map instead of for i in ...
-    bfrom = map(int, bfromtemp)
-    
-    btotemp = bfromandto[1]
-    bto = map(int, btotemp)
-    
-    return lims, bfrom, bto
-
 def getsessions():
     #Returns sessions that run x-session-manager: ['username', 'pid']
     #Needs: ps
