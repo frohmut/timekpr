@@ -1,7 +1,9 @@
 timekpr (0.2.2~b3) UNRELEASED; urgency=low
 
-  * Rev #143
+  * Rev #149
   * Includes timekpr-client
+  * Fix for problems reported in Bug#287012 by WNino
+  * Checks users even if /etc/timekpr/username does not exist
 
  -- Even Nedberg <code@nedberg.net>  Thu, 20 Nov 2008 20:51:18 +0100
 
