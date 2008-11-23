@@ -53,7 +53,7 @@ class TimekprClient:
             return "XFCE"
 
     def kde_version(self):
-        return getcmdoutput('echo $KDE_SESSION_VERSION')
+        return int(getcmdoutput('echo $KDE_SESSION_VERSION'))
 
     '''
     Left click
