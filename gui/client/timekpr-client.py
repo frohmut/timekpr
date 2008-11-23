@@ -108,7 +108,7 @@ class TimekprClient:
             self.notifier('You are late.')
         
         if ispasttime(self.limits, time):
-            self.notifier('Your time is up')
+            
 	return True
 
     def pnotifier(self):
@@ -118,6 +118,9 @@ class TimekprClient:
         time = self.gettime(self.timefile)
         index = int(strftime("%w"))
         left = self.limits[index] - time
+        if left < 0:
+            self.notifier('Your time is up')
+            return True
         h, m, s = self.fractSec(left)
         message = 'You have '
         if h > 0:
