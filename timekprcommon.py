@@ -7,7 +7,7 @@ import ConfigParser
 from os.path import isfile, getmtime
 from os import geteuid
 from time import strftime, localtime
-import timekprpam
+from timekprpam import *
 
 def getversion(): 
     return '0.2.2'
