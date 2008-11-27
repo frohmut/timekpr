@@ -10,7 +10,7 @@ from timekprcommon import *
 class TimekprClient:
     def __init__(self):
         self.VAR = getvariables(False)
-        self.checkInterval = 30
+        self.checkInterval = 60
         self.tray = gtk.StatusIcon()
         self.red = self.VAR['TIMEKPRSHARED'] + '/timekpr32x32.png'
         self.tray.set_from_file(self.red)
@@ -89,6 +89,20 @@ class TimekprClient:
         if ispasttime(self.limits, time):
             self.notifier('Your time is up')
 	return True
+    
+    def timeleftstring(h, m, s):
+        if h > 1 or h == 0:
+            if m > 1 or m == 0:
+                message = 'You have %s hours, %s minutes and %s seconds left' % (h, m, s)
+            else:
+                message = 'You have %s hours, %s minute and %s seconds left' % (h, m, s)
+        else:
+            if m > 1 or m == 0:
+                message = 'You have %s hour, %s minutes and %s seconds left' % (h, m, s)
+            else:
+                message = 'You have %s hour, %s minute and %s seconds left' % (h, m, s)
+        
+        return message
 
     def pnotifier(self):
         if not self.gettime(self.timefile):
@@ -97,31 +111,17 @@ class TimekprClient:
         time = self.gettime(self.timefile)
         index = int(strftime("%w"))
         left = self.limits[index] - time
-        if left < 0:
+        if left =< 0:
             self.notifier('Your time is up')
             return True
-        h, m, s = self.fractSec(left)
-        message = 'You have '
-        if h > 0:
-            message = message + '%s' %h + ' hour'
-            if h > 1:
-                message = message + 's'
-            if m > 0:
-                message = message + ', '
-            else:
-                message = message + ' and '
-        if m > 0:
-            message = message + ' %s' %m + ' minute'
-            if m > 1:
-                message = message + 's'
-            message = message + ' and '
-        message = message + '%s' %s + ' seconds left'
+        
+        message = self.timeleftstring(self.fractSec(left))
         self.notifier(message)
         
         # if time left is less than 5 minutes, notify every minute
         if time < 300:
             gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
-            return False        
+            return False
         
         # if time left is less than 15 minutes, notify every 5 minutes
         if time < 900:

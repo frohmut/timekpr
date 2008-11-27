@@ -1,3 +1,10 @@
+* Should we use 'who' to get a list of users and then log them out using 'pkill -u <username>' instead of getting username and pid
+  if x-session-manager?
+  x-session-manager gives us a problem making the daemon work in XFCE, 'who' and 'pkill' will fix this
+  x-session-manager gives us a problem with the "Hardy Hack" preventing the daemon from working with KDE, 'who' and 'pkill' will not do this
+  Logging out a user with 'pkill' is not nice, but we will warn them and data loss will happen the way it is also if they don't log out!
+  To use 'who' and 'pkill' will will have to move notificatios out of the daemon and into the client. This would, imo, be a better solution than the current as the client will know what DE the user is running.
+
 * Move most of the logic in the while-loop of timekpr.py into timekprcommon.py
   That way it can be used by timekpr-client.py without the need to rewrite the code
 
