@@ -94,7 +94,7 @@ class TimekprClient:
             self.notifier('Your time is up')
 	return True
     
-    def timeleftstring(h, m, s):
+    def timeleftstring(self, h, m, s):
         if h > 1 or h == 0:
             if m > 1 or m == 0:
                 message = 'You have %s hours, %s minutes and %s seconds left' % (h, m, s)
