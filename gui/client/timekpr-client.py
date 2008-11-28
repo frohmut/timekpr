@@ -54,7 +54,7 @@ class TimekprClient:
 
     def kde_version(self):
         version = getcmdoutput('echo $KDE_SESSION_VERSION')
-        if version == "":
+        if version == "\n":
             return 3
         else:
             return int(version)
