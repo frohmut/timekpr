@@ -115,7 +115,7 @@ class TimekprClient:
         time = self.gettime(self.timefile)
         index = int(strftime("%w"))
         left = self.limits[index] - time
-        if left =< 0:
+        if left <= 0:
             self.notifier('Your time is up')
             return True
         
