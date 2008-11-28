@@ -30,6 +30,8 @@ class TimekprClient:
         gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
 
     def fractSec(self, s):
+        h = 0
+        m = 0
         m, s = divmod(s, 60)
         h, m = divmod(m, 60)
         return h, m, s
