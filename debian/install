@@ -18,4 +18,4 @@ gui/timekpr100x100.png usr/share/timekpr/
 gui/timekpr32x32.png usr/share/timekpr/
 gui/timekpr.xpm usr/share/pixmaps/
 debian/timekpr.desktop usr/share/applications/
-debian/56timekpr-client etc/X11/Xsession.d/
+debian/timekpr-client.desktop etc/xdg/autostart

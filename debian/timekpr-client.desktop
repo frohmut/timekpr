@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=timekpr-client
+Comment=Timekpr Client
+Icon=timekpr
+Exec=/usr/bin/timekpr-client
+Terminal=false
+Type=Application
+Categories=
+OnlyShowIn=GNOME;XFCE;KDE;
+X-GNOME-Autostart-enabled=true
