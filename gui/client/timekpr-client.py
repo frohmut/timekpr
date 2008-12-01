@@ -40,10 +40,10 @@ class TimekprClient:
         t.close()
         return time
     
-    def now():
+    def now(self):
         return datetime.datetime.now()
     
-    def timeofbto():
+    def timeofbto(self):
         return datetime.datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, self.bto, 0, 0)
     
     def get_de(self):
