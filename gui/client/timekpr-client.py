@@ -40,11 +40,16 @@ class TimekprClient:
         t.close()
         return time
     
+    def now():
+        return datetime.datetime.now()
+    
+    def timeofbto():
+        return datetime.datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, self.bto, 0, 0)
+    
     def get_de(self):
         '''
         Detect desktop environment
         '''
-    
         if os.environ.has_key("KDE_FULL_SESSION") or os.environ.has_key("KDE_MULTIHEAD"):
             return "KDE"
         elif os.environ.has_key("GNOME_DESKTOP_SESSION_ID") or os.environ.has_key("GNOME_KEYRING_SOCKET"):
@@ -61,17 +66,12 @@ class TimekprClient:
 
     '''
     Left click
-    
-    We can use this to display the time left
     '''
     def on_activate(self, data):
         self.pnotifier()
 
     '''
     Right click
-    
-    Not sure if we will need this
-    Perhaps a menu that can be used to request extra time? How could we do that?
     '''
     def on_popup_menu(self, status, button, time):
         self.pnotifier()
@@ -80,18 +80,22 @@ class TimekprClient:
     Run every checkInterval seconds, check if user has run out of time
     '''
     def checkLimits(self):
+        # Re-read settings in case they changed
+        self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
+        
+        # In case timefile does not exist yet
         if not self.gettime(self.timefile):
             return True
         
         time = self.gettime(self.timefile)
         if isearly(self.bfrom, self.allowfile):
-            self.notifier('You are early.')
+            self.notifier('You are early, you will be logged out in LESS than 2 minutes')
         
         if islate(self.bto, self.allowfile):
-            self.notifier('You are late.')
+            self.notifier('You are late, you will be logged out in LESS than 2 minutes')
         
         if ispasttime(self.limits, time):
-            self.notifier('Your time is up')
+            self.notifier('Your time is up, you will be logged out in LESS than 2 minutes')
 	return True
     
     def timeleftstring(self, h, m, s):
@@ -112,11 +116,20 @@ class TimekprClient:
         if not self.gettime(self.timefile):
             return True
         
-        time = self.gettime(self.timefile)
         index = int(strftime("%w"))
-        left = self.limits[index] - time
+        
+        # How much time if left?
+        usedtime = self.gettime(self.timefile)
+        timeleft = self.limits[index] - usedtime
+        timeuntil = self.timeofbto() - self.now()
+        
+        if timeleft <= timeuntil:
+            left = timeleft
+        else:
+            left = timeuntil
+        
         if left <= 0:
-            self.notifier('Your time is up')
+            self.notifier('Your time is up, you will be logged out in less than 2 minutes')
             return True
         h, m, s = self.fractSec(left)
         message = self.timeleftstring(h, m, s)
