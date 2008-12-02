@@ -4,6 +4,7 @@ import gtk
 import gobject
 import os
 from time import strftime, sleep
+from datetime import datetime
 from timekprpam import *
 from timekprcommon import *
 
@@ -41,10 +42,10 @@ class TimekprClient:
         return time
     
     def now(self):
-        return datetime.datetime.now()
+        return datetime.now()
     
     def timeofbto(self):
-        return datetime.datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, self.bto, 0, 0)
+        return datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, self.bto, 0, 0)
     
     def get_de(self):
         '''

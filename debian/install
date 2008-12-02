@@ -4,7 +4,7 @@ timekpr usr/bin/
 timekpr-gui usr/bin/
 timekpr-client usr/bin/
 timekprpam.py usr/share/python-support/timekpr/
-timekpr.py usr/share/python-support/timekpr/
+testing/timekpr.py usr/share/python-support/timekpr/
 timekpr-gui.py usr/share/python-support/timekpr/
 gui/client/timekpr-client.py usr/share/python-support/timekpr/
 timekprpam.py usr/share/python-support/timekpr/
