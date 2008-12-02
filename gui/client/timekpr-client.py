@@ -4,7 +4,7 @@ import gtk
 import gobject
 import os
 from time import strftime, sleep
-from datetime import datetime
+import datetime
 from timekprpam import *
 from timekprcommon import *
 
@@ -42,11 +42,20 @@ class TimekprClient:
         return time
     
     def now(self):
-        return datetime.now()
+        return datetime.datetime.now()
     
-    def timeofbto(self):
-        return datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, self.bto, 0, 0)
-    
+    def timeofbto(self, index):
+        y = datetime.date.today().year
+        m = datetime.date.today().month
+        d = datetime.date.today().day
+        h = self.bto[index]
+        date = datetime.date(y, m, d)
+        if h == 24:
+            h = 0
+            date = date + datetime.timedelta(days=1)
+        dt = datetime.datetime(date.year, date.month, date.day, h, 0, 0)
+        return dt
+
     def get_de(self):
         '''
         Detect desktop environment
@@ -122,12 +131,13 @@ class TimekprClient:
         # How much time if left?
         usedtime = self.gettime(self.timefile)
         timeleft = self.limits[index] - usedtime
-        timeuntil = self.timeofbto() - self.now()
+        timeuntil = self.timeofbto(index) - self.now()
+        tuntil = timeuntil.seconds
         
-        if timeleft <= timeuntil:
+        if timeleft <= tuntil:
             left = timeleft
         else:
-            left = timeuntil
+            left = tuntil
         
         if left <= 0:
             self.notifier('Your time is up, you will be logged out in less than 2 minutes')
@@ -137,12 +147,12 @@ class TimekprClient:
         self.notifier(message)
         
         # if time left is less than 5 minutes, notify every minute
-        if time < 300:
+        if left < 300:
             gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
             return False
         
         # if time left is less than 15 minutes, notify every 5 minutes
-        if time < 900:
+        if left < 900:
             gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
             return False
 
