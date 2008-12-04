@@ -261,6 +261,7 @@ while (True):
                                 threadit(float(VAR['GRACEPERIOD']), remove, allowfile)
                                 addnotified(username)
                                 threadit(VAR['GRACEPERIOD'], removenotified, username)
+                                lockacct(username)
                     else:
                         logkpr('Extended login hours detected - %s.allow is from today' % username)
                 else:
