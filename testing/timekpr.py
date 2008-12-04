@@ -50,7 +50,8 @@ def logkpr(string,clear = 0):
     nowtime = strftime('%Y-%m-%d %H:%M:%S ')
     l.write(nowtime + string +'\n')
 
-def logOut(user, somefile):
+def logOut(user, somefile = ''):
+    logkpr('logOut called with user: %s and somefile: %' % (user, somefile))
     if somefile != '':
         f = open(somefile, 'w').close()
     if issessionalive(user):
@@ -275,6 +276,7 @@ while (True):
                         threadit(float(VAR['GRACEPERIOD']), logOut, username, latefile)
                         addnotified(username)
                         threadit(VAR['GRACEPERIOD'], removenotified, username)
+                        lockacct(username)
             
             # Is the limit exeeded
             if (time > limits[index]):
@@ -294,12 +296,14 @@ while (True):
                         threadit(float(VAR['GRACEPERIOD']), logOut, username, logoutfile)
                         addnotified(username)
                         threadit(VAR['GRACEPERIOD'], removenotified, username)
+                        lockacct(username)
                 else:
                     # The user has not been kicked out before
                     logkpr('Not found: %s.logout' % username)
                     threadit(float(VAR['GRACEPERIOD']), logOut, username, logoutfile)
                     addnotified(username)
                     threadit(VAR['GRACEPERIOD'], removenotified, username)
+                    lockacct(username)
     
     # Done checking all users, sleeping
     logkpr('Finished checking all users, sleeping for %s seconds' % VAR['POLLTIME'])
