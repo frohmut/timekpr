@@ -51,7 +51,7 @@ def logkpr(string,clear = 0):
     l.write(nowtime + string +'\n')
 
 def logOut(user, somefile = ''):
-    logkpr('logOut called with user: %s and somefile: %' % (user, somefile))
+    logkpr('logOut called with user: %s and somefile: %s' % (user, somefile))
     if somefile != '':
         f = open(somefile, 'w').close()
     if issessionalive(user):
