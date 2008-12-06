@@ -1,3 +1,15 @@
+timekpr (0.2.2~b5~ppa1~intrepid1) intrepid; urgency=low
+
+  * Fixed typo in timekpr.py, def logOut 
+
+ -- Even Nedberg <even@lateralus>  Fri, 05 Dec 2008 18:11:43 +0100
+
+timekpr (0.2.2~b4~ppa1~intrepid1) intrepid; urgency=low
+
+  * Fixed Bug#305055
+
+ -- Even Nedberg <even@lateralus>  Fri, 05 Dec 2008 17:11:25 +0100
+
 timekpr (0.2.2~b3) UNRELEASED; urgency=low
 
   * Rev #149
