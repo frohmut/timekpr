@@ -99,6 +99,7 @@ class timekprGUI:
         self.boundariesicon = self.wTree.get_widget("imagelimited2")
         self.alldayloginicon = self.wTree.get_widget("imagealldaylogin")
         self.lockedicon = self.wTree.get_widget("imagelocked")
+        self.timeleftlabel = self.wTree.get_widget("timeleftlabel")
         
         self.extendLimitsButton = self.wTree.get_widget("extendLimitsButton")
         self.rewardButton = self.wTree.get_widget("rewardButton")
@@ -108,6 +109,8 @@ class timekprGUI:
         
         self.statusbar = self.wTree.get_widget("statusbar")
         self.statusbarCID = self.statusbar.get_context_id("timekprstatus")
+        
+        self.limits = []
         
         dic = {
             "on_limitCheck_toggled": self.limitCheck_toggled,
@@ -330,13 +333,13 @@ class timekprGUI:
         configFile = VAR['TIMEKPRDIR'] + '/' + self.user
         if isfile(configFile):
             fileHandle = open(configFile)
-            limits = fileHandle.readline()
-            limits = limits.replace("limit=( ", "")
-            limits = limits.replace(")", "")
-            limits = limits.split(" ")
+            self.limits = fileHandle.readline()
+            self.limits = self.limits.replace("limit=( ", "")
+            self.limits = self.limits.replace(")", "")
+            self.limits = self.limits.split(" ")
             
             for i in range(7):
-                self.limitSpin[i].set_value(float(limits[i]) / 60)
+                self.limitSpin[i].set_value(float(self.limits[i]) / 60)
             
             # Single limits? (set per day)
             sl = False
@@ -344,10 +347,10 @@ class timekprGUI:
             ul = True
             
             for i in range(1, 7):
-                if limits[i] != limits[i-1]:
+                if self.limits[i] != self.limits[i-1]:
                     sl = True
             
-            if limits[0] == '86400' and not sl:
+            if self.limits[0] == '86400' and not sl:
                 ul = False
             self.limitCheck.set_active(ul)
             self.singleLimits.set_active(sl)
@@ -385,6 +388,11 @@ class timekprGUI:
             self.lockedicon.set_from_file(lockred)
         else:
             self.lockedicon.set_from_file(lockgreen)
+        
+        index = int(strftime("%w"))
+        limit = int(self.limits[index])
+        # TODO: Read used time
+        self.timeleftlabel.set_label(str(limit) + " minutes")
     
     def buttonstates(self,widget, uislocked):
         if uislocked:
