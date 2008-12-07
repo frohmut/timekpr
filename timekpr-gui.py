@@ -392,7 +392,15 @@ class timekprGUI:
         index = int(strftime("%w"))
         limit = int(self.limits[index])
         # TODO: Read used time
-        self.timeleftlabel.set_label(str(limit) + " minutes")
+        timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
+        used = 0
+        if isfile(timefile) and fromtoday(timefile):
+            t = open(timefile)
+            used = int(t.readline())
+            t.close()
+        left = limit - used
+        m, s = divmod(left, 60)
+        self.timeleftlabel.set_label(str(m) + " minutes")
     
     def buttonstates(self,widget, uislocked):
         if uislocked:
