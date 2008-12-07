@@ -331,6 +331,7 @@ class timekprGUI:
     def readdurationlimit(self, widget):
         #time length limitation
         configFile = VAR['TIMEKPRDIR'] + '/' + self.user
+        del self.limits[:]
         if isfile(configFile):
             fileHandle = open(configFile)
             self.limits = fileHandle.readline()
@@ -390,8 +391,11 @@ class timekprGUI:
             self.lockedicon.set_from_file(lockgreen)
         
         index = int(strftime("%w"))
-        limit = int(self.limits[index])
-        # TODO: Read used time
+        try:
+            limit = int(self.limits[index])
+        except IndexError:
+            limit = 86400
+        
         timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         used = 0
         if isfile(timefile) and fromtoday(timefile):
