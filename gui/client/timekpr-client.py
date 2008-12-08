@@ -14,6 +14,7 @@ class TimekprClient:
         self.checkInterval = 60
         self.tray = gtk.StatusIcon()
         self.red = self.VAR['TIMEKPRSHARED'] + '/timekpr32x32.png'
+        self.green = self.VAR['TIMEKPRSHARED'] + '/padlock-green.png'
         self.tray.set_from_file(self.red)
         self.tray.set_tooltip('Timekpr-client')
         self.tray.set_visible(True)
@@ -25,6 +26,7 @@ class TimekprClient:
         self.conffile = '/etc/timekpr/' + self.username
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
         self.timer = None
+        self.checkLimits()
         #Add a gobject loop to check limits:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
         #Add a notifier every 15 minutes
@@ -36,6 +38,8 @@ class TimekprClient:
         return h, m, s
 
     def gettime(self, tfile):
+        if not isfile(tfile):
+            return False
         t = open(tfile)
         time = int(t.readline())
         t.close()
@@ -92,6 +96,13 @@ class TimekprClient:
     def checkLimits(self):
         # Re-read settings in case they changed
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
+        
+        index = int(strftime("%w"))
+        if not isrestricteduser(self.username, self.limits[index]):
+            self.tray.set_from_file(self.green)
+            return
+        else:
+            self.tray.set_from_file(self.red)
         
         # In case timefile does not exist yet
         if not self.gettime(self.timefile):
@@ -159,6 +170,9 @@ class TimekprClient:
         return True
 
     def notifier(self, message):
+        index = int(strftime("%w"))
+        if not isrestricteduser(self.username, self.limits[index]):
+            return
         title = "Timekpr"
         if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
             getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')

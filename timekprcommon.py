@@ -137,6 +137,12 @@ def isearly(bfrom, allowfile):
     else:
         return False
 
+def isrestricteduser(username, limit):
+    if not isuserlimited(username) and limit == 86400:
+        return False
+    else:
+        return True
+
 def readusersettings(user, conffile):
     #Returns limits and from/to allowed hours
     if isfile(conffile):
