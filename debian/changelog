@@ -1,3 +1,12 @@
+timekpr (0.2.2~b6~ppa1~intrepid1) intrepid; urgency=low
+
+  * Unrestricted users no longer get notified, closes: Bug#306121
+  * Logfile is kept over system reboot and timekpr restart, logfile is rotated. closes: Bug#302833
+  * Timekpr-gui shows remaining time for a restricted user. closes: Bug#302774
+  * Added option to remove time from a user, aka Penalty button. closes: Bug#302776
+
+ -- Even Nedberg <even@lateralus>  Wed, 10 Dec 2008 20:25:24 +0100
+
 timekpr (0.2.2~b5~ppa1~intrepid1) intrepid; urgency=low
 
   * Fixed typo in timekpr.py, def logOut 
