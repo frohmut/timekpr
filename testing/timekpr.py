@@ -181,7 +181,7 @@ def removenotified(u):
         return
     notifiedusers.remove(u)
 
-logkpr('Starting timekpr version %s' % getversion(), 1)
+logkpr('Starting timekpr version %s' % getversion())
 logkpr('Variables: GRACEPERIOD: %s POLLTIME: %s DEBUGME: %s LOCKLASTS: %s' % (\
         VAR['GRACEPERIOD'],
         VAR['POLLTIME'],
