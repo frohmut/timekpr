@@ -198,9 +198,6 @@ while (True):
     checklockacct()
     # Check if we have passed midnight, ie new day
     if THISDAY != strftime("%Y%m%d"):
-        logkpr('New day, resetting loggedoutusers and latekickedusers.')
-        del latekickedusers[:]
-        del loggedoutusers[:]
         THISDAY = strftime("%Y%m%d")
     
     # Get the usernames and PIDs of sessions
