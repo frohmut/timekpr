@@ -1,3 +1,10 @@
+timekpr (0.2.2~b7~ppa1~intrepid1) intrepid; urgency=low
+
+  * Fixed a bug where timekpr would crash at midnight, (LP: #307839)
+  * timekpr no longer truncates log file when it is restared. (LP: #302833)
+
+ -- Even Nedberg <even@lateralus>  Sun, 14 Dec 2008 21:02:41 +0100
+
 timekpr (0.2.2~b6~ppa1~intrepid1) intrepid; urgency=low
 
   * Unrestricted users no longer get notified, closes: Bug#306121
