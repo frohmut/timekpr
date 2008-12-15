@@ -150,16 +150,16 @@ class TimekprClient:
         else:
             left = tuntil
         
+        # If the time is up, notifications is taken care of by checkLimits
         if left <= 0:
-            self.notifier('Your time is up, you will be logged out in less than 2 minutes')
             return True
         h, m, s = self.fractSec(left)
         message = self.timeleftstring(h, m, s)
         self.notifier(message)
         
-        # if time left is less than 5 minutes, notify every minute
+        # if time left is less than 5 minutes, notify every second minute
         if left < 300:
-            gobject.timeout_add(1 * 60 * 1000, self.pnotifier)
+            gobject.timeout_add(2 * 60 * 1000, self.pnotifier)
             return False
         
         # if time left is less than 15 minutes, notify every 5 minutes
