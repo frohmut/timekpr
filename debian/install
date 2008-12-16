@@ -1,6 +1,6 @@
 etc/timekpr.conf etc/
 etc/timekpr etc/
-etc/logrotate.d/timekpr etc/logrotate.d/timekpr
+etc/logrotate.d/timekpr etc/logrotate.d/
 timekpr usr/bin/
 timekpr-gui usr/bin/
 timekpr-client usr/bin/
