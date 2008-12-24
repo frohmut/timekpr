@@ -1,3 +1,12 @@
+timekpr (0.2.2~ppa1~intrepid1) intrepid; urgency=low
+
+  * .deb file now reflects revision 186
+  * timekpr-client gives less notifications, less annoying
+  * Logrotate should work now, earlier versions installed config file to wrong location
+  * Logrotate will compress old logfiles on second run
+
+ -- Even Nedberg <even@lateralus>  Wed, 24 Dec 2008 11:49:02 +0100
+
 timekpr (0.2.2~b7~ppa1~intrepid1) intrepid; urgency=low
 
   * Fixed a bug where timekpr would crash at midnight, (LP: #307839)
