@@ -1,3 +1,6 @@
+* Add more tooltips to GUI
+* Implement i18n support
+
 * Should we use 'who' to get a list of users and then log them out using 'pkill -u <username>' instead of getting username and pid
   if x-session-manager?
   x-session-manager gives us a problem making the daemon work in XFCE, 'who' and 'pkill' will fix this
