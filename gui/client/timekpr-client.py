@@ -23,7 +23,7 @@ class TimekprClient:
         self.username = os.getenv('USER')
         self.timefile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
         self.allowfile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
-        self.conffile = '/etc/timekpr/' + self.username
+        self.conffile = self.VAR['TIMEKPRDIR'] + self.username
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
         self.timer = None
         self.checkLimits()
@@ -37,6 +37,9 @@ class TimekprClient:
         h, m = divmod(m, 60)
         return h, m, s
 
+    '''
+    Returns the number of seconds a user has left, False if user.time does not exist
+    '''
     def gettime(self, tfile):
         if not isfile(tfile):
             return False
@@ -44,10 +47,13 @@ class TimekprClient:
         time = int(t.readline())
         t.close()
         return time
-    
+
+    '''
+    Returns current time
+    '''
     def now(self):
         return datetime.datetime.now()
-    
+
     def timeofbto(self, index):
         y = datetime.date.today().year
         m = datetime.date.today().month
@@ -60,10 +66,10 @@ class TimekprClient:
         dt = datetime.datetime(date.year, date.month, date.day, h, 0, 0)
         return dt
 
+    '''
+    Detect and return the desktop environment user is using
+    '''
     def get_de(self):
-        '''
-        Detect desktop environment
-        '''
         if os.environ.has_key("KDE_FULL_SESSION") or os.environ.has_key("KDE_MULTIHEAD"):
             return "KDE"
         elif os.environ.has_key("GNOME_DESKTOP_SESSION_ID") or os.environ.has_key("GNOME_KEYRING_SOCKET"):
@@ -71,6 +77,9 @@ class TimekprClient:
         elif getcmdoutput("xprop -root _DT_SAVE_MODE").strip().endswith(' = "xfce4"'):
             return "XFCE"
 
+    '''
+    Returns the version of KDE in use (4 if KDE4, or 3 for everything else)
+    '''
     def kde_version(self):
         version = getcmdoutput('echo $KDE_SESSION_VERSION')
         if version == "\n":
@@ -79,13 +88,14 @@ class TimekprClient:
             return int(version)
 
     '''
-    Left click
+    Left click on tray icon
     '''
     def on_activate(self, data):
         self.pnotifier()
 
     '''
-    Right click
+    Right click on tray icon
+    Should we add a menu to this action?
     '''
     def on_popup_menu(self, status, button, time):
         self.pnotifier()
@@ -96,29 +106,33 @@ class TimekprClient:
     def checkLimits(self):
         # Re-read settings in case they changed
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
-        
+
         index = int(strftime("%w"))
+        # If the user is not a restricted user, set the tray icon to green padlock
         if not isrestricteduser(self.username, self.limits[index]):
             self.tray.set_from_file(self.green)
             return
         else:
             self.tray.set_from_file(self.red)
-        
+
         # In case timefile does not exist yet
         if not self.gettime(self.timefile):
             return True
-        
+
         time = self.gettime(self.timefile)
         if isearly(self.bfrom, self.allowfile):
             self.notifier('You are early, you will be logged out in LESS than 2 minutes')
-        
+
         if islate(self.bto, self.allowfile):
             self.notifier('You are late, you will be logged out in LESS than 2 minutes')
-        
+
         if ispasttime(self.limits, time):
             self.notifier('Your time is up, you will be logged out in LESS than 2 minutes')
 	return True
-    
+
+    '''
+    Returns a formated string with the time left for a user
+    '''
     def timeleftstring(self, h, m, s):
         if h > 1 or h == 0:
             if m > 1 or m == 0:
@@ -130,38 +144,44 @@ class TimekprClient:
                 message = 'You have %s hour, %s minutes and %s seconds left' % (h, m, s)
             else:
                 message = 'You have %s hour, %s minute and %s seconds left' % (h, m, s)
-        
+
         return message
 
+    '''
+    Periodic notifier, gives notifications to the user.
+    Runs every 15 minutes, as long as time left > 15 minutes
+    '''
     def pnotifier(self):
+
         if not self.gettime(self.timefile):
             return True
-        
+
         index = int(strftime("%w"))
-        
+
         # How much time if left?
         usedtime = self.gettime(self.timefile)
         timeleft = self.limits[index] - usedtime
         timeuntil = self.timeofbto(index) - self.now()
         tuntil = timeuntil.seconds
-        
+
+        # What is less?
         if timeleft <= tuntil:
             left = timeleft
         else:
             left = tuntil
-        
+
         # If the time is up, notifications is taken care of by checkLimits
         if left <= 0:
             return True
         h, m, s = self.fractSec(left)
         message = self.timeleftstring(h, m, s)
         self.notifier(message)
-        
+
         # if time left is less than 5 minutes, notify every second minute
         if left < 300:
             gobject.timeout_add(2 * 60 * 1000, self.pnotifier)
             return False
-        
+
         # if time left is less than 15 minutes, notify every 5 minutes
         if left < 900:
             gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
@@ -169,24 +189,32 @@ class TimekprClient:
 
         return True
 
+    '''
+    Acctuall notifier
+    '''
     def notifier(self, message):
         index = int(strftime("%w"))
+        # Don't notify an unrestricted user
         if not isrestricteduser(self.username, self.limits[index]):
             return
         title = "Timekpr"
+        # Gnome and XFCE can user notify-send
         if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
             getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')
         else:
+            # KDE4 uses dbus
             if self.kde_version() == 4:
                 import sys
                 import dbus
                 kn = dbus.SessionBus().get_object("org.kde.knotify", "/Notify")
+                # Should get rid of "kde" in second argument, but it did not work with "timekpr-client
                 i = kn.event("warning", "kde", [], message, [0,0,0,0], [], 0, dbus_interface="org.kde.KNotify")
                 sleep(10)
                 kn.closeNotification(i)
             else:
+                # KDE3 and friends use dcop
                 getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
-    
+
     def main(self):
         gtk.main()
 
