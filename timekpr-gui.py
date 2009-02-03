@@ -26,7 +26,7 @@ APP_NAME = "timekpr"
 
 #Get the local directory since we are not installing anything
 #This should be changed when timekpr is installed!
-local_path = realpath(dirname(sys.argv[0])) + '/LOCALES'
+local_path = realpath(dirname(sys.argv[0])) + '/locale'
 # Init the list of languages to support
 langs = []
 #Check the default locale
