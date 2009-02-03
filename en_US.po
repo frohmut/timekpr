@@ -1,0 +1,260 @@
+# English translations for PACKAGE package.
+# Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Even Nedberg <code@nedberg.net>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-03 20:11+0100\n"
+"PO-Revision-Date: 2009-02-03 20:35+0100\n"
+"Last-Translator: Even Nedberg <code@nedberg.net>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: timekpr-gui.py:37
+msgid "You need to have administrative privileges to run timekpr-gui"
+msgstr "You need to have administrative privileges to run timekpr-gui"
+
+#: timekpr-gui.py:175
+#, python-format
+msgid "Unlocked account %s"
+msgstr "Unlocked account %s"
+
+#: timekpr-gui.py:199
+#, python-format
+msgid "Removed all restrictions for account %s"
+msgstr "Removed all restrictions for account %s"
+
+#: timekpr-gui.py:207
+#, python-format
+msgid "Cleared used up time for account %s"
+msgstr "Cleared used up time for account %s"
+
+#: timekpr-gui.py:224
+msgid "Applied reward of %(num) minute(s) to account %(user)"
+msgstr "Applied reward of %(num) minute(s) to account %(user)"
+
+#: timekpr-gui.py:241
+msgid "Set access hours to 00-24 on %(day) for account %(user)"
+msgstr "Set access hours to 00-24 on %(day) for account %(user)"
+
+#: timekpr-gui.py:246
+#, python-format
+msgid "Refreshed setting values from account %s"
+msgstr "Refreshed setting values from account %s"
+
+#: timekpr-gui.py:448
+msgid "Status for <span weight=\"bold\">"
+msgstr "Status for <span weight=\"bold\">"
+
+#: timekpr-gui.py:480 timekpr-gui.py:506
+msgid "    Sun     "
+msgstr "    Sun     "
+
+#: timekpr-gui.py:486 timekpr-gui.py:511 gui/timekpr.glade.h:13
+msgid "Every day"
+msgstr "Every day"
+
+#: timekpr-gui.py:558
+#, python-format
+msgid "Applied limit changes for account %s"
+msgstr "Applied limit changes for account %s"
+
+#: gui/timekpr.glade.h:1
+msgid "-"
+msgstr "-"
+
+#: gui/timekpr.glade.h:2
+msgid ""
+"Able to login all day today:\n"
+"(Also active bypass)"
+msgstr ""
+"Able to login all day today:\n"
+"(Also active bypass)"
+
+#: gui/timekpr.glade.h:4
+msgid "About timekpr"
+msgstr "About timekpr"
+
+#: gui/timekpr.glade.h:5
+msgid "Account locked:"
+msgstr "Account locked:"
+
+#: gui/timekpr.glade.h:6
+msgid ""
+"Add time\n"
+"Reward / Penalty"
+msgstr ""
+"Add time\n"
+"Reward / Penalty"
+
+#: gui/timekpr.glade.h:8
+msgid "Bypass for today"
+msgstr "Bypass for today"
+
+#: gui/timekpr.glade.h:9
+msgid "Clear all restrictions"
+msgstr "Clear all restrictions"
+
+#: gui/timekpr.glade.h:10
+msgid "Configure per day"
+msgstr "Configure per day"
+
+#: gui/timekpr.glade.h:11
+msgid ""
+"Copyright (c) 2008 Evan Nedberg\n"
+"Copyright (c) 2008 Savvas Radevic"
+msgstr ""
+"Copyright (c) 2008 Evan Nedberg\n"
+"Copyright (c) 2008 Savvas Radevic"
+
+#: gui/timekpr.glade.h:14
+msgid "Fri"
+msgstr "Fri"
+
+#: gui/timekpr.glade.h:15
+msgid "Keep control of computer usage"
+msgstr "Keep control of computer usage"
+
+#: gui/timekpr.glade.h:16
+msgid "Limit access duration"
+msgstr "Limit access duration"
+
+#: gui/timekpr.glade.h:17
+msgid "Limit time frame"
+msgstr "Limit time frame"
+
+#: gui/timekpr.glade.h:18
+msgid ""
+"Limit user access by defining the hours\n"
+"when user is allowed to login"
+msgstr ""
+"Limit user access by defining the hours\n"
+"when user is allowed to login"
+
+#: gui/timekpr.glade.h:20
+msgid ""
+"Limit user access by defining the time duration\n"
+"(how long the user is logged in)"
+msgstr ""
+"Limit user access by defining the time duration\n"
+"(how long the user is logged in)"
+
+#: gui/timekpr.glade.h:22
+msgid "Limited by access duration (any day):"
+msgstr "Limited by access duration (any day):"
+
+#: gui/timekpr.glade.h:23
+msgid "Limited by time frame (any day):"
+msgstr "Limited by time frame (any day):"
+
+#: gui/timekpr.glade.h:24
+msgid "Limits & Boundaries"
+msgstr "Limits & Boundaries"
+
+#: gui/timekpr.glade.h:25
+msgid "Mon"
+msgstr "Mon"
+
+#: gui/timekpr.glade.h:26
+msgid "Reset time"
+msgstr "Reset time"
+
+#: gui/timekpr.glade.h:27
+msgid "Sat"
+msgstr "Sat"
+
+#: gui/timekpr.glade.h:28
+msgid "Select user"
+msgstr "Select user"
+
+#: gui/timekpr.glade.h:29
+msgid "Status"
+msgstr "Status"
+
+#: gui/timekpr.glade.h:30
+msgid "Status for <span weight=\"bold\">username</span>"
+msgstr "Status for <span weight=\"bold\">username</span>"
+
+#: gui/timekpr.glade.h:31
+msgid ""
+"This program is free software: you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation, either version 3 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>. In Debian, see "
+"file /usr/share/common-licenses/GPL-3"
+msgstr ""
+"This program is free software: you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation, either version 3 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>. In Debian, see "
+"file /usr/share/common-licenses/GPL-3"
+
+#: gui/timekpr.glade.h:36
+msgid "Thu"
+msgstr "Thu"
+
+#: gui/timekpr.glade.h:37
+msgid "Time left:"
+msgstr "Time left:"
+
+#: gui/timekpr.glade.h:38
+msgid "Tue"
+msgstr "Tue"
+
+#: gui/timekpr.glade.h:39
+msgid "Unlock Account"
+msgstr "Unlock Account"
+
+#: gui/timekpr.glade.h:40
+msgid "Wed"
+msgstr "Wed"
+
+#: gui/timekpr.glade.h:41
+msgid "_Help"
+msgstr "_Help"
+
+#: gui/timekpr.glade.h:42
+msgid "from"
+msgstr "from"
+
+#: gui/timekpr.glade.h:43
+msgid "http://launchpad.net/timekpr"
+msgstr "http://launchpad.net/timekpr"
+
+#: gui/timekpr.glade.h:44
+msgid "minutes"
+msgstr "minutes"
+
+#: gui/timekpr.glade.h:45
+msgid "timekpr"
+msgstr "timekpr"
+
+#: gui/timekpr.glade.h:46
+msgid "to"
+msgstr "to"
+
+#: gui/timekpr.glade.h:48
+msgid "translator-credits"
+msgstr "translator-credits"
