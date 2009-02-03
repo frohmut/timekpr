@@ -36,14 +36,13 @@ if (lc):
         langs = [lc]
 # Now lets get all of the supported languages on the system
 language = environ.get('LANGUAGE', None)
-print language
 if (language):
         """language comes back something like en_CA:en_US:en_GB:en
         so we need to split it up into a list"""
         langs += language.split(":")
 """Now add on to the back of the list the translations that we
 know that we have, our defaults"""
-langs += ["nb", "en_US"]
+langs += ["en_US", "nb_NO"]
 
 """Now langs is a list of all of the languages that we are going
 to try to use.  First we check the default, then what the system
@@ -60,7 +59,7 @@ _ = lang.gettext
 
 
 #If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = False
+DEVACTIVE = True
 
 #IMPORT
 if DEVACTIVE:
