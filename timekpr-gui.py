@@ -26,37 +26,11 @@ APP_NAME = "timekpr"
 
 #Get the local directory since we are not installing anything
 #This should be changed when timekpr is installed!
-local_path = realpath('/usr/share/locale')
-# Init the list of languages to support
-langs = []
-#Check the default locale
-lc, encoding = locale.getdefaultlocale()
-if (lc):
-        #If we have a default, it's the first in the list
-        langs = [lc]
-# Now lets get all of the supported languages on the system
-language = environ.get('LANGUAGE', None)
-if (language):
-        """language comes back something like en_CA:en_US:en_GB:en
-        so we need to split it up into a list"""
-        langs += language.split(":")
-"""Now add on to the back of the list the translations that we
-know that we have, our defaults"""
-langs += ["en_US", "hu", "sv", "da", "es", "pt", "nb"]
-
-"""Now langs is a list of all of the languages that we are going
-to try to use.  First we check the default, then what the system
-told us, and finally the 'known' list"""
-
+local_path = '/usr/share/locale'
+locale.setlocale(locale.LC_ALL, '')
 gettext.bindtextdomain(APP_NAME, local_path)
 gettext.textdomain(APP_NAME)
-# Get the language to use
-lang = gettext.translation(APP_NAME, local_path, languages=langs, fallback = True)
-"""Install the language, map _() (which we marked our
-strings to translate with) to lang.gettext() which will
-translate them."""
-_ = lang.gettext
-
+_ = gettext.gettext
 
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = False
@@ -121,7 +95,7 @@ def rm(f):
 class timekprGUI:
     def __init__(self):
         gladefile = VAR['TIMEKPRSHARED'] + '/timekpr.glade'
-        self.wTree = gtk.glade.XML(gladefile, 'mainwindow')
+        self.wTree = gtk.glade.XML(gladefile, 'mainwindow', APP_NAME)
 
         self.get_limit_spin()
         self.get_from_spin()
@@ -271,7 +245,7 @@ class timekprGUI:
         f = open(timefile, 'w')
         f.write(str(tnew))
         f.close()
-        statusmsg = _("Applied reward of %(num) minute(s) to account %(user)" % {'num': arg, 'user': self.user})
+        statusmsg = _("Applied reward of %(num)s minute(s) to account %(user)s" % {'num': arg, 'user': self.user})
         self.statusmessage(self, statusmsg)
         self.read_settings_nolimits(self)
 
