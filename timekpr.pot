@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-03 20:11+0100\n"
+"POT-Creation-Date: 2009-02-18 20:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,51 +16,56 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: timekpr-gui.py:37
+#: timekpr-gui.py:79
 msgid "You need to have administrative privileges to run timekpr-gui"
 msgstr ""
 
-#: timekpr-gui.py:175
+#: timekpr-gui.py:184
+msgid ""
+"You need to have at least one normal user available to configure timekpr"
+msgstr ""
+
+#: timekpr-gui.py:225
 #, python-format
 msgid "Unlocked account %s"
 msgstr ""
 
-#: timekpr-gui.py:199
+#: timekpr-gui.py:249
 #, python-format
 msgid "Removed all restrictions for account %s"
 msgstr ""
 
-#: timekpr-gui.py:207
+#: timekpr-gui.py:257
 #, python-format
 msgid "Cleared used up time for account %s"
 msgstr ""
 
-#: timekpr-gui.py:224
+#: timekpr-gui.py:274
 msgid "Applied reward of %(num) minute(s) to account %(user)"
 msgstr ""
 
-#: timekpr-gui.py:241
+#: timekpr-gui.py:291
 msgid "Set access hours to 00-24 on %(day) for account %(user)"
 msgstr ""
 
-#: timekpr-gui.py:246
+#: timekpr-gui.py:296
 #, python-format
 msgid "Refreshed setting values from account %s"
 msgstr ""
 
-#: timekpr-gui.py:448
+#: timekpr-gui.py:498
 msgid "Status for <span weight=\"bold\">"
 msgstr ""
 
-#: timekpr-gui.py:480 timekpr-gui.py:506
+#: timekpr-gui.py:530 timekpr-gui.py:556
 msgid "    Sun     "
 msgstr ""
 
-#: timekpr-gui.py:486 timekpr-gui.py:511 gui/timekpr.glade.h:13
+#: timekpr-gui.py:536 timekpr-gui.py:561 gui/timekpr.glade.h:13
 msgid "Every day"
 msgstr ""
 
-#: timekpr-gui.py:558
+#: timekpr-gui.py:608
 #, python-format
 msgid "Applied limit changes for account %s"
 msgstr ""

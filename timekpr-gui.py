@@ -42,7 +42,7 @@ if (language):
         langs += language.split(":")
 """Now add on to the back of the list the translations that we
 know that we have, our defaults"""
-langs += ["en_US", "nb_NO"]
+langs += ["en_US", "hu", "nb_NO"]
 
 """Now langs is a list of all of the languages that we are going
 to try to use.  First we check the default, then what the system
@@ -178,6 +178,14 @@ class timekprGUI:
             if isnormal(userinfo[0]):
                 self.userSelect.append_text(userinfo[0])
                 self.userSelect.set_active(0)
+
+        #Ensure we have at least one available normal user
+        if self.userSelect.get_active_text() is None:
+            dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _("You need to have at least one normal user available to configure timekpr"))
+            dlg.set_default_response(gtk.RESPONSE_CLOSE)
+            dlg.run()
+            dlg.destroy()
+            exit("Error: You need to have at least one normal user available to configure timekpr")
 
         self.read_settings(self)
         return
