@@ -26,7 +26,7 @@ APP_NAME = "timekpr"
 
 #Get the local directory since we are not installing anything
 #This should be changed when timekpr is installed!
-local_path = realpath(dirname(sys.argv[0])) + '/locale'
+local_path = realpath('/usr/share/locale')
 # Init the list of languages to support
 langs = []
 #Check the default locale
@@ -42,7 +42,7 @@ if (language):
         langs += language.split(":")
 """Now add on to the back of the list the translations that we
 know that we have, our defaults"""
-langs += ["en_US", "hu", "nb_NO"]
+langs += ["en_US", "hu", "sv", "da", "es", "pt", "nb"]
 
 """Now langs is a list of all of the languages that we are going
 to try to use.  First we check the default, then what the system
@@ -59,7 +59,7 @@ _ = lang.gettext
 
 
 #If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = True
+DEVACTIVE = False
 
 #IMPORT
 if DEVACTIVE:
