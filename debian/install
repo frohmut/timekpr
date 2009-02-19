@@ -20,9 +20,9 @@ gui/timekpr32x32.png usr/share/timekpr/
 gui/timekpr.xpm usr/share/pixmaps/
 debian/timekpr.desktop usr/share/applications/
 debian/timekpr-client.desktop etc/xdg/autostart
-locale/da/LC_MESSAGES/timekpr.mo usr/share/locale/da/LC_MESSAGES/timekpr.mo
-locale/en_US/LC_MESSAGES/timekpr.mo usr/share/locale/en_US/LC_MESSAGES/timekpr.mo
-locale/es/LC_MESSAGES/timekpr.mo usr/share/locale/es/LC_MESSAGES/timekpr.mo
-locale/hu/LC_MESSAGES/timekpr.mo usr/share/locale/hu/LC_MESSAGES/timekpr.mo
-locale/nb/LC_MESSAGES/timekpr.mo usr/share/locale/nb/LC_MESSAGES/timekpr.mo
-locale/sv/LC_MESSAGES/timekpr.mo usr/share/locale/sv/LC_MESSAGES/timekpr.mo
+locale/da/LC_MESSAGES/timekpr.mo usr/share/locale/da/LC_MESSAGES/
+locale/en_US/LC_MESSAGES/timekpr.mo usr/share/locale/en_US/LC_MESSAGES/
+locale/es/LC_MESSAGES/timekpr.mo usr/share/locale/es/LC_MESSAGES/
+locale/hu/LC_MESSAGES/timekpr.mo usr/share/locale/hu/LC_MESSAGES/
+locale/nb/LC_MESSAGES/timekpr.mo usr/share/locale/nb/LC_MESSAGES/
+locale/sv/LC_MESSAGES/timekpr.mo usr/share/locale/sv/LC_MESSAGES/

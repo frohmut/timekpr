@@ -6,6 +6,7 @@ _CONTINUE () {
     if [ "$CHOICE" = "y" ] || [ "$CHOICE" = "Y" ] || [ "$CHOICE" = "" ] ; then
         _COPYSTUFF
     elif [ "$CHOICE" = "n" ]; then
+        echo ""
         echo "You have chosen not to continue. Exiting..."
         exit 1
     else
@@ -18,8 +19,14 @@ _CONTINUE () {
 
 _COPYSTUFF() {
     cat debian/install | while read a b; do
-        echo "Copy $a to $b"
-        cp $a /$b
+        d="/$b"
+        if [ ! -d $d ]; then
+            echo "Making directory $d"
+            mkdir -p $d
+        fi
+        f=`basename $a`
+        echo "Copying $a to /$b$f"
+        cp $a /$b$f
     done
     echo ""
     echo "timekpr has been updated!"
