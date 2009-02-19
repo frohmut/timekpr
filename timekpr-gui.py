@@ -180,10 +180,10 @@ class timekprGUI:
         self.aboutd.destroy()
 
     def lockunlockaccount(self, widget):
-        if self.lockLabel.get_label() == 'Lock account':
+        if self.lockLabel.get_label() == _('Lock account'):
             #lock account
             lockuser(self.user)
-            statusmsg = "Locked account %s" % (self.user)
+            statusmsg = _("Locked account %s") % (self.user)
             self.statusmessage(self, statusmsg)
             self.read_settings_nolimits(self)
         else:
@@ -196,7 +196,7 @@ class timekprGUI:
             rm(logoutf)
             latef = VAR['TIMEKPRWORK'] + '/' + self.user + '.late'
             rm(latef)
-            statusmsg = _("Unlocked account %s" % (self.user))
+            statusmsg = _("Unlocked account %s") % self.user
             self.statusmessage(self, statusmsg)
             self.read_settings_nolimits(self)
 
@@ -220,7 +220,7 @@ class timekprGUI:
         #Unlock user
         unlockuser(self.user)
 
-        statusmsg = _("Removed all restrictions for account %s" % self.user)
+        statusmsg = _("Removed all restrictions for account %s") % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings(self)
 
@@ -228,7 +228,7 @@ class timekprGUI:
         #clear the .time file
         timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         rm(timefile)
-        statusmsg = _("Cleared used up time for account %s" % self.user)
+        statusmsg = _("Cleared used up time for account %s") % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings_nolimits(self)
 
@@ -245,7 +245,7 @@ class timekprGUI:
         f = open(timefile, 'w')
         f.write(str(tnew))
         f.close()
-        statusmsg = _("Applied reward of %(num)s minute(s) to account %(user)s" % {'num': arg, 'user': self.user})
+        statusmsg = _("Applied reward of %(num)s minute(s) to account %(user)s") % {'num': arg, 'user': self.user}
         self.statusmessage(self, statusmsg)
         self.read_settings_nolimits(self)
 
@@ -262,12 +262,12 @@ class timekprGUI:
         adduserlimits(self.user, wfrom, wto)
         allowfile = VAR['TIMEKPRWORK'] + '/' + self.user + '.allow'
         f = open(allowfile, 'w').close()
-        statusmsg = _("Set access hours to 00-24 on %(day) for account %(user)" % {'day': strftime("%A"), 'user': self.user})
+        statusmsg = _("Set access hours to 00-24 on %(day)s for account %(user)s") % {'day': strftime("%A"), 'user': self.user}
         self.statusmessage(self, statusmsg)
         self.read_settings(self)
 
     def refreshButton_clicked(self, widget):
-        statusmsg = _("Refreshed setting values from account %s" % self.user)
+        statusmsg = _("Refreshed setting values from account %s") % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings(self)
 
@@ -432,9 +432,9 @@ class timekprGUI:
 
     def buttonstates(self,widget, uislocked):
         if uislocked:
-            self.lockLabel.set_label('Unlock account')
+            self.lockLabel.set_label(_('Unlock account'))
         else:
-            self.lockLabel.set_label('Lock account')
+            self.lockLabel.set_label(_('Lock account'))
 
         if self.limitCheck.get_active():
             timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
@@ -579,7 +579,7 @@ class timekprGUI:
         #Add new limits (boundaries)
         ab = adduserlimits(self.user, bFrom, bTo)
 
-        statusmsg = _("Applied limit changes for account %s" % (self.user))
+        statusmsg = _("Applied limit changes for account %s") % self.user
         self.statusmessage(self, statusmsg)
         self.read_settings(self)
 
