@@ -66,6 +66,9 @@ if not isdir(VAR['TIMEKPRSHARED']):
 
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
+    #FIXME: Hide active user - bug #286529
+    if username == os.getlogin(): return False
+
     userid = int(getpwnam(username)[2])
     logindefs = open('/etc/login.defs')
     uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)', re.M).findall(logindefs.read())
@@ -76,10 +79,7 @@ def isnormal(username):
         uidmin = int(uidminmax[1])
         uidmax = int(uidminmax[0])
 
-    #FIXME: Bug #286529
-    if userid == uidmin:
-        return False
-    elif uidmin < userid <= uidmax:
+    if uidmin <= userid <= uidmax:
         return True
     else:
         return False
