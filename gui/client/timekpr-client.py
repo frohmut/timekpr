@@ -8,6 +8,20 @@ import datetime
 from timekprpam import *
 from timekprcommon import *
 
+import locale
+import gettext
+import sys
+
+APP_NAME = "timekpr"
+
+#Translation stuff
+#Get the local directory
+local_path = '/usr/share/locale'
+locale.setlocale(locale.LC_ALL, '')
+gettext.bindtextdomain(APP_NAME, local_path)
+gettext.textdomain(APP_NAME)
+_ = gettext.gettext
+
 class TimekprClient:
     def __init__(self):
         self.VAR = getvariables(False)
@@ -135,7 +149,7 @@ class TimekprClient:
     '''
     def timeleftstring(self, h, m, s):
         #TODO: Need to find a better way to have plural form (or just use hours(s) )
-        message = _('You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left') % {'hour': h, 'min': m, 'sec': s)
+        message = _('You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left') % {'hour': h, 'min': m, 'sec': s}
 
         #if h > 1 or h == 0:
             #if m > 1 or m == 0:
