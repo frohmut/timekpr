@@ -121,29 +121,32 @@ class TimekprClient:
 
         time = self.gettime(self.timefile)
         if isearly(self.bfrom, self.allowfile):
-            self.notifier('You are early, you will be logged out in LESS than 2 minutes')
+            self.notifier(_('You are early, you will be logged out in LESS than 2 minutes'))
 
         if islate(self.bto, self.allowfile):
-            self.notifier('You are late, you will be logged out in LESS than 2 minutes')
+            self.notifier(_('You are late, you will be logged out in LESS than 2 minutes'))
 
         if ispasttime(self.limits, time):
-            self.notifier('Your time is up, you will be logged out in LESS than 2 minutes')
+            self.notifier(_('Your time is up, you will be logged out in LESS than 2 minutes'))
 	return True
 
     '''
     Returns a formated string with the time left for a user
     '''
     def timeleftstring(self, h, m, s):
-        if h > 1 or h == 0:
-            if m > 1 or m == 0:
-                message = 'You have %s hours, %s minutes and %s seconds left' % (h, m, s)
-            else:
-                message = 'You have %s hours, %s minute and %s seconds left' % (h, m, s)
-        else:
-            if m > 1 or m == 0:
-                message = 'You have %s hour, %s minutes and %s seconds left' % (h, m, s)
-            else:
-                message = 'You have %s hour, %s minute and %s seconds left' % (h, m, s)
+        #TODO: Need to find a better way to have plural form (or just use hours(s) )
+        message = _('You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left') % {'hour': h, 'min': m, 'sec': s)
+
+        #if h > 1 or h == 0:
+            #if m > 1 or m == 0:
+                #message = _('You have %(hour)s hours, %(min)s minutes and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
+            #else:
+                #message = _('You have %(hour)s hours, %(min)s minute and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
+        #else:
+            #if m > 1 or m == 0:
+                #message = _('You have %(hour)s hour, %(min)s minutes and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
+            #else:
+                #message = _('You have %(hour)s hour, %(min)s minute and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
 
         return message
 

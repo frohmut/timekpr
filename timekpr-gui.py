@@ -16,22 +16,6 @@ import gtk
 import gtk.glade
 import gobject
 
-import locale
-import gettext
-import sys
-
-APP_NAME = "timekpr"
-
-#Translation stuff
-
-#Get the local directory since we are not installing anything
-#This should be changed when timekpr is installed!
-local_path = '/usr/share/locale'
-locale.setlocale(locale.LC_ALL, '')
-gettext.bindtextdomain(APP_NAME, local_path)
-gettext.textdomain(APP_NAME)
-_ = gettext.gettext
-
 #If DEVACTIVE is true, it uses files from local directory
 DEVACTIVE = False
 

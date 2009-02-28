@@ -8,9 +8,22 @@ from os.path import isfile, getmtime
 from os import geteuid
 from time import strftime, localtime
 from timekprpam import *
+import locale
+import gettext
+import sys
 
-def getversion(): 
-    return '0.2.2'
+APP_NAME = "timekpr"
+
+#Translation stuff
+#Get the local directory
+local_path = '/usr/share/locale'
+locale.setlocale(locale.LC_ALL, '')
+gettext.bindtextdomain(APP_NAME, local_path)
+gettext.textdomain(APP_NAME)
+_ = gettext.gettext
+
+def getversion():
+    return '0.3.0'
 
 def checkifadmin():
     if geteuid() != 0:
@@ -23,68 +36,68 @@ def getvariables(DEVACTIVE):
         fconf = './etc/timekpr.conf'
     if not isfile(fconf):
         exit('Error: Could not find configuration file %s' % fconf)
-    
+
     conf = ConfigParser.ConfigParser()
     try:
         conf.read(fconf)
     except ConfigParser.ParsingError:
         exit('Error: Could not parse the configuration file properly %s' % fconf)
-    
+
     #Creating a dictionary file
     var = dict()
     #VARIABLES
     #VERSION GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
     #Exits or sets default if not found
-    
+
     try:
         var['VERSION'] = conf.get("general", "version")
     except ConfigParser.NoOptionError:
         exit('Error: Could not detect variable version in configuration file %s' % fconf)
     if var['VERSION'] < '0.2.0':
         exit('Error: You have an old /etc/timekpr.conf - remove and reinstall timekpr')
-    
+
     try:
         var['GRACEPERIOD'] = int(conf.get("variables", "graceperiod"))
     except ConfigParser.NoOptionError:
         var['GRACEPERIOD'] = 120
-    
+
     try:
         var['POLLTIME'] = int(conf.get("variables", "polltime"))
     except ConfigParser.NoOptionError:
         var['POLLTIME'] = 45
-    
+
     try:
         var['LOCKLASTS'] = conf.get("variables", "locklasts")
     except ConfigParser.NoOptionError:
         var['LOCKLASTS'] = '1 hour'
-    
+
     try:
         var['DEBUGME'] = conf.get("variables", "debugme")
     except ConfigParser.NoOptionError:
         var['DEBUGME'] = 'True'
-    
+
     try:
         var['LOGFILE'] = conf.get("directories", "logfile")
     except ConfigParser.NoOptionError:
         var['LOGFILE'] = '/var/log/timekpr.log'
-    
+
     try:
         var['TIMEKPRDIR'] = conf.get("directories", "timekprdir")
     except ConfigParser.NoOptionError:
         var['TIMEKPRDIR'] = '/etc/timekpr'
-    
+
     try:
         var['TIMEKPRWORK'] = conf.get("directories", "timekprwork")
     except ConfigParser.NoOptionError:
         var['TIMEKPRWORK'] = '/var/lib/timekpr'
-    
+
     try:
         var['TIMEKPRSHARED'] = conf.get("directories", "timekprshared")
     except ConfigParser.NoOptionError:
         var['TIMEKPRSHARED'] = '/usr/share/timekpr'
     if DEVACTIVE:
         var['TIMEKPRSHARED'] = './gui'
-    
+
     return var
 
 def getcmdoutput(cmd):
@@ -156,8 +169,8 @@ def readusersettings(user, conffile):
     bfromtemp = bfromandto[0]
     #Using map instead of for i in ...
     bfrom = map(int, bfromtemp)
-    
+
     btotemp = bfromandto[1]
     bto = map(int, btotemp)
-    
+
     return lims, bfrom, bto
