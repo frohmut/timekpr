@@ -4,7 +4,7 @@
 """
 
 import re
-from os import remove, mkdir, geteuid, environ, getlogin
+from os import remove, mkdir, geteuid, getenv
 from os.path import isdir, isfile, realpath, dirname
 from time import strftime, sleep
 from pwd import getpwnam
@@ -67,7 +67,8 @@ if not isdir(VAR['TIMEKPRSHARED']):
 #Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
     #FIXME: Hide active user - bug #286529
-    if username == getlogin(): return False
+    if (getenv('SUDO_USER') and username == getenv('SUDO_USER')):
+        return False
 
     userid = int(getpwnam(username)[2])
     logindefs = open('/etc/login.defs')
