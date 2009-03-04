@@ -84,9 +84,9 @@ class TimekprClient:
     Detect and return the desktop environment user is using
     '''
     def get_de(self):
-        if os.environ.has_key("KDE_FULL_SESSION") or os.environ.has_key("KDE_MULTIHEAD"):
+        if "KDE_FULL_SESSION" in os.environ or "KDE_MULTIHEAD" in os.environ:
             return "KDE"
-        elif os.environ.has_key("GNOME_DESKTOP_SESSION_ID") or os.environ.has_key("GNOME_KEYRING_SOCKET"):
+        elif "GNOME_DESKTOP_SESSION_ID" in os.environ or "GNOME_KEYRING_SOCKET" in os.environ:
             return "GNOME"
         elif getcmdoutput("xprop -root _DT_SAVE_MODE").strip().endswith(' = "xfce4"'):
             return "XFCE"

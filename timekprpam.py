@@ -274,8 +274,8 @@ def converttconf(tfrom, tto, mode=0):
 
     """
     if mode == 0:
-        ffrom = map(strint, tfrom)
-        fto = map(strint, tto)
+        ffrom = list(map(strint, tfrom))
+        fto = list(map(strint, tto))
     elif mode == 1:
         #Single values mode, need to multiply 7 times
         ffrom = [strint(tfrom)] * 7

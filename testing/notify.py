@@ -23,5 +23,5 @@ if __name__ == '__main__':
 #    n.set_icon_from_pixbuf(icon)
 
     if not n.show():
-        print 'Failed to send notification'
+        print('Failed to send notification')
         exit(1)
