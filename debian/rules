@@ -2,5 +2,9 @@
 
 DEB_PYTHON_SYSTEM=pysupport
 
+clean:
+	dh $@
+	find . -name ".bzr" -exec rm -fr "{}" \;
+
 %:
 	dh $@
