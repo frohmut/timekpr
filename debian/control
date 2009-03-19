@@ -3,21 +3,21 @@ Section: admin
 Priority: extra
 Maintainer: Savvas Radevic <vicedar@gmail.com>
 Uploaders: Even Nedberg <code@nedberg.net>, Savvas Radevic <vicedar@gmail.com>
-Build-Depends: debhelper (>= 7), python, po-debconf
+Build-Depends: debhelper (>= 7), python-dev, po-debconf
 Build-Depends-Indep: python-support (>= 0.5.3)
 Standards-Version: 3.8.0
+XS-Python-Version: >= 2.5
 Vcs-Bzr: https://code.edge.launchpad.net/~timekpr-maintainers/timekpr/trunk
 Vcs-Browser: https://code.edge.launchpad.net/~timekpr-maintainers/timekpr/trunk
 Homepage: http://launchpad.net/timekpr/
 
 Package: timekpr
 Architecture: all
-Pre-Depends: sed, grep
-Depends:  ${misc:Depends}, ${python:Depends}, python2.5-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules, gksu
+XB-Python-Version: ${python:Versions}
+Depends: ${misc:Depends}, ${python:Depends}, python-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules, gksu
 Provides: timekpr
-Conflicts: timekpr
-Replaces: timekpr
-Recommends: gdm
+Conflicts: timekpr (< 0.2.2)
+Replaces: timekpr (< 0.2.2)
 Description: Keep control of computer usage
  This program will track and control the computer usage of
  your user accounts. You can limit their daily usage based
