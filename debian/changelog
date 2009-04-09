@@ -1,10 +1,13 @@
 timekpr (0.3.0~ppa1~intrepid1~beta1) intrepid; urgency=low
 
   * Fixed Bug #330261: GUI fails to start if no normal users present
-  * Added i18n support to timekpr-gui
+  * Added i18n support to timekpr-gui and timekpr-client, Bug #302782
   * Fixed bug #314061: hard reference to /etc/timkpr in timekpr-client
+  * Fixed Bug #344538: timekpr limitations allow maximum 14h 
+(Fixed by Savvas)
+  * Build from revison #212
 
- -- Even Nedberg <even@undertow>  Thu, 19 Feb 2009 10:53:06 +0100
+ -- Even Nedberg <even@lateralus>  Thu, 09 Apr 2009 17:42:00 +0200
 
 timekpr (0.2.2~ppa1~intrepid1) intrepid; urgency=low
 
