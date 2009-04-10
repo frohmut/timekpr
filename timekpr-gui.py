@@ -174,6 +174,7 @@ class timekprGUI:
         self.aboutdialog = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade', 'aboutdialog')
         self.aboutd = self.aboutdialog.get_widget('aboutdialog')
         self.aboutd.set_version(version)
+        self.aboutd.set_translator_credits(_("translator-credits"))
         self.aboutd.show_all()
         self.aboutd.run()
         self.aboutd.destroy()
