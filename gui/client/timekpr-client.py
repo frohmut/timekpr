@@ -37,7 +37,7 @@ class TimekprClient:
         self.username = os.getenv('USER')
         self.timefile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
         self.allowfile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
-        self.conffile = self.VAR['TIMEKPRDIR'] + self.username
+        self.conffile = self.VAR['TIMEKPRDIR'] + '/' + self.username
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
         self.timer = None
         self.checkLimits()
