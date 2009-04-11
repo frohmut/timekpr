@@ -1,0 +1,105 @@
+
+.TH TIMEKPR 8 "NOVEMBER 2008" Linux "User Manuals"
+.SH TIMEKPR 
+timekpr \- keep control of computer usage
+.SH SYNOPSIS
+.B timekpr 
+.SH DESCRIPTION
+.B timekpr 
+tracks and controls the computer usage of user accounts. 
+Using 
+.B timekpr-gui(8), 
+the administrator can limit daily usage per user by configuring
+
+.IP . 
+a daytime range (e.g. from 8am to 7pm) when to user is allowed to work.
+
+.IP . 
+an elapsed time (e.g. 90 minutes) the user is allowed to work per day.
+
+.PP 
+.B timekpr
+allows users to login or to stay logged in only as long as both limits are met.
+As long as a user hasn't any limits configured,
+.B timekpr
+does not do any monitoring or other actions on that user.
+
+To
+.I disallow logins outside the defined daytime range,
+.B timekpr
+relies on the settings in the configuration file for the 
+.I time
+PAM-Module entered by 
+.B timekpr-gui.
+
+To disallow users 
+.I to stay logged in over the defined daytime range,
+or
+.I to stay logged in over the defined elapsed time,
+.B timekpr 
+checks the process tree at regular intervals. When a certain 
+user is logged in, the file
+.I /var/lib/timekpr/<username>.time
+is updated to contain the new
+elapsed time. This time is then checked against the total allowed
+(stored in 
+.I /etc/timekpr/<username>
+).
+
+
+When
+.B timekpr
+discovers a user violating its limits, the user is warned and given a grace
+period to save his work. After this grace period, the user is 
+.I kicked out
+by killing its processes. In addition, the file 
+.I /var/lib/timekpr/<username>.logout
+is touched to state the fact that the user has been logged out forcibly by 
+.B timekpr.
+
+When the user tries to login again (within its daytime range, but all elapsed time
+used up), it is kicked out immediately and then locked by editing the
+config file for the 
+.I access
+PAM-Module. Now the user cannot login any more.
+
+.SH FILES
+.I /etc/timekpr.conf
+.RS 
+The system wide configuration file. See
+.BR timekpr.conf (5)
+for further details.
+.RE
+.I /etc/security/time.conf
+.I /etc/security/access.conf
+.RS 
+The system wide PAM Configuration files for the time and and access modules.
+
+.SH DIAGNOSTICS
+The logfile is quite verbose:
+.I /var/log/timekpr.log
+. The logfile can located elsewhere, check the config file.
+
+.SH BUGS
+.B timekpr 
+is in an early development stage. Please check https://bugs.launchpad.net/timekpr/+bugs 
+
+
+.SH AUTHORS
+Chris Jackson wrote the original bash script.
+
+Even Nedberg and Savvas Radevic wrote the current python implementation.
+
+Nicolas Iselin wrote this manpage.
+
+.SH SEE ALSO
+.BR timekpr.conf (5),
+.BR timekpr-gui (8),
+The
+.BR "Linux-PAM guide for system administrators" 
+(modules 
+.BR access
+and
+.BR limits)
+
+
