@@ -45,6 +45,8 @@ class TimekprClient:
         self.timer = gobject.timeout_add(self.checkInterval * 1000, self.checkLimits)
         #Add a notifier every 15 minutes
         gobject.timeout_add(15 * 60 * 1000, self.pnotifier)
+        self.click = False
+        self.lastNotified = datetime.datetime.now()
 
     def fractSec(self, s):
         m, s = divmod(s, 60)
@@ -105,6 +107,7 @@ class TimekprClient:
     Left click on tray icon
     '''
     def on_activate(self, data):
+        self.click = True
         self.pnotifier()
 
     '''
@@ -112,6 +115,7 @@ class TimekprClient:
     Should we add a menu to this action?
     '''
     def on_popup_menu(self, status, button, time):
+        self.click = True
         self.pnotifier()
 
     '''
@@ -194,16 +198,17 @@ class TimekprClient:
         message = self.timeleftstring(h, m, s)
         self.notifier(message)
 
-        # if time left is less than 5 minutes, notify every second minute
-        if left < 300:
+        # if time left is less than 8 minutes, notify every second minute
+        if left < 480 and not self.click:
             gobject.timeout_add(2 * 60 * 1000, self.pnotifier)
             return False
 
-        # if time left is less than 15 minutes, notify every 5 minutes
-        if left < 900:
+        # if time left is less than 20 minutes, notify every 5 minutes
+        if left < 1200 and not self.click:
             gobject.timeout_add(5 * 60 * 1000, self.pnotifier)
             return False
 
+        self.click = False
         return True
 
     '''
@@ -215,6 +220,9 @@ class TimekprClient:
         if not isrestricteduser(self.username, self.limits[index]):
             return
         title = "Timekpr"
+        # Don't notify if we just gave a notification
+        if (datetime.datetime.now() - self.lastNotified).seconds < 5:
+            return
         # Gnome and XFCE can user notify-send
         if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
             getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')
@@ -231,6 +239,8 @@ class TimekprClient:
             else:
                 # KDE3 and friends use dcop
                 getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
+
+        self.lastNotified = datetime.datetime.now()
 
     def main(self):
         gtk.main()

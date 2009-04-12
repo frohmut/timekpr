@@ -1,3 +1,16 @@
+timekpr (0.3.0~ppa1~ubuntu1~beta4) jaunty; urgency=low
+
+  * timekpr-client will no longer display two or more notifications at the same time
+  * Added Finish translation
+
+ -- Even Nedberg <even@undertow>  Sun, 12 Apr 2009 20:09:28 +0200
+
+timekpr (0.3.0~ppa1~ubuntu1~beta3) jaunty; urgency=low
+
+  * Added manpage (LP: #302770)
+
+ -- Even Nedberg <even@undertow>  Sun, 12 Apr 2009 20:07:34 +0200
+
 timekpr (0.3.0~ppa1~intrepid1~beta2) intrepid; urgency=low
 
   * Fixed (LP: #314061): hard reference to /etc/timekpr in timekpr-client, Properly this time
