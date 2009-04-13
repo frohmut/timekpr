@@ -199,7 +199,7 @@ while (True):
     # Check if we have passed midnight, ie new day
     if THISDAY != strftime("%Y%m%d"):
         THISDAY = strftime("%Y%m%d")
-    
+
     # Get the usernames and PIDs of sessions
     for username in getusers():
         conffile = VAR['TIMEKPRDIR'] + '/' + username
@@ -212,18 +212,18 @@ while (True):
             allowfile = VAR['TIMEKPRWORK'] + '/' + username + '.allow'
             latefile = VAR['TIMEKPRWORK'] + '/' + username + '.late'
             logoutfile = VAR['TIMEKPRWORK'] + '/' + username + '.logout'
-            
+
             time = int(gettime(timefile, username))
             '''Is the user allowed to be logged in at this time?
             We take it for granted that if they are allowed to login all day ($default_limit) then
             they can login whenever they want, ie they are normal users'''
-            
+
             # Get current day index and hour of day
             index = int(strftime("%w"))
             hour = int(strftime("%H"))
-            
+
             logkpr('User: %s Day-Index: %s Seconds-passed: %s' % (username, index, time))
-            
+
             # Compare: is current hour less than the one in bfrom list?
             if (hour < bfrom[index]):
                 logkpr('Current hour less than the defined hour in conffile for user %s' % username)
@@ -236,7 +236,7 @@ while (True):
                     # User has not been given extended login hours
                     logkpr('Extended hours not detected, %s not in allowed period from-to' %username)
                     threadit(0.5, logOut, username)
-            
+
             # Compare: is current hour greater/equal to $to array?
             if (hour >= bto[index]):
                 logkpr('Current hour greater than the defined hour in conffile for user %s' % username)
@@ -275,9 +275,10 @@ while (True):
                         addnotified(username)
                         threadit(VAR['GRACEPERIOD'], removenotified, username)
                         lockacct(username)
-            
+
             # Is the limit exeeded
-            if (time > limits[index]):
+            # Also includes a fix for a bug that caused an unrestricted user to be kicked and locked at midnight
+            if (time > limits[index] and not limits[index] == 86400):
                 logkpr('Exceeded today\'s access login duration user %s' % username)
                 # Has the user already been kicked out?
                 if isfile(logoutfile):
@@ -302,7 +303,7 @@ while (True):
                     addnotified(username)
                     threadit(VAR['GRACEPERIOD'], removenotified, username)
                     lockacct(username)
-    
+
     # Done checking all users, sleeping
     logkpr('Finished checking all users, sleeping for %s seconds' % VAR['POLLTIME'])
     sleep(VAR['POLLTIME'])
