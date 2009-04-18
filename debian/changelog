@@ -1,3 +1,10 @@
+timekpr (0.3.0~ppa1~ubuntu1) jaunty; urgency=low
+
+  * Fixed a bug that would kick a unrestricted user who was logged in all day
+  * Release includes files from revision 221
+
+ -- Even Nedberg <even@lateralus>  Sat, 18 Apr 2009 09:24:35 +0200
+
 timekpr (0.3.0~ppa1~ubuntu1~beta4) jaunty; urgency=low
 
   * timekpr-client will no longer display two or more notifications at the same time
