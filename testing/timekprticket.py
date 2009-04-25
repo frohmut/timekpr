@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import re
-from uuid import uuid4 as uuidrand
 from random import choice
 from glob import glob
 from os.path import isfile
@@ -18,13 +17,13 @@ TKTFILE = TKTDIR + '/' + '.tickets'
 
 def mkticket():
 	#Create a ticketid
-	#returns format 'ABC1234'
-	a = uuidrand().hex.upper()
-	letters = re.findall('[A-Z]',a)
-	al = choice(letters)*3
-	digits = re.findall('\d',a)
-	ad = choice(digits)*4
-	ticket = al + ad
+	#returns format 'ABC-1234'
+	letters = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')*4
+	al = choice(letters) + choice(letters) + choice(letters)
+	digits = list('0123456789')*6
+	ad = choice(digits) + choice(digits) + choice(digits) + choice(digits) + choice(digits)
+	ticket = "%s-%s" % (al, ad)
+	return ticket
 
 def gettickets(u = ''):
 	#Without u argument, returns tickets of all usernames
