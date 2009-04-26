@@ -3,11 +3,17 @@
 
 import os.path
 import re
+import sys
 
-def pamgdm(file='/etc/pam.d/gdm'):
-    if not os.path.isfile(file):
+#TODO: os.environ[param] if operating systems have different paths
+
+def pamfilecheck(file):
+    """ Checking pam.d files, adds the required lines """
+    try:
+        f = open(file)
+    except IOError, e:
+        print("INFO: " + str(e))
         return
-    f = open(file)
     contents = f.read()
     f.close()
 
@@ -36,12 +42,45 @@ def pamgdm(file='/etc/pam.d/gdm'):
         f.close()
     return
 
-def pamkdm(file='/etc/pam.d/kdm'):
+def pamconffilecheck(file):
+    """ Checks time.conf and access.conf, adds the required TIMEKPR section """
+    pass # Disabled
+    try:
+        f = open(file)
+    except IOError, e:
+        # Here we fail, we need those two files.
+        sys.exit("INFO: " + str(e))
+    contents = f.read()
+    f.close()
+
+    #time.conf
+    match_time = re.findall('^###? TIMEKPR START', contents)
+    if match_time:
+        #Found timekpr section, uncomment the whole section (commented after removal, see postrm)
+        if re.findall('^### TIMEKPR START', contents):
+            #newcontents = re.sub('### TIMEKPR START', '', input)
     return
 
-def pamlogin(file='/etc/pam.d/login'):
-    return
+def beginpamcheck():
+    file_list = [
+        '/etc/pam.d/gdm',
+        '/etc/pam.d/kdm',
+        '/etc/pam.d/login'
+    ]
+    for f in file_list:
+        pamfilecheck(f)
 
+def beginpamconfcheck():
+    file_list = [
+        '/etc/security/time.conf',
+        '/etc/security/access.conf'
+    ]
+    for f in file_list:
+        pamconffilecheck(f)
+
+def main():
+    beginpamcheck()
+    beginpamconfcheck()
 
 if __name__ == '__main__':
-    pamgdm()
+    main()
