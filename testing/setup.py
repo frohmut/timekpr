@@ -15,7 +15,20 @@ if sys.version < '2.5':
     sys.exit('ERROR: Sorry, python 2.5 is required for this application.')
 
 # Main setup
-PREFIX = "/usr/"
+try:
+    PREFIX = os.environ['PREFIX']
+except KeyError:
+    PREFIX = "/usr"
+
+try:
+    PAMD_DIR = os.environ['PAMD_DIR']
+except KeyError:
+    PAMD_DIR = "/etc/pam.d"
+
+try:
+    PAM_SECURITY_DIR = os.environ['PAM_SECURITY_DIR']
+except KeyError:
+    PAM_SECURITY_DIR = "/etc/security"
 
 timekpr_data_files = [
     (os.path.join(PREFIX, 'share/icons/hicolor/scalable/apps'),
@@ -57,8 +70,8 @@ when they can or cannot log in.",
     package_data = {'timekprd': ['data/etc/*'],
                     'timekpr-gui': ['data/share/timekpr/*'],
                     'timekpr-client': [],
-                    }
-    data_files=timekpr_data_files,
-    py_modules=['timekprpam.timekprpam', 'timekprcommon.timekprcommon'],
-    zip_safe=False,
+                    },
+    data_files = timekpr_data_files,
+    py_modules = ['timekprpam.timekprpam', 'timekprcommon.timekprcommon'],
+    zip_safe = False,
 )
