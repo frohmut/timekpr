@@ -14,13 +14,16 @@ else:
     PURGE=False
 
 #if operating systems have different paths
-#PAM_SECURITY_DIR=/etc/security post-remove.py
+#PAM_SECURITY_DIR=/etc/security python post-remove.py
 try:
     PAM_SECURITY_DIR = os.environ['PAM_SECURITY_DIR']
 except KeyError:
     PAM_SECURITY_DIR = "/etc/security"
 
 def folderrm(folder):
+    if not os.path.exists(folder):
+        return 1
+    print "Processing %s" % folder
     try:
         shutil.rmtree(folder)
         print("Removed: " + folder)
@@ -31,6 +34,9 @@ def folderrm(folder):
 
 def pamconffilerm(file):
     filewpath = os.path.join(PAM_SECURITY_DIR, file)
+    if not os.path.isfile(filewpath):
+        return 1
+    print "Processing %s" % filewpath
     if PURGE:
         #Comment out the timekpr section
         os.system("sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' '%s'" % filewpath)

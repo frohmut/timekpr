@@ -8,7 +8,7 @@ import re
 import sys
 
 #if operating systems have different paths
-#PAMD_DIR=/etc/pam.d PAM_SECURITY_DIR=/etc/security post-install.py
+#PAMD_DIR=/etc/pam.d PAM_SECURITY_DIR=/etc/security python post-install.py
 try:
     PAMD_DIR = os.environ['PAMD_DIR']
 except KeyError:
@@ -21,7 +21,9 @@ except KeyError:
 
 def pamfilecheck(file):
     """ Checking pam.d files, adds the required lines """
-    filewpath = os.path.join(PAM_DIR, file)
+    filewpath = os.path.join(PAMD_DIR, file)
+    if not os.path.isfile(filewpath):
+        return 1
     try:
         f = open(filewpath)
     except IOError, e:
@@ -37,25 +39,27 @@ def pamfilecheck(file):
         str_start = '\n'
         str_end = ''
 
+    print "Processing %s" % filewpath
     # pam_time
-    match_time = re.findall('^account\s+required\s+pam_time.so', contents)
+    match_time = re.findall('^account\s+required\s+pam_time.so', contents, re.M)
     if not match_time:
         #Didn't find pam_time.so in file - add it (write-append)
         f = open(filewpath, 'a')
         f.write(str_start + 'account required pam_time.so' + str_end)
         f.close()
     # pam_access
-    match_access = re.findall('^account\s+required\s+pam_access.so', contents)
+    match_access = re.findall('^account\s+required\s+pam_access.so', contents, re.M)
     if not match_access:
         #Didn't find pam_time.so in file - add it (write-append)
         f = open(filewpath, 'a')
         f.write(str_start + 'account required pam_access.so' + str_end)
         f.close()
-    return
 
 def pamconffilecheck(file):
     """ Checks time.conf and access.conf, adds the required timekpr section """
     filewpath = os.path.join(PAM_SECURITY_DIR, file)
+    if not os.path.isfile(filewpath):
+        return 1
     try:
         f = open(filewpath)
     except IOError, e:
@@ -64,21 +68,25 @@ def pamconffilecheck(file):
     contents = f.read()
     f.close()
 
-    #time.conf
-    match_time = re.findall('^###? TIMEKPR START', contents)
+    print "Processing %s" % filewpath
+    match_time = re.findall('^###? TIMEKPR START', contents, re.M)
     if match_time:
         #Found timekpr section
-        if re.findall('^### TIMEKPR START', contents):
+        if re.findall('^### TIMEKPR START', contents, re.M):
             # Uncomment the whole section (commented after removal, see postrm)
             #FIXME: Use python regex
-            p = os.system("sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' '%s'" % filewpath)
+            _command = "sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' '%s'" % filewpath
+            print "Uncommenting existing timekpr section"
+            p = os.system(_command)
         else:
-            #No timekpr section
-            p = os.system("sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' '%s'" % filewpath)
+            #No commented timekpr section, don't do anything
+            #print "timekpr section is already installed"
+            pass
     else:
-        #Create timekpr section
-        p = os.system("sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' '%s'" % filewpath)
-    return
+        # No timekpr section, create it
+        _command = "sed -i -e '$s/$/\\n## TIMEKPR START\\n## TIMEKPR END/' '%s'" % filewpath
+        print "Creating timekpr section"
+        p = os.system(_command)
 
 def beginpamcheck():
     #/etc/pam.d/gdm
