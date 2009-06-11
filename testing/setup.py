@@ -120,18 +120,16 @@ when they can or cannot log in.",
     keywords = 'system admin time limit access account',
 
     entry_points = {
-        'console_scripts': [
-            'timekpr = timekprd.todo:todo_func',
-            'timekpr-gui = timekpr-gui.todo2:todo2_func',
-        ]
+        'console_scripts': ['timekpr = timekpr.main',
+        'gui_scripts': ['timekpr-gui = timekpr-gui.main']
     },
 
     cmdclass = cmdclass,
 
     packages = ['timekpr'],
-    package_data = {'timekpr': ['data/etc/*',
-                    'data/share/timekpr/*'],
-                    },
+    package_data = {
+        'timekpr': ['data/etc/*', 'data/share/timekpr/*'],
+    },
     include_package_data=True,
     data_files = timekpr_data_files,
     py_modules = ['timekprpam', 'timekprcommon'],

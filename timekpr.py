@@ -193,118 +193,121 @@ logkpr('Directories: LOGFILE: %s TIMEKPRDIR: %s TIMEKPRWORK: %s TIMEKPRSHARED: %
         VAR['TIMEKPRWORK'],
         VAR['TIMEKPRSHARED']))
 
-while (True):
-    # Check if any accounts should be unlocked and re-activate them
-    checklockacct()
-    # Check if we have passed midnight, ie new day
-    if THISDAY != strftime("%Y%m%d"):
-        THISDAY = strftime("%Y%m%d")
+def main():
+    while (True):
+        # Check if any accounts should be unlocked and re-activate them
+        checklockacct()
+        # Check if we have passed midnight, ie new day
+        if THISDAY != strftime("%Y%m%d"):
+            THISDAY = strftime("%Y%m%d")
 
-    # Get the usernames and PIDs of sessions
-    for username in getusers():
-        conffile = VAR['TIMEKPRDIR'] + '/' + username
-        # Check if user configfile exists and if user was not already notified
-        if not isnotified(username):
-            logkpr('configuration file for %s exists' % username)
-            # Read lists: from, to and limit
-            limits, bfrom, bto = readusersettings(username, conffile)
-            timefile = VAR['TIMEKPRWORK'] + '/' + username + '.time'
-            allowfile = VAR['TIMEKPRWORK'] + '/' + username + '.allow'
-            latefile = VAR['TIMEKPRWORK'] + '/' + username + '.late'
-            logoutfile = VAR['TIMEKPRWORK'] + '/' + username + '.logout'
+        # Get the usernames and PIDs of sessions
+        for username in getusers():
+            conffile = VAR['TIMEKPRDIR'] + '/' + username
+            # Check if user configfile exists and if user was not already notified
+            if not isnotified(username):
+                logkpr('configuration file for %s exists' % username)
+                # Read lists: from, to and limit
+                limits, bfrom, bto = readusersettings(username, conffile)
+                timefile = VAR['TIMEKPRWORK'] + '/' + username + '.time'
+                allowfile = VAR['TIMEKPRWORK'] + '/' + username + '.allow'
+                latefile = VAR['TIMEKPRWORK'] + '/' + username + '.late'
+                logoutfile = VAR['TIMEKPRWORK'] + '/' + username + '.logout'
 
-            time = int(gettime(timefile, username))
-            '''Is the user allowed to be logged in at this time?
-            We take it for granted that if they are allowed to login all day ($default_limit) then
-            they can login whenever they want, ie they are normal users'''
+                time = int(gettime(timefile, username))
+                '''Is the user allowed to be logged in at this time?
+                We take it for granted that if they are allowed to login all day ($default_limit) then
+                they can login whenever they want, ie they are normal users'''
 
-            # Get current day index and hour of day
-            index = int(strftime("%w"))
-            hour = int(strftime("%H"))
+                # Get current day index and hour of day
+                index = int(strftime("%w"))
+                hour = int(strftime("%H"))
 
-            logkpr('User: %s Day-Index: %s Seconds-passed: %s' % (username, index, time))
+                logkpr('User: %s Day-Index: %s Seconds-passed: %s' % (username, index, time))
 
-            # Compare: is current hour less than the one in bfrom list?
-            if (hour < bfrom[index]):
-                logkpr('Current hour less than the defined hour in conffile for user %s' % username)
-                if isfile(allowfile):
-                    if not fromtoday(allowfile):
-                        logkpr('Extended login hours detected from %s.allow, but not from today' % username)
-                        threadit(0.5, logOut, username)
-                        remove(allowfile)
-                else:
-                    # User has not been given extended login hours
-                    logkpr('Extended hours not detected, %s not in allowed period from-to' %username)
-                    threadit(0.5, logOut, username)
-
-            # Compare: is current hour greater/equal to $to array?
-            if (hour >= bto[index]):
-                logkpr('Current hour greater than the defined hour in conffile for user %s' % username)
-                # Has the user been given extended login hours?
-                if isfile(allowfile):
-                    if not fromtoday(allowfile):
-                        logkpr('Extended login hours detected from %s.allow, but not from today' % username)
-                        # Has the user been late-kicked today?
-                        if isfile(latefile):
-                            if fromtoday(latefile):
-                                logkpr('User %s has been late-kicked today' % username)
-                                threadit(0.5, logOut, username)
-                                remove(allowfile)
-                                #Lock account
-                                lockacct(username)
-                            else:
-                                logkpr('User %s has NOT been late-kicked today' % username)
-                                threadit(float(VAR['GRACEPERIOD']), logOut, username, latefile)
-                                threadit(float(VAR['GRACEPERIOD']), remove, allowfile)
-                                addnotified(username)
-                                threadit(VAR['GRACEPERIOD'], removenotified, username)
-                                lockacct(username)
+                # Compare: is current hour less than the one in bfrom list?
+                if (hour < bfrom[index]):
+                    logkpr('Current hour less than the defined hour in conffile for user %s' % username)
+                    if isfile(allowfile):
+                        if not fromtoday(allowfile):
+                            logkpr('Extended login hours detected from %s.allow, but not from today' % username)
+                            threadit(0.5, logOut, username)
+                            remove(allowfile)
                     else:
-                        logkpr('Extended login hours detected - %s.allow is from today' % username)
-                else:
-                    # User has not been given extended login hours
-                    logkpr('Extended hours and %s.allow file not detected, %s not in allowed period from-to' % (username, username))
-                    if isfile(latefile) and fromtoday(latefile):
-                        logkpr('User %s has been late-kicked today' % username)
+                        # User has not been given extended login hours
+                        logkpr('Extended hours not detected, %s not in allowed period from-to' %username)
                         threadit(0.5, logOut, username)
-                        #Lock account
-                        lockacct(username)
-                    else:
-                        logkpr('User %s has NOT been late-kicked today' % username)
-                        threadit(float(VAR['GRACEPERIOD']), logOut, username, latefile)
-                        addnotified(username)
-                        threadit(VAR['GRACEPERIOD'], removenotified, username)
-                        lockacct(username)
 
-            # Is the limit exeeded
-            # Also includes a fix for a bug that caused an unrestricted user to be kicked and locked at midnight
-            if (time > limits[index] and not limits[index] == 86400):
-                logkpr('Exceeded today\'s access login duration user %s' % username)
-                # Has the user already been kicked out?
-                if isfile(logoutfile):
-                    logkpr('Found %s.logout' % username)
-                    # Was he kicked out today?
-                    if fromtoday(logoutfile):
-                        logkpr('%s has been kicked out today' % username)
-                        threadit(0.5, logOut, username)
-                        #Lock account
-                        lockacct(username)
+                # Compare: is current hour greater/equal to $to array?
+                if (hour >= bto[index]):
+                    logkpr('Current hour greater than the defined hour in conffile for user %s' % username)
+                    # Has the user been given extended login hours?
+                    if isfile(allowfile):
+                        if not fromtoday(allowfile):
+                            logkpr('Extended login hours detected from %s.allow, but not from today' % username)
+                            # Has the user been late-kicked today?
+                            if isfile(latefile):
+                                if fromtoday(latefile):
+                                    logkpr('User %s has been late-kicked today' % username)
+                                    threadit(0.5, logOut, username)
+                                    remove(allowfile)
+                                    #Lock account
+                                    lockacct(username)
+                                else:
+                                    logkpr('User %s has NOT been late-kicked today' % username)
+                                    threadit(float(VAR['GRACEPERIOD']), logOut, username, latefile)
+                                    threadit(float(VAR['GRACEPERIOD']), remove, allowfile)
+                                    addnotified(username)
+                                    threadit(VAR['GRACEPERIOD'], removenotified, username)
+                                    lockacct(username)
+                        else:
+                            logkpr('Extended login hours detected - %s.allow is from today' % username)
                     else:
-                        # The user has not been kicked out today
-                        logkpr('%s has been kicked out, but not today' % username)
+                        # User has not been given extended login hours
+                        logkpr('Extended hours and %s.allow file not detected, %s not in allowed period from-to' % (username, username))
+                        if isfile(latefile) and fromtoday(latefile):
+                            logkpr('User %s has been late-kicked today' % username)
+                            threadit(0.5, logOut, username)
+                            #Lock account
+                            lockacct(username)
+                        else:
+                            logkpr('User %s has NOT been late-kicked today' % username)
+                            threadit(float(VAR['GRACEPERIOD']), logOut, username, latefile)
+                            addnotified(username)
+                            threadit(VAR['GRACEPERIOD'], removenotified, username)
+                            lockacct(username)
+
+                # Is the limit exeeded
+                # Also includes a fix for a bug that caused an unrestricted user to be kicked and locked at midnight
+                if (time > limits[index] and not limits[index] == 86400):
+                    logkpr('Exceeded today\'s access login duration user %s' % username)
+                    # Has the user already been kicked out?
+                    if isfile(logoutfile):
+                        logkpr('Found %s.logout' % username)
+                        # Was he kicked out today?
+                        if fromtoday(logoutfile):
+                            logkpr('%s has been kicked out today' % username)
+                            threadit(0.5, logOut, username)
+                            #Lock account
+                            lockacct(username)
+                        else:
+                            # The user has not been kicked out today
+                            logkpr('%s has been kicked out, but not today' % username)
+                            threadit(float(VAR['GRACEPERIOD']), logOut, username, logoutfile)
+                            addnotified(username)
+                            threadit(VAR['GRACEPERIOD'], removenotified, username)
+                            lockacct(username)
+                    else:
+                        # The user has not been kicked out before
+                        logkpr('Not found: %s.logout' % username)
                         threadit(float(VAR['GRACEPERIOD']), logOut, username, logoutfile)
                         addnotified(username)
                         threadit(VAR['GRACEPERIOD'], removenotified, username)
                         lockacct(username)
-                else:
-                    # The user has not been kicked out before
-                    logkpr('Not found: %s.logout' % username)
-                    threadit(float(VAR['GRACEPERIOD']), logOut, username, logoutfile)
-                    addnotified(username)
-                    threadit(VAR['GRACEPERIOD'], removenotified, username)
-                    lockacct(username)
 
-    # Done checking all users, sleeping
-    logkpr('Finished checking all users, sleeping for %s seconds' % VAR['POLLTIME'])
-    sleep(VAR['POLLTIME'])
+        # Done checking all users, sleeping
+        logkpr('Finished checking all users, sleeping for %s seconds' % VAR['POLLTIME'])
+        sleep(VAR['POLLTIME'])
 
+if __name__ == '__main__':
+    main()
