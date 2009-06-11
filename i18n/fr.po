@@ -1,0 +1,305 @@
+# French translation for timekpr
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the timekpr package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: timekpr\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-02-28 16:27+0100\n"
+"PO-Revision-Date: 2009-03-03 10:57+0000\n"
+"Last-Translator: ostie <ostie67@gmail.com>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-06-11 07:44+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: timekpr-gui.py:37
+msgid "You need to have administrative privileges to run timekpr-gui"
+msgstr ""
+"Vous devez avoir des privilèges d'administrateur pour exécuter timekpr-gui"
+
+#: timekpr-gui.py:142
+msgid ""
+"You need to have at least one normal user available to configure timekpr"
+msgstr ""
+"Vous devez avoir au moins un utilisateur normal pour configurer timekpr"
+
+#: timekpr-gui.py:167 timekpr-gui.py:421
+msgid "Lock account"
+msgstr "Vérrouiller compte"
+
+#: timekpr-gui.py:170
+#, python-format
+msgid "Locked account %s"
+msgstr "Bloquer le compte %s"
+
+#: timekpr-gui.py:183
+#, python-format
+msgid "Unlocked account %s"
+msgstr "Compte déverrouillé compte %s"
+
+#: timekpr-gui.py:207
+#, python-format
+msgid "Removed all restrictions for account %s"
+msgstr "Supprimé toutes les restrictions pour le compte %s"
+
+#: timekpr-gui.py:215
+#, python-format
+msgid "Cleared used up time for account %s"
+msgstr "Effacer temps utilisé pour le compte %s"
+
+#: timekpr-gui.py:232
+#, python-format
+msgid "Applied reward of %(num)s minute(s) to account %(user)s"
+msgstr "Appliquer %(num)s minute(s) de récompense au compte %(user)s"
+
+#: timekpr-gui.py:249
+#, python-format
+msgid "Set access hours to 00-24 on %(day)s for account %(user)s"
+msgstr "Fixer l'acces de 00-24 les %(day)s au compte %(user)s"
+
+#: timekpr-gui.py:254
+#, python-format
+msgid "Refreshed setting values from account %s"
+msgstr "Rafraichis les valeurs du compte %s"
+
+#: timekpr-gui.py:419
+msgid "Unlock account"
+msgstr "Déverrouillez compte"
+
+#: timekpr-gui.py:456
+msgid "Status for <span weight=\"bold\">"
+msgstr "Statut pour <span weight=\"bold\">"
+
+#: timekpr-gui.py:488 timekpr-gui.py:514
+msgid "    Sun     "
+msgstr "    Dim     "
+
+#: timekpr-gui.py:494 timekpr-gui.py:519 gui/timekpr.glade.h:13
+msgid "Every day"
+msgstr "Tous les jours"
+
+#: timekpr-gui.py:566
+#, python-format
+msgid "Applied limit changes for account %s"
+msgstr "Appliquez les modifications pour le compte %s"
+
+#: gui/timekpr.glade.h:1
+msgid "-"
+msgstr "-"
+
+#: gui/timekpr.glade.h:2
+msgid ""
+"Able to login all day today:\n"
+"(Also active bypass)"
+msgstr ""
+"Capable de se connecter toute la journée:\n"
+"(Également active bypass)"
+
+#: gui/timekpr.glade.h:4
+msgid "About timekpr"
+msgstr "À propos"
+
+#: gui/timekpr.glade.h:5
+msgid "Account locked:"
+msgstr "Etat du compte"
+
+#: gui/timekpr.glade.h:6
+msgid ""
+"Add time\n"
+"Reward / Penalty"
+msgstr ""
+"Ajout de temps\n"
+"Récompense / Pénalité"
+
+#: gui/timekpr.glade.h:8
+msgid "Bypass for today"
+msgstr "Accès libre aujourd'hui"
+
+#: gui/timekpr.glade.h:9
+msgid "Clear all restrictions"
+msgstr "Effacer toutes les restrictions"
+
+#: gui/timekpr.glade.h:10
+msgid "Configure per day"
+msgstr "Configuration par jour"
+
+#: gui/timekpr.glade.h:11
+msgid ""
+"Copyright (c) 2008 Evan Nedberg\n"
+"Copyright (c) 2008 Savvas Radevic"
+msgstr ""
+"Copyright (c) 2008 Evan Nedberg\n"
+"Copyright (c) 2008 Savvas Radevic"
+
+#: gui/timekpr.glade.h:14
+msgid "Fri"
+msgstr "Ven"
+
+#: gui/timekpr.glade.h:15
+msgid "Keep control of computer usage"
+msgstr "Gardez le contrôle sur l'usage de l'ordinateur"
+
+#: gui/timekpr.glade.h:16
+msgid "Limit access duration"
+msgstr "Limiter l'accès durée"
+
+#: gui/timekpr.glade.h:17
+msgid "Limit time frame"
+msgstr "Limite de temps"
+
+#: gui/timekpr.glade.h:18
+msgid ""
+"Limit user access by defining the hours\n"
+"when user is allowed to login"
+msgstr ""
+"Limiter l'accès des utilisateurs en définissant le nombre d'heures\n"
+"lorsque l'utilisateur est autorisé à se connecter"
+
+#: gui/timekpr.glade.h:20
+msgid ""
+"Limit user access by defining the time duration\n"
+"(how long the user is logged in)"
+msgstr ""
+"Limiter l'accès des utilisateurs par la définition de la durée\n"
+"(combien de temps l'utilisateur est connecté)"
+
+#: gui/timekpr.glade.h:22
+msgid "Limited by access duration (any day):"
+msgstr "Limiter par durée (chaque jour)"
+
+#: gui/timekpr.glade.h:23
+msgid "Limited by time frame (any day):"
+msgstr "Limiter par tranche horaire (chaque jour)"
+
+#: gui/timekpr.glade.h:24
+msgid "Limits & Boundaries"
+msgstr "Limites & Tranches"
+
+#: gui/timekpr.glade.h:25
+msgid "Mon"
+msgstr "Lun"
+
+#: gui/timekpr.glade.h:26
+msgid "Reset time"
+msgstr "Réinitialise temps"
+
+#: gui/timekpr.glade.h:27
+msgid "Sat"
+msgstr "Sam"
+
+#: gui/timekpr.glade.h:28
+msgid "Select user"
+msgstr "Sélectionnez l'utilisateur"
+
+#: gui/timekpr.glade.h:29
+msgid "Status"
+msgstr "État"
+
+#: gui/timekpr.glade.h:30
+msgid "Status for <span weight=\"bold\">username</span>"
+msgstr "Statut pour <span weight=\"bold\">username</span>"
+
+#: gui/timekpr.glade.h:31
+msgid ""
+"This program is free software: you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation, either version 3 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>. In Debian, see "
+"file /usr/share/common-licenses/GPL-3"
+msgstr ""
+"Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon "
+"les termes de la Licence Publique Générale GNU publiée par la Free Software "
+"Foundation (version 2 ou bien toute autre version ultérieure choisie par "
+"vous).\n"
+"Ce programme est distribué car potentiellement utile, mais SANS AUCUNE "
+"GARANTIE, ni explicite ni implicite, y compris les garanties de "
+"commercialisation ou d'adaptation dans un but spécifique. Reportez-vous à la "
+"Licence Publique Générale GNU pour plus de détails.\n"
+"Vous devez avoir reçu une copie de la Licence Publique Générale GNU en même "
+"temps que ce programme ; si ce n'est pas le cas, regardez "
+"<http://www.gnu.org/licenses/>. sous Debian, regardez le fichier "
+"/usr/share/common-licenses/GPL-3"
+
+#: gui/timekpr.glade.h:36
+msgid "Thu"
+msgstr "Jeu"
+
+#: gui/timekpr.glade.h:37
+msgid "Time left:"
+msgstr "Temps restant:"
+
+#: gui/timekpr.glade.h:38
+msgid "Tue"
+msgstr "Mar"
+
+#: gui/timekpr.glade.h:39
+msgid "Unlock Account"
+msgstr "Déverouillez compte"
+
+#: gui/timekpr.glade.h:40
+msgid "Wed"
+msgstr "Mer"
+
+#: gui/timekpr.glade.h:41
+msgid "_Help"
+msgstr "_Aide"
+
+#: gui/timekpr.glade.h:42
+msgid "from"
+msgstr "de"
+
+#: gui/timekpr.glade.h:43
+msgid "http://launchpad.net/timekpr"
+msgstr "http://launchpad.net/timekpr"
+
+#: gui/timekpr.glade.h:44
+msgid "minutes"
+msgstr "minutes"
+
+#: gui/timekpr.glade.h:45
+msgid "timekpr"
+msgstr "timekpr"
+
+#: gui/timekpr.glade.h:46
+msgid "to"
+msgstr "vers"
+
+#: gui/client/timekpr-client.py:124
+msgid "You are early, you will be logged out in LESS than 2 minutes"
+msgstr ""
+"Vous êtes en avance, vous allez être déconnecté en moins de 2 minutes"
+
+#: gui/client/timekpr-client.py:127
+msgid "You are late, you will be logged out in LESS than 2 minutes"
+msgstr ""
+"Vous êtes en retard, vous allez être déconnecté en moins de 2 minutes"
+
+#: gui/client/timekpr-client.py:130
+msgid "Your time is up, you will be logged out in LESS than 2 minutes"
+msgstr "Votre temps est écoulé, vous serez déconnecté en moins de 2 minutes"
+
+#: gui/client/timekpr-client.py:138
+#, python-format
+msgid ""
+"You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
+msgstr ""
+"Vous disposez de %(hour)s heure(s), %(min)s minute(s) et %(sec)s seconde(s)"
+
+#: gui/timekpr.glade.h:48
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  ostie https://launchpad.net/~ostie67"
