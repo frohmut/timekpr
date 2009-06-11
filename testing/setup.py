@@ -2,13 +2,20 @@
 # Under heavy construction (wear a helmet!)
 # http://peak.telecommunity.com/DevCenter/setuptools
 
+# Based on deluge setup.py:
+# Copyright (C) 2007 Andrew Resch <andrewresch@gmail.com>
+
 import ez_setup
 ez_setup.use_setuptools()
 from setuptools import setup, find_packages
+from distutils.command.build import build as _build
+from distutils.command.clean import clean as _clean
+from setuptools.command.install import install as _install
 
 import msgfmt
 import sys
 import os
+import os.path
 
 timekpr_version = '0.2.2'
 
