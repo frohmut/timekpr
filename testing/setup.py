@@ -121,18 +121,18 @@ when they can or cannot log in.",
 
     entry_points = {
         'console_scripts': [
-            'timekprd = timekprd.todo:todo_func',
+            'timekpr = timekprd.todo:todo_func',
             'timekpr-gui = timekpr-gui.todo2:todo2_func',
         ]
     },
 
     cmdclass = cmdclass,
 
-    packages = ['timekprd', 'timekpr-gui', 'timekpr-client'],
-    package_data = {'timekprd': ['data/etc/*'],
-                    'timekpr-gui': ['data/share/timekpr/*'],
-                    'timekpr-client': [],
+    packages = ['timekpr'],
+    package_data = {'timekpr': ['data/etc/*',
+                    'data/share/timekpr/*'],
                     },
+    include_package_data=True,
     data_files = timekpr_data_files,
     py_modules = ['timekprpam', 'timekprcommon'],
     zip_safe = False,
