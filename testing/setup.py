@@ -120,7 +120,7 @@ when they can or cannot log in.",
     keywords = 'system admin time limit access account',
 
     entry_points = {
-        'console_scripts': ['timekpr = timekpr.main',
+        'console_scripts': ['timekpr = timekpr:main',
         'gui_scripts': ['timekpr-gui = timekpr-gui.main']
     },
 
