@@ -1,9 +1,18 @@
-For developers
-===============
+INSTALLATION
+============
 
-Currently the project REQUIRES python >= 2.5
-If you want to see other dependencies, check out the file 
-debian/control at the branch
+-TODO-
+
+
+DEVELOPERS
+==========
+
+Currently the project requires (expressed as Ubuntu packages):
+ - python >= 2.5
+ - setup.py requires python-distutils and python-distutils-extra
+ - In order to run: python-gtk2, python-glade2, procps, libnotify-bin, login, 
+   libpam-modules, gksu or kdesu
+
 
 Install bazaar:
 - fedora: yum install bzr
