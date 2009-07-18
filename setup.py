@@ -59,7 +59,7 @@ when they can or cannot log in.",
         ('share/icons/hicolor/scalable/apps', ['artwork/timekpr.svg']),
         ('share/pixmaps', ['data/share/pixmaps/timekpr.xpm'])
     ],
-    py_modules = ['timekprpam', 'timekprcommon'],
+    py_modules = ['timekpr.timekprpam', 'timekpr.timekprcommon'],
     cmdclass = {
         "build": build_extra.build_extra,
         "build_i18n":  build_i18n.build_i18n,
