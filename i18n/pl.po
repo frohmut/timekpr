@@ -1,4 +1,4 @@
-# Swedish translation for timekpr
+# Polish translation for timekpr
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the timekpr package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: timekpr\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-02-28 16:27+0100\n"
-"PO-Revision-Date: 2009-03-31 19:47+0000\n"
-"Last-Translator: larren <lars@renstroms.se>\n"
-"Language-Team: Swedish <sv@li.org>\n"
+"PO-Revision-Date: 2009-06-27 02:11+0000\n"
+"Last-Translator: Baton1 <baton1batonik@gmail.com>\n"
+"Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,74 +19,74 @@ msgstr ""
 
 #: timekpr-gui.py:37
 msgid "You need to have administrative privileges to run timekpr-gui"
-msgstr "Du måste ha administrativa rättigheter för att starta timekpr-gui"
+msgstr "Potrzebujesz uprawnień administratora aby uruchomić timekpr-gui"
 
 #: timekpr-gui.py:142
 msgid ""
 "You need to have at least one normal user available to configure timekpr"
 msgstr ""
-"Ditt system behöver ha minst en normal användare för att konfigurera med "
+"Potrzebujesz przynajmniej jednego normalnego użytkownika aby skonfigurować "
 "timekpr"
 
 #: timekpr-gui.py:167 timekpr-gui.py:421
 msgid "Lock account"
-msgstr "Lås kontot"
+msgstr "Zablokuj konto"
 
 #: timekpr-gui.py:170
 #, python-format
 msgid "Locked account %s"
-msgstr "Låste kontot %s"
+msgstr "Zablokowano konto %s"
 
 #: timekpr-gui.py:183
 #, python-format
 msgid "Unlocked account %s"
-msgstr "Olåst konto %s"
+msgstr "Odblokowano konto %s"
 
 #: timekpr-gui.py:207
 #, python-format
 msgid "Removed all restrictions for account %s"
-msgstr "Tog bort alla restriktioner för konto %s"
+msgstr "Usunięto wszelkie restrykcje z konta %s"
 
 #: timekpr-gui.py:215
 #, python-format
 msgid "Cleared used up time for account %s"
-msgstr "Tog bort använd tid för konto %s"
+msgstr ""
 
 #: timekpr-gui.py:232
 #, python-format
 msgid "Applied reward of %(num)s minute(s) to account %(user)s"
-msgstr "Lade till extra tid i form av %(num)s minuter för konto %(user)s"
+msgstr ""
 
 #: timekpr-gui.py:249
 #, python-format
 msgid "Set access hours to 00-24 on %(day)s for account %(user)s"
-msgstr "Sätt åtkomsttiden till 00-24 under %(day)s för konto %(user)s"
+msgstr ""
 
 #: timekpr-gui.py:254
 #, python-format
 msgid "Refreshed setting values from account %s"
-msgstr "Uppdaterade inställningar från konto %s"
+msgstr "Odświeżono ustawienia z konta %s"
 
 #: timekpr-gui.py:419
 msgid "Unlock account"
-msgstr "Lås upp konto"
+msgstr "Odblokuj konto"
 
 #: timekpr-gui.py:456
 msgid "Status for <span weight=\"bold\">"
-msgstr "Status för <span weight=\"bold\">"
+msgstr "Status dla <span weight=\"bold\">"
 
 #: timekpr-gui.py:488 timekpr-gui.py:514
 msgid "    Sun     "
-msgstr "    Sun     "
+msgstr ""
 
 #: timekpr-gui.py:494 timekpr-gui.py:519 gui/timekpr.glade.h:13
 msgid "Every day"
-msgstr "Varje dag"
+msgstr "Codziennie"
 
 #: timekpr-gui.py:566
 #, python-format
 msgid "Applied limit changes for account %s"
-msgstr "Uppdaterade begränsningar för konto %s"
+msgstr ""
 
 #: gui/timekpr.glade.h:1
 msgid "-"
@@ -97,36 +97,32 @@ msgid ""
 "Able to login all day today:\n"
 "(Also active bypass)"
 msgstr ""
-"Kan logga in hela dagen idag\n"
-"(Aktiv bypass)"
 
 #: gui/timekpr.glade.h:4
 msgid "About timekpr"
-msgstr "Om timekpr"
+msgstr "O timekpr"
 
 #: gui/timekpr.glade.h:5
 msgid "Account locked:"
-msgstr "Kontot låst:"
+msgstr "Zablokowane konta:"
 
 #: gui/timekpr.glade.h:6
 msgid ""
 "Add time\n"
 "Reward / Penalty"
 msgstr ""
-"Lägg till tid\n"
-"Belöning / Straff"
 
 #: gui/timekpr.glade.h:8
 msgid "Bypass for today"
-msgstr "Bypass för idag"
+msgstr ""
 
 #: gui/timekpr.glade.h:9
 msgid "Clear all restrictions"
-msgstr "Töm alla restriktioner"
+msgstr "Usuń wszelkie restrykcje"
 
 #: gui/timekpr.glade.h:10
 msgid "Configure per day"
-msgstr "Konfigurera per dag"
+msgstr ""
 
 #: gui/timekpr.glade.h:11
 msgid ""
@@ -138,63 +134,59 @@ msgstr ""
 
 #: gui/timekpr.glade.h:14
 msgid "Fri"
-msgstr "fre"
+msgstr "pt"
 
 #: gui/timekpr.glade.h:15
 msgid "Keep control of computer usage"
-msgstr "Ha kontroll över datoranvändning"
+msgstr "Kontroluj używanie komputera"
 
 #: gui/timekpr.glade.h:16
 msgid "Limit access duration"
-msgstr "Begränsa tillgång under tiden"
+msgstr ""
 
 #: gui/timekpr.glade.h:17
 msgid "Limit time frame"
-msgstr "Begränsa tidsfönster"
+msgstr ""
 
 #: gui/timekpr.glade.h:18
 msgid ""
 "Limit user access by defining the hours\n"
 "when user is allowed to login"
 msgstr ""
-"Begränsa användarens tillgång med att definiera timmar\n"
-"när det är tilåtet för användare att logga in"
 
 #: gui/timekpr.glade.h:20
 msgid ""
 "Limit user access by defining the time duration\n"
 "(how long the user is logged in)"
 msgstr ""
-"Begränsa användarens tillgång med att definiera tidsfönster\n"
-"(under vilken tid av dygnet användaren kan logga in)"
 
 #: gui/timekpr.glade.h:22
 msgid "Limited by access duration (any day):"
-msgstr "Begränsad tillgång under tiden (alla dagar)"
+msgstr ""
 
 #: gui/timekpr.glade.h:23
 msgid "Limited by time frame (any day):"
-msgstr "Begränsad tidsfönster (alla dagar)"
+msgstr ""
 
 #: gui/timekpr.glade.h:24
 msgid "Limits & Boundaries"
-msgstr "Begränsningar"
+msgstr ""
 
 #: gui/timekpr.glade.h:25
 msgid "Mon"
-msgstr "mån"
+msgstr "Pon"
 
 #: gui/timekpr.glade.h:26
 msgid "Reset time"
-msgstr "Nollställ tid"
+msgstr ""
 
 #: gui/timekpr.glade.h:27
 msgid "Sat"
-msgstr "lör"
+msgstr "Sob"
 
 #: gui/timekpr.glade.h:28
 msgid "Select user"
-msgstr "Välj användare"
+msgstr "Wybierz użytkownika"
 
 #: gui/timekpr.glade.h:29
 msgid "Status"
@@ -202,7 +194,7 @@ msgstr "Status"
 
 #: gui/timekpr.glade.h:30
 msgid "Status for <span weight=\"bold\">username</span>"
-msgstr "Status för <span weight=\"bold\">username</span>"
+msgstr ""
 
 #: gui/timekpr.glade.h:31
 msgid ""
@@ -220,47 +212,34 @@ msgid ""
 "this program.  If not, see <http://www.gnu.org/licenses/>. In Debian, see "
 "file /usr/share/common-licenses/GPL-3"
 msgstr ""
-"Denna progem är fri mjukvara: du kan distribuera och/eller modifiera det "
-"enligt GNU General Public License publicerad av Free Software Foundation, "
-"antingen licensens 3:e version eller (enligt ditt val) någon senare "
-"version.\n"
-"\n"
-"Denna program distribueras i förhoppningen att den är användbar men UTAN "
-"GARANTIER; även utan underförstådd garanti av MERCHANTABILITY eller FITNESS "
-"FOR A PARTICULAR PURPOSE. Se GNU General Public License för mer "
-"information.\n"
-"\n"
-"Du borde ha fått en kopia av GNU General Public License med detta program. "
-"Om inte se <http://www.gnu.org/licenses/>. I Debian, se fil "
-"/usr/share/common-licenses/GPL-3"
 
 #: gui/timekpr.glade.h:36
 msgid "Thu"
-msgstr "tor"
+msgstr "Czw"
 
 #: gui/timekpr.glade.h:37
 msgid "Time left:"
-msgstr "Tid kvar"
+msgstr "Pozostało:"
 
 #: gui/timekpr.glade.h:38
 msgid "Tue"
-msgstr "tis"
+msgstr "Wto"
 
 #: gui/timekpr.glade.h:39
 msgid "Unlock Account"
-msgstr "Olåst konto"
+msgstr "Odbloku konto"
 
 #: gui/timekpr.glade.h:40
 msgid "Wed"
-msgstr "ons"
+msgstr "Śro"
 
 #: gui/timekpr.glade.h:41
 msgid "_Help"
-msgstr "_Hjälp"
+msgstr "_Pomoc"
 
 #: gui/timekpr.glade.h:42
 msgid "from"
-msgstr "från"
+msgstr "z"
 
 #: gui/timekpr.glade.h:43
 msgid "http://launchpad.net/timekpr"
@@ -268,7 +247,7 @@ msgstr "http://launchpad.net/timekpr"
 
 #: gui/timekpr.glade.h:44
 msgid "minutes"
-msgstr "minuter"
+msgstr "minuty"
 
 #: gui/timekpr.glade.h:45
 msgid "timekpr"
@@ -276,32 +255,28 @@ msgstr "timekpr"
 
 #: gui/timekpr.glade.h:46
 msgid "to"
-msgstr "till"
+msgstr ""
+
+#: gui/timekpr.glade.h:48
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  Baton1 https://launchpad.net/~baton1batonik"
 
 #: gui/client/timekpr-client.py:124
 msgid "You are early, you will be logged out in LESS than 2 minutes"
 msgstr ""
-"Du har loggat in för tidigt och kommer att loggas ut om mindre än 2 minuter"
 
 #: gui/client/timekpr-client.py:127
 msgid "You are late, you will be logged out in LESS than 2 minutes"
 msgstr ""
-"Du har loggat in för sent och kommer att loggas ut om mindre än 2 minuter"
 
 #: gui/client/timekpr-client.py:130
 msgid "Your time is up, you will be logged out in LESS than 2 minutes"
-msgstr "Din tid är slut och du kommer att loggas ut om mindre än 2 minuter"
+msgstr ""
 
 #: gui/client/timekpr-client.py:138
 #, python-format
 msgid ""
 "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
 msgstr ""
-"Du har %(hour)s timme/timmar, %(min)s minut(er) och %(sec)s sekund(er) kvar"
-
-#: gui/timekpr.glade.h:48
-msgid "translator-credits"
-msgstr ""
-"Launchpad Contributions:\n"
-"  larren https://launchpad.net/~lars-renstrom\n"
-"  petri https://launchpad.net/~stenudde-gmail"
