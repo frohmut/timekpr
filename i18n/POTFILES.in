@@ -1,0 +1,13 @@
+# find *.py timekpr/ data/ -name "*.in" -or -name "*.py" -or -name "*.glade"
+[encoding: UTF-8]
+setup.py
+timekprcommon.py
+timekprpam.py
+timekpr/timekpr.py
+timekpr/timekpr-client.py
+timekpr/timekpr-gui.py
+data/usr/share/timekpr/timekpr.glade
+data/timekpr-gnome.desktop.in
+data/timekpr-kde.desktop.in
+data/timekpr-client.desktop.in
+
