@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=timekpr-client
-Comment=Timekpr Client
+_Name=timekpr-client
+_Comment=Timekpr Client
 Icon=timekpr
 Exec=timekpr-client
 Terminal=false
