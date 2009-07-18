@@ -1,6 +1,8 @@
 Authors:
     Even Nedberg <even@nedberg.net>
     Savvas Radevic <vicedar@gmail.com>
+
+Guidance and code recommendations:
     Nicolas Laurance <nlaurance@zindep.com>
 
 Package maintainers:

@@ -1,0 +1,11 @@
+[Desktop Entry]
+_Name=Timekpr Control Panel
+_GenericName=Timekpr
+_Comment=Keep control of computer usage
+Exec=gksu timekpr-gui
+Icon=timekpr
+Terminal=false
+Type=Application
+Categories=System;Settings;GTK;
+X-Ubuntu-Gettext-Domain=timekpr
+NotShowIn=KDE;
