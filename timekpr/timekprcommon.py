@@ -18,11 +18,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 try:
-    # python3
-    import configparser
-except ImportError:
     # python2.x
     import ConfigParser as configparser
+except ImportError:
+    # python3
+    import configparser
 
 from os.path import isfile, getmtime
 from os import geteuid
@@ -36,6 +36,24 @@ def checkifadmin():
     if geteuid() != 0:
         exit('Error: You need to have administrative privileges to run timekpr')
 
+# GRACEPERIOD:
+# This is the grace period, where a notification pops up letting the users
+# know that their time usage will be over soon.
+# Users are given by default 120 seconds to finish up their work.
+# Limit is expressed in seconds, e.g. 120 means 2 minutes
+# POLLTIME: How often should the script check the timelogs.
+# Setting is expressed in seconds, e.g. 45 means 45 seconds.
+# DEBUGME: True keeps a logfile, False does not.
+# LOCKLASTS: Default lock period
+# Setting can be day(s), hour(s), minute(s), month(s) (30 days)
+# Example: 5 hours
+
+GRACEPERIOD = 120
+POLLTIME = 45
+DEBUGME = True
+LOCKLASTS = '1 hour'
+
+#TODO: Change it, fix it, make it work.
 def getvariables(DEVACTIVE):
     #Read timekpr.conf
     fconf = '/etc/timekpr.conf'
