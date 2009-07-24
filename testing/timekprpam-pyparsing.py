@@ -37,7 +37,7 @@ tconf_commonops = "&|"
 negation = Optional("!", "allow") # block or allow
 negation.setParseAction(negation_replace)
 # days of week and time of day
-daysofweek = Group(OneOrMore(Literal("Mo") | Literal("Tu") | Literal("We") | Literal("Th") | Literal("Fr") | Literal("Sa") | Literal("Su") | Literal("Wk") | Literal("Wd")))
+daysofweek = Group(OneOrMore(Literal("Mo") | Literal("Tu") | Literal("We") | Literal("Th") | Literal("Fr") | Literal("Sa") | Literal("Su") | Literal("Wk") | Literal("Wd") | Literal("Al")))
 timeofday = Group(Word(nums,exact=4) + Suppress("-") + Word(nums,exact=4))
 tconf_time = negation + daysofweek + timeofday
 tconf_time_list = Group(tconf_time) + Optional(Word(tconf_commonops))
