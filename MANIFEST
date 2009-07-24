@@ -1,0 +1,15 @@
+README
+README.Developers
+TODO
+CONTRIBUTORS
+COPYRIGHT
+setup.cfg
+setup.py
+scripts/timekpr
+scripts/timekpr-client
+scripts/timekpr-gui
+timekpr/timekpr-client.py
+timekpr/timekpr-gui.py
+timekpr/timekpr.py
+timekpr/timekprcommon.py
+timekpr/timekprpam.py
