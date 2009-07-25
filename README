@@ -1,16 +1,37 @@
-INSTALLATION
-============
+Dependencies
+------------
 
--TODO-
+Currently the project requires (expressed as Ubuntu packages):
+ - python >= 2.5
+ - setup.py requires python-distutils and python-distutils-extra
+ - In order to run: python-gtk2, python-glade2, python-pyparsing, procps, 
+   libnotify-bin, login, libpam-modules, gksu or kdesu
 
-HISTORY
+Installation
+-------------
+Execute:
+sudo python setup.py install
+
+Notes
+-----
+You might need to patch timekpr/dirs.py to match your system.
+
+History
 =======
 
  - This is a complete re-write in python and vast improvement from the original timekpr bash script: http://tinyurl.com/waggledanceblog
  - This project was born after Charles Jackson's (crjackson) request for a program that time-limits user accounts: http://ubuntuforums.org/showthread.php?t=887769
  - Even Nedberg initially began to improve the original bash script from Chris Jackson, Savvas Radević packaged it and soon began co-development.
+ - timekpr is now in experimental mode, highly unstable. Expect changes and a release that will be more distributable.
 
-THANKS
+Thanks
 ======
 
 Special thanks go to Charles Jackson (crjackson), who has contributed a lot by suggesting and brainstorming useful features, as well as reporting bugs. We would also like to thank all the people posting at that topic at ubuntuforums for their helpful suggestions, tests and bug reports!
+
+Also thanks to 
+
+Top contributors list:
+https://launchpad.net/timekpr/+topcontributors
+
+Finally, a huge thank you to the translators! :-)

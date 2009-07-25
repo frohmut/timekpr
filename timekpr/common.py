@@ -17,17 +17,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-try:
-    # python2.x
-    import ConfigParser as configparser
-except ImportError:
-    # python3
-    import configparser
-
 from os.path import isfile, getmtime
 from os import geteuid
 from time import strftime, localtime
-from timekprpam import *
+from pam import *
+import dirs
 
 def getversion():
     return '0.3.0'
@@ -36,94 +30,34 @@ def checkifadmin():
     if geteuid() != 0:
         exit('Error: You need to have administrative privileges to run timekpr')
 
-# GRACEPERIOD:
-# This is the grace period, where a notification pops up letting the users
-# know that their time usage will be over soon.
-# Users are given by default 120 seconds to finish up their work.
-# Limit is expressed in seconds, e.g. 120 means 2 minutes
-# POLLTIME: How often should the script check the timelogs.
-# Setting is expressed in seconds, e.g. 45 means 45 seconds.
-# DEBUGME: True keeps a logfile, False does not.
-# LOCKLASTS: Default lock period
-# Setting can be day(s), hour(s), minute(s), month(s) (30 days)
-# Example: 5 hours
+""" Variables
+    * GRACEPERIOD:
+    This is the grace period, where a notification pops up letting the users
+    know that their time usage will be over soon.
+    Users are given by default 120 seconds to finish up their work.
+    Limit is expressed in seconds, e.g. 120 means 2 minutes
+    * POLLTIME: How often should the script check the timelogs.
+    Setting is expressed in seconds, e.g. 45 means 45 seconds.
+    * DEBUGME: True keeps a logfile, False does not.
+    * LOCKLASTS: Default lock period
+    Setting can be day(s), hour(s), minute(s), month(s) (30 days)
+    Example: 5 hours
+"""
 
-GRACEPERIOD = 120
-POLLTIME = 45
-DEBUGME = True
-LOCKLASTS = '1 hour'
+timekpr_variables = {
+    'GRACEPERIOD'  : 120,
+    'POLLTIME'     : 45,
+    'DEBUGME'      : True,
+    'LOCKLASTS'    : '1 hour',
+    'LOGFILE'      : dirs.LOGFILE,
+    'TIMEKPRDIR'   : dirs.TIMEKPRDIR,
+    'TIMEKPRSHARED': dirs.TIMEKPRSHARED,
+    'TIMEKPRDAEMON': dirs.TIMEKPRDAEMON,
+}
 
 #TODO: Change it, fix it, make it work.
-def getvariables(DEVACTIVE):
-    #Read timekpr.conf
-    fconf = '/etc/timekpr.conf'
-    if DEVACTIVE:
-        fconf = './etc/timekpr.conf'
-    if not isfile(fconf):
-        exit('Error: Could not find configuration file %s' % fconf)
-
-    conf = configparser.ConfigParser()
-    try:
-        conf.read(fconf)
-    except configparser.ParsingError:
-        exit('Error: Could not parse the configuration file properly %s' % fconf)
-
-    #Creating a dictionary file
-    var = dict()
-    #VARIABLES
-    #VERSION GRACEPERIOD POLLTIME DEBUGME LOCKLASTS LOGFILE TIMEKPRDIR TIMEKPRWORK TIMEKPRSHARED
-    #Exits or sets default if not found
-
-    try:
-        var['VERSION'] = conf.get("general", "version")
-    except configparser.NoOptionError:
-        exit('Error: Could not detect variable version in configuration file %s' % fconf)
-    if var['VERSION'] < '0.2.0':
-        exit('Error: You have an old /etc/timekpr.conf - remove and reinstall timekpr')
-
-    try:
-        var['GRACEPERIOD'] = int(conf.get("variables", "graceperiod"))
-    except configparser.NoOptionError:
-        var['GRACEPERIOD'] = 120
-
-    try:
-        var['POLLTIME'] = int(conf.get("variables", "polltime"))
-    except configparser.NoOptionError:
-        var['POLLTIME'] = 45
-
-    try:
-        var['LOCKLASTS'] = conf.get("variables", "locklasts")
-    except configparser.NoOptionError:
-        var['LOCKLASTS'] = '1 hour'
-
-    try:
-        var['DEBUGME'] = conf.get("variables", "debugme")
-    except configparser.NoOptionError:
-        var['DEBUGME'] = 'True'
-
-    try:
-        var['LOGFILE'] = conf.get("directories", "logfile")
-    except configparser.NoOptionError:
-        var['LOGFILE'] = '/var/log/timekpr.log'
-
-    try:
-        var['TIMEKPRDIR'] = conf.get("directories", "timekprdir")
-    except configparser.NoOptionError:
-        var['TIMEKPRDIR'] = '/etc/timekpr'
-
-    try:
-        var['TIMEKPRWORK'] = conf.get("directories", "timekprwork")
-    except configparser.NoOptionError:
-        var['TIMEKPRWORK'] = '/var/lib/timekpr'
-
-    try:
-        var['TIMEKPRSHARED'] = conf.get("directories", "timekprshared")
-    except configparser.NoOptionError:
-        var['TIMEKPRSHARED'] = '/usr/share/timekpr'
-    if DEVACTIVE:
-        var['TIMEKPRSHARED'] = './gui'
-
-    return var
+def getvariables():
+    return timekpr_variables
 
 def getcmdoutput(cmd):
     #TODO: timekpr-gui.py: Use it for "/etc/init.d/timekpr status" and a button enable/disable

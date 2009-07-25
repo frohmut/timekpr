@@ -30,7 +30,10 @@ import glob
 from distutils.core import setup
 from DistUtilsExtra.command import *
 
-timekpr_version = '0.3.0'
+import timekpr.dirs
+import timekpr.common
+
+timekpr_version = timekpr.common.get_version()
 
 if sys.version < '2.5':
     sys.exit('ERROR: Sorry, python 2.5 or higher is required for this application.')
@@ -52,14 +55,14 @@ when they can or cannot log in.",
     maintainer_email = 'even@nedberg.net, vicedar@gmail.com',
 
     license = 'GPL-3',
-    keywords = 'system admin time limit access account',
+    keywords = 'system admin time limit access account lock tracking',
 
     packages = ['timekpr'],
     data_files = [
         ('share/icons/hicolor/scalable/apps', ['artwork/timekpr.svg']),
         ('share/pixmaps', ['data/share/pixmaps/timekpr.xpm'])
+        (timekpr.dirs.TIMEKPRDAEMON, ['scripts/timekpr.init'])
     ],
-    py_modules = ['timekpr.timekprpam', 'timekpr.timekprcommon'],
     cmdclass = {
         "build": build_extra.build_extra,
         "build_i18n":  build_i18n.build_i18n,
@@ -68,6 +71,7 @@ when they can or cannot log in.",
     },
     scripts = [
         "scripts/timekpr",
+        "scripts/timekprd",
         "scripts/timekpr-gui",
         "scripts/timekpr-client",
     ],
