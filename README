@@ -1,3 +1,11 @@
+Install
+=======
+
+Requirements
+------------
+- You might need to patch timekpr/dirs.py to match your system.
+- You might need to enable access and time plugins in respective pam.d/ files
+
 Dependencies
 ------------
 
@@ -12,9 +20,9 @@ Installation
 Execute:
 sudo python setup.py install
 
-Notes
------
-You might need to patch timekpr/dirs.py to match your system.
+Need more options?
+python setup.py --help
+python setup.py --help-commands
 
 History
 =======

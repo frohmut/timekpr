@@ -25,3 +25,12 @@ https://code.launchpad.net/~yourusername/+addbranch
 When you are editing and adding new stuff, please be clear as to 
 _every detail_ you have changed (summarize them in topics if there 
 are a lot of changes).
+
+Translations
+------------
+
+How to update the translations:
+files=`find *.py timekpr/ data/ -name "*.in" -or -name "*.py" -or -name "*.glade"`
+echo -e "[encoding: UTF-8]\n$files" > i18n/POTFILES.in
+python setup.py build_i18n
+

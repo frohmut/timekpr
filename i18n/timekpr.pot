@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: Savvas Radevic <vicedar@gmail.com>\n"
-"POT-Creation-Date: 2009-07-18 20:31+0200\n"
+"POT-Creation-Date: 2009-07-26 11:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,95 +16,95 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../timekpr/timekpr-client.py:157
+#: ../timekpr-client.py:157
 msgid "You are early, you will be logged out in LESS than 2 minutes"
 msgstr ""
 
-#: ../timekpr/timekpr-client.py:160
+#: ../timekpr-client.py:160
 msgid "You are late, you will be logged out in LESS than 2 minutes"
 msgstr ""
 
-#: ../timekpr/timekpr-client.py:163
+#: ../timekpr-client.py:163
 msgid "Your time is up, you will be logged out in LESS than 2 minutes"
 msgstr ""
 
 #. TODO: Need to find a better way to have plural form (or just use hours(s) )
-#: ../timekpr/timekpr-client.py:171
+#: ../timekpr-client.py:171
 #, python-format
 msgid "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:65
+#: ../timekpr-gui.py:65
 msgid "You need to have administrative privileges to run timekpr-gui"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:171
+#: ../timekpr-gui.py:171
 msgid ""
 "You need to have at least one normal user available to configure timekpr"
 msgstr ""
 
 #. TRANSLATORS: Replace this string with your names, one name per line.
-#: ../timekpr/timekpr-gui.py:191 ../data/usr/share/timekpr/timekpr.glade.h:48
+#: ../timekpr-gui.py:191 ../data/usr/share/timekpr/timekpr.glade.h:48
 msgid "translator-credits"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:197 ../timekpr/timekpr-gui.py:451
+#: ../timekpr-gui.py:197 ../timekpr-gui.py:451
 msgid "Lock account"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:200
+#: ../timekpr-gui.py:200
 #, python-format
 msgid "Locked account %s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:213
+#: ../timekpr-gui.py:213
 #, python-format
 msgid "Unlocked account %s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:237
+#: ../timekpr-gui.py:237
 #, python-format
 msgid "Removed all restrictions for account %s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:245
+#: ../timekpr-gui.py:245
 #, python-format
 msgid "Cleared used up time for account %s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:262
+#: ../timekpr-gui.py:262
 #, python-format
 msgid "Applied reward of %(num)s minute(s) to account %(user)s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:279
+#: ../timekpr-gui.py:279
 #, python-format
 msgid "Set access hours to 00-24 on %(day)s for account %(user)s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:284
+#: ../timekpr-gui.py:284
 #, python-format
 msgid "Refreshed setting values from account %s"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:449
+#: ../timekpr-gui.py:449
 msgid "Unlock account"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:486
+#: ../timekpr-gui.py:486
 msgid "Status for <span weight=\"bold\">"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:518 ../timekpr/timekpr-gui.py:544
+#: ../timekpr-gui.py:518 ../timekpr-gui.py:544
 msgid "    Sun     "
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:524 ../timekpr/timekpr-gui.py:549
+#: ../timekpr-gui.py:524 ../timekpr-gui.py:549
 #: ../data/usr/share/timekpr/timekpr.glade.h:13
 msgid "Every day"
 msgstr ""
 
-#: ../timekpr/timekpr-gui.py:596
+#: ../timekpr-gui.py:596
 #, python-format
 msgid "Applied limit changes for account %s"
 msgstr ""

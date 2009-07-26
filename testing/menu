@@ -1,3 +1,0 @@
-?package(timekpr):needs="X11" section="Applications/System/Administration" \
-  icon="timekpr.xpm" title="Timekpr Control Panel" \
-  command="su-to-root -X -c /usr/bin/timekpr-gui"

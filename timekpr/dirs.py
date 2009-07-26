@@ -12,4 +12,3 @@ TIMEKPRDIR = '/etc/timekpr'
 TIMEKPRWORK = '/var/lib/timekpr'
 TIMEKPRSHARED = '/usr/share/timekpr'
 TIMEKPRDAEMON = '/etc/init.d'
-

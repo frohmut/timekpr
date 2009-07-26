@@ -33,7 +33,7 @@ from DistUtilsExtra.command import *
 import timekpr.dirs
 import timekpr.common
 
-timekpr_version = timekpr.common.get_version()
+timekpr_version = timekpr.common.getversion()
 
 if sys.version < '2.5':
     sys.exit('ERROR: Sorry, python 2.5 or higher is required for this application.')
@@ -60,7 +60,7 @@ when they can or cannot log in.",
     packages = ['timekpr'],
     data_files = [
         ('share/icons/hicolor/scalable/apps', ['artwork/timekpr.svg']),
-        ('share/pixmaps', ['data/share/pixmaps/timekpr.xpm'])
+        ('share/pixmaps', ['data/share/pixmaps/timekpr.xpm']),
         (timekpr.dirs.TIMEKPRDAEMON, ['scripts/timekpr.init'])
     ],
     cmdclass = {
