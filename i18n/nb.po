@@ -7,146 +7,160 @@ msgid ""
 msgstr ""
 "Project-Id-Version: timekpr\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-02-28 16:27+0100\n"
-"PO-Revision-Date: 2009-02-28 16:15+0000\n"
-"Last-Translator: Even Nedberg <Unknown>\n"
+"POT-Creation-Date: 2009-07-26 11:28+0200\n"
+"PO-Revision-Date: 2009-07-18 19:32+0000\n"
+"Last-Translator: Savvas Radevic <vicedar@gmail.com>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-07-18 17:28+0000\n"
+"X-Launchpad-Export-Date: 2009-07-26 10:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: timekpr-gui.py:37
+#: ../timekpr-client.py:157
+msgid "You are early, you will be logged out in LESS than 2 minutes"
+msgstr "Det er for tidlig på dagen, du blir logget av innen 2 minutter"
+
+#: ../timekpr-client.py:160
+msgid "You are late, you will be logged out in LESS than 2 minutes"
+msgstr "Det er for sent på dagen, du blir logget av innen 2 minutter"
+
+#: ../timekpr-client.py:163
+msgid "Your time is up, you will be logged out in LESS than 2 minutes"
+msgstr "Tiden din er ute, du blir logget av innen 2 minutter"
+
+#. TODO: Need to find a better way to have plural form (or just use hours(s) )
+#: ../timekpr-client.py:171
+#, python-format
+msgid ""
+"You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
+msgstr ""
+"Du har %(hour)s time(r), %(min)s minutt(er) og %(sec)s sekund(er) igjen"
+
+#: ../timekpr-gui.py:65
 msgid "You need to have administrative privileges to run timekpr-gui"
 msgstr "Du må ha administrator tilgang for å benytte timekpr-gui"
 
-#: timekpr-gui.py:142
+#: ../timekpr-gui.py:171
 msgid ""
 "You need to have at least one normal user available to configure timekpr"
 msgstr "Du må ha minst en normal bruker for å konfigurere timekpr"
 
-#: timekpr-gui.py:167 timekpr-gui.py:421
+#: ../timekpr-gui.py:197 ../timekpr-gui.py:451
 msgid "Lock account"
 msgstr "Lås konto"
 
-#: timekpr-gui.py:170
+#: ../timekpr-gui.py:200
 #, python-format
 msgid "Locked account %s"
 msgstr "Låste konto %s"
 
-#: timekpr-gui.py:183
+#: ../timekpr-gui.py:213
 #, python-format
 msgid "Unlocked account %s"
 msgstr "Åpnet brukerkonto: %s"
 
-#: timekpr-gui.py:207
+#: ../timekpr-gui.py:237
 #, python-format
 msgid "Removed all restrictions for account %s"
 msgstr "Fjernet alle restriksjoner for brukerkonto: %s"
 
-#: timekpr-gui.py:215
+#: ../timekpr-gui.py:245
 #, python-format
 msgid "Cleared used up time for account %s"
 msgstr "Slettet brukt tid for brukerkonto: %s"
 
-#: timekpr-gui.py:232
+#: ../timekpr-gui.py:262
 #, python-format
 msgid "Applied reward of %(num)s minute(s) to account %(user)s"
 msgstr "Ga belønning på %(num)s minutt(er) til konto %(user)s"
 
-#: timekpr-gui.py:249
+#: ../timekpr-gui.py:279
 #, python-format
 msgid "Set access hours to 00-24 on %(day)s for account %(user)s"
 msgstr "Satte tilgangstider til 00-24 på %(day)s for konto %(user)s"
 
-#: timekpr-gui.py:254
+#: ../timekpr-gui.py:284
 #, python-format
 msgid "Refreshed setting values from account %s"
 msgstr "Lastet brukerinstillinger for %s på nytt"
 
-#: timekpr-gui.py:419
+#: ../timekpr-gui.py:449
 msgid "Unlock account"
 msgstr "Lås opp konto"
 
-#: timekpr-gui.py:456
+#: ../timekpr-gui.py:486
 msgid "Status for <span weight=\"bold\">"
 msgstr "Status for <span weight=\"bold\">"
 
-#: timekpr-gui.py:488 timekpr-gui.py:514
+#: ../timekpr-gui.py:518 ../timekpr-gui.py:544
 msgid "    Sun     "
 msgstr "    Søn     "
 
-#: timekpr-gui.py:494 timekpr-gui.py:519 gui/timekpr.glade.h:13
+#: ../timekpr-gui.py:524 ../timekpr-gui.py:549
+#: ../data/usr/share/timekpr/timekpr.glade.h:13
 msgid "Every day"
 msgstr "Hver dag"
 
-#: timekpr-gui.py:566
+#: ../timekpr-gui.py:596
 #, python-format
 msgid "Applied limit changes for account %s"
 msgstr "Bruker begrensninger for brukerkonto %s"
 
-#: gui/timekpr.glade.h:1
+#: ../data/usr/share/timekpr/timekpr.glade.h:1
 msgid "-"
 msgstr "-"
 
-#: gui/timekpr.glade.h:2
+#: ../data/usr/share/timekpr/timekpr.glade.h:2
 msgid ""
 "Able to login all day today:\n"
 "(Also active bypass)"
 msgstr "Kan logge inn hele dagen"
 
-#: gui/timekpr.glade.h:4
+#: ../data/usr/share/timekpr/timekpr.glade.h:4
 msgid "About timekpr"
 msgstr "Om timekpr"
 
-#: gui/timekpr.glade.h:5
+#: ../data/usr/share/timekpr/timekpr.glade.h:5
 msgid "Account locked:"
 msgstr "Konto låst"
 
-#: gui/timekpr.glade.h:6
+#: ../data/usr/share/timekpr/timekpr.glade.h:6
 msgid ""
 "Add time\n"
 "Reward / Penalty"
 msgstr "Legg til tid"
 
-#: gui/timekpr.glade.h:8
+#: ../data/usr/share/timekpr/timekpr.glade.h:8
 msgid "Bypass for today"
 msgstr "Omgå for i dag"
 
-#: gui/timekpr.glade.h:9
+#: ../data/usr/share/timekpr/timekpr.glade.h:9
 msgid "Clear all restrictions"
 msgstr "Slett alle restriksjoner"
 
-#: gui/timekpr.glade.h:10
+#: ../data/usr/share/timekpr/timekpr.glade.h:10
 msgid "Configure per day"
 msgstr "Konfigurer for enkeltdager"
 
-#: gui/timekpr.glade.h:11
-msgid ""
-"Copyright (c) 2008 Evan Nedberg\n"
-"Copyright (c) 2008 Savvas Radevic"
-msgstr ""
-"Copyright (c) 2008 Even Nedberg\n"
-"Copyright (c) 2008 Savvas Radevic"
-
-#: gui/timekpr.glade.h:14
+#: ../data/usr/share/timekpr/timekpr.glade.h:14
 msgid "Fri"
 msgstr "Fre"
 
-#: gui/timekpr.glade.h:15
+#: ../data/usr/share/timekpr/timekpr.glade.h:15
+#: ../data/timekpr-gnome.desktop.in.h:1 ../data/timekpr-kde.desktop.in.h:1
 msgid "Keep control of computer usage"
 msgstr "Kontroller databruken"
 
-#: gui/timekpr.glade.h:16
+#: ../data/usr/share/timekpr/timekpr.glade.h:16
 msgid "Limit access duration"
 msgstr "Begrens tilgangsvarigheten"
 
-#: gui/timekpr.glade.h:17
+#: ../data/usr/share/timekpr/timekpr.glade.h:17
 msgid "Limit time frame"
 msgstr "Begrenst tidspunkter"
 
-#: gui/timekpr.glade.h:18
+#: ../data/usr/share/timekpr/timekpr.glade.h:18
 msgid ""
 "Limit user access by defining the hours\n"
 "when user is allowed to login"
@@ -154,7 +168,7 @@ msgstr ""
 "Begrens brukertilgang ved å definere tidspunktene\n"
 "brukeren har tillatelse til å logge inn"
 
-#: gui/timekpr.glade.h:20
+#: ../data/usr/share/timekpr/timekpr.glade.h:20
 msgid ""
 "Limit user access by defining the time duration\n"
 "(how long the user is logged in)"
@@ -162,43 +176,43 @@ msgstr ""
 "Begrens brukertilgangen ved å definere hvor varighet\n"
 "(hvor lenge brukerene kan være logget inn)"
 
-#: gui/timekpr.glade.h:22
+#: ../data/usr/share/timekpr/timekpr.glade.h:22
 msgid "Limited by access duration (any day):"
 msgstr "Begrenset varigheten (alle dager)"
 
-#: gui/timekpr.glade.h:23
+#: ../data/usr/share/timekpr/timekpr.glade.h:23
 msgid "Limited by time frame (any day):"
 msgstr "Begrenset ved tidspunkter (alle dager)"
 
-#: gui/timekpr.glade.h:24
+#: ../data/usr/share/timekpr/timekpr.glade.h:24
 msgid "Limits & Boundaries"
 msgstr "Begrensninger og rammer"
 
-#: gui/timekpr.glade.h:25
+#: ../data/usr/share/timekpr/timekpr.glade.h:25
 msgid "Mon"
 msgstr "Man"
 
-#: gui/timekpr.glade.h:26
+#: ../data/usr/share/timekpr/timekpr.glade.h:26
 msgid "Reset time"
 msgstr "Tøm tidstelleren"
 
-#: gui/timekpr.glade.h:27
+#: ../data/usr/share/timekpr/timekpr.glade.h:27
 msgid "Sat"
 msgstr "Lør"
 
-#: gui/timekpr.glade.h:28
+#: ../data/usr/share/timekpr/timekpr.glade.h:28
 msgid "Select user"
 msgstr "Velg bruker"
 
-#: gui/timekpr.glade.h:29
+#: ../data/usr/share/timekpr/timekpr.glade.h:29
 msgid "Status"
 msgstr "Status"
 
-#: gui/timekpr.glade.h:30
+#: ../data/usr/share/timekpr/timekpr.glade.h:30
 msgid "Status for <span weight=\"bold\">username</span>"
 msgstr "Status for <span weight=\"bold\">username</span>"
 
-#: gui/timekpr.glade.h:31
+#: ../data/usr/share/timekpr/timekpr.glade.h:31
 msgid ""
 "This program is free software: you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -227,72 +241,88 @@ msgstr ""
 "programmet. Hvis ikke kan du se <http://www.gnu.org/licenses/>. I Debian kan "
 "du se under filen /usr/share/common-licenses/GPL-3."
 
-#: gui/timekpr.glade.h:36
+#: ../data/usr/share/timekpr/timekpr.glade.h:36
 msgid "Thu"
 msgstr "Tor"
 
-#: gui/timekpr.glade.h:37
+#: ../data/usr/share/timekpr/timekpr.glade.h:37
 msgid "Time left:"
 msgstr "Gjenstående tid:"
 
-#: gui/timekpr.glade.h:38
+#: ../data/usr/share/timekpr/timekpr.glade.h:38
 msgid "Tue"
 msgstr "Tir"
 
-#: gui/timekpr.glade.h:39
+#: ../data/usr/share/timekpr/timekpr.glade.h:39
 msgid "Unlock Account"
 msgstr "Lås opp konto"
 
-#: gui/timekpr.glade.h:40
+#: ../data/usr/share/timekpr/timekpr.glade.h:40
 msgid "Wed"
 msgstr "Ons"
 
-#: gui/timekpr.glade.h:41
+#: ../data/usr/share/timekpr/timekpr.glade.h:41
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: gui/timekpr.glade.h:42
+#: ../data/usr/share/timekpr/timekpr.glade.h:42
 msgid "from"
 msgstr "fra"
 
-#: gui/timekpr.glade.h:43
+#: ../data/usr/share/timekpr/timekpr.glade.h:43
 msgid "http://launchpad.net/timekpr"
 msgstr "http://launchpad.net/timekpr"
 
-#: gui/timekpr.glade.h:44
+#: ../data/usr/share/timekpr/timekpr.glade.h:44
 msgid "minutes"
 msgstr "minutter"
 
-#: gui/timekpr.glade.h:45
+#: ../data/usr/share/timekpr/timekpr.glade.h:45
 msgid "timekpr"
 msgstr "timekpr"
 
-#: gui/timekpr.glade.h:46
+#: ../data/usr/share/timekpr/timekpr.glade.h:46
 msgid "to"
 msgstr "til"
 
-#: gui/client/timekpr-client.py:124
-msgid "You are early, you will be logged out in LESS than 2 minutes"
-msgstr "Det er for tidlig på dagen, du blir logget av innen 2 minutter"
+#~ msgid ""
+#~ "Copyright (c) 2008 Evan Nedberg\n"
+#~ "Copyright (c) 2008 Savvas Radevic"
+#~ msgstr ""
+#~ "Copyright (c) 2008 Even Nedberg\n"
+#~ "Copyright (c) 2008 Savvas Radevic"
 
-#: gui/client/timekpr-client.py:127
-msgid "You are late, you will be logged out in LESS than 2 minutes"
-msgstr "Det er for sent på dagen, du blir logget av innen 2 minutter"
-
-#: gui/client/timekpr-client.py:130
-msgid "Your time is up, you will be logged out in LESS than 2 minutes"
-msgstr "Tiden din er ute, du blir logget av innen 2 minutter"
-
-#: gui/client/timekpr-client.py:138
-#, python-format
-msgid ""
-"You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
-msgstr ""
-"Du har %(hour)s time(r), %(min)s minutt(er) og %(sec)s sekund(er) igjen"
-
-#: gui/timekpr.glade.h:48
+#. TRANSLATORS: Replace this string with your names, one name per line.
+#: ../timekpr-gui.py:191 ../data/usr/share/timekpr/timekpr.glade.h:48
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Even Nedberg https://launchpad.net/~nedberg\n"
-"  Per Kongstad https://launchpad.net/~p-kongstad"
+"  Per Kongstad https://launchpad.net/~p-kongstad\n"
+"\n"
+"Launchpad Contributions:\n"
+"  Even Nedberg https://launchpad.net/~nedberg\n"
+"  Per Kongstad https://launchpad.net/~p-kongstad\n"
+"  Savvas Radevic https://launchpad.net/~medigeek"
+
+#: ../data/usr/share/timekpr/timekpr.glade.h:11
+msgid ""
+"Copyright (c) 2008 Even Nedberg\n"
+"Copyright (c) 2008 Savvas Radevic"
+msgstr ""
+
+#: ../data/timekpr-gnome.desktop.in.h:2 ../data/timekpr-kde.desktop.in.h:2
+msgid "Timekpr"
+msgstr ""
+
+#: ../data/timekpr-gnome.desktop.in.h:3 ../data/timekpr-kde.desktop.in.h:3
+msgid "Timekpr Control Panel"
+msgstr ""
+
+#: ../data/timekpr-client.desktop.in.h:1
+msgid "Timekpr Client"
+msgstr ""
+
+#: ../data/timekpr-client.desktop.in.h:2
+msgid "timekpr-client"
+msgstr ""

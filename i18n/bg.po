@@ -2,107 +2,138 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Timekpr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-28 16:27+0100\n"
-"PO-Revision-Date: 2009-07-06 08:24+0000\n"
-"Last-Translator: Svetoslav Stefanov <Unknown>\n"
+"POT-Creation-Date: 2009-07-26 11:28+0200\n"
+"PO-Revision-Date: 2009-07-18 19:27+0000\n"
+"Last-Translator: Savvas Radevic <vicedar@gmail.com>\n"
 "Language-Team: Svetoslav Stefanov <lfu.project@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-07-18 17:28+0000\n"
+"X-Launchpad-Export-Date: 2009-07-26 10:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 "X-Poedit-Country: BULGARIA\n"
 "X-Poedit-Language: Bulgarian\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: timekpr-gui.py:37
+#: ../timekpr-client.py:157
+msgid "You are early, you will be logged out in LESS than 2 minutes"
+msgstr "Вие сте подранил, ще бъдете отписан след ПО-МАЛКО от 2 минути"
+
+#: ../timekpr-client.py:160
+msgid "You are late, you will be logged out in LESS than 2 minutes"
+msgstr "Вие сте закъснял, ще бъдете отписан след ПО-МАЛКО от 2 минути"
+
+#: ../timekpr-client.py:163
+msgid "Your time is up, you will be logged out in LESS than 2 minutes"
+msgstr "Времето изтече, ще бъдете отписан след ПО-МАЛКО от 2 минути"
+
+#. TODO: Need to find a better way to have plural form (or just use hours(s) )
+#: ../timekpr-client.py:171
+#, python-format
+msgid ""
+"You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
+msgstr "Остават ви %(hour)s час(а), %(min)s минута(и) и %(sec)s секунда(и)"
+
+#: ../timekpr-gui.py:65
 msgid "You need to have administrative privileges to run timekpr-gui"
 msgstr "За да пуснете timekpr-gui са ви необходими права на Администратор"
 
-#: timekpr-gui.py:142
+#: ../timekpr-gui.py:171
 msgid ""
 "You need to have at least one normal user available to configure timekpr"
 msgstr "За да настроите timekpr ви е необходим поне един нормален потребител"
 
-#: timekpr-gui.py:167 timekpr-gui.py:421
+#. TRANSLATORS: Replace this string with your names, one name per line.
+#: ../timekpr-gui.py:191 ../data/usr/share/timekpr/timekpr.glade.h:48
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  Svetoslav Stefanov https://launchpad.net/~lfu-project\n"
+"\n"
+"Launchpad Contributions:\n"
+"  Savvas Radevic https://launchpad.net/~medigeek\n"
+"  Svetoslav Stefanov https://launchpad.net/~lfu-project"
+
+#: ../timekpr-gui.py:197 ../timekpr-gui.py:451
 msgid "Lock account"
 msgstr "Заключване на потребител"
 
-#: timekpr-gui.py:170
+#: ../timekpr-gui.py:200
 #, python-format
 msgid "Locked account %s"
 msgstr "Потребителят %s е заключен"
 
-#: timekpr-gui.py:183
+#: ../timekpr-gui.py:213
 #, python-format
 msgid "Unlocked account %s"
 msgstr "Потребителят %s е отключен"
 
-#: timekpr-gui.py:207
+#: ../timekpr-gui.py:237
 #, python-format
 msgid "Removed all restrictions for account %s"
 msgstr "Премахнати са всички ограничения за потребителят %s"
 
-#: timekpr-gui.py:215
+#: ../timekpr-gui.py:245
 #, python-format
 msgid "Cleared used up time for account %s"
 msgstr "Използваното време за потребителя %s е изчистено"
 
-#: timekpr-gui.py:232
+#: ../timekpr-gui.py:262
 #, python-format
 msgid "Applied reward of %(num)s minute(s) to account %(user)s"
 msgstr ""
 
-#: timekpr-gui.py:249
+#: ../timekpr-gui.py:279
 #, python-format
 msgid "Set access hours to 00-24 on %(day)s for account %(user)s"
 msgstr "Задаване часовете на достъп на 00-24 във %(day)s за профила %(user)s"
 
-#: timekpr-gui.py:254
+#: ../timekpr-gui.py:284
 #, python-format
 msgid "Refreshed setting values from account %s"
 msgstr "Опреснени стойности на настройките от потребител %s"
 
-#: timekpr-gui.py:419
+#: ../timekpr-gui.py:449
 msgid "Unlock account"
 msgstr "Отключване на профила"
 
-#: timekpr-gui.py:456
+#: ../timekpr-gui.py:486
 msgid "Status for <span weight=\"bold\">"
 msgstr "Състояние за <span weight=\"bold\">"
 
-#: timekpr-gui.py:488 timekpr-gui.py:514
+#: ../timekpr-gui.py:518 ../timekpr-gui.py:544
 msgid "    Sun     "
 msgstr "    Нед     "
 
-#: timekpr-gui.py:494 timekpr-gui.py:519 gui/timekpr.glade.h:13
+#: ../timekpr-gui.py:524 ../timekpr-gui.py:549
+#: ../data/usr/share/timekpr/timekpr.glade.h:13
 msgid "Every day"
 msgstr "Всеки ден"
 
-#: timekpr-gui.py:566
+#: ../timekpr-gui.py:596
 #, python-format
 msgid "Applied limit changes for account %s"
 msgstr "Приложени са  промени в ограниченията за профила %s"
 
-#: gui/timekpr.glade.h:1
+#: ../data/usr/share/timekpr/timekpr.glade.h:1
 msgid "-"
 msgstr "-"
 
-#: gui/timekpr.glade.h:2
+#: ../data/usr/share/timekpr/timekpr.glade.h:2
 msgid ""
 "Able to login all day today:\n"
 "(Also active bypass)"
 msgstr ""
 
-#: gui/timekpr.glade.h:4
+#: ../data/usr/share/timekpr/timekpr.glade.h:4
 msgid "About timekpr"
 msgstr "Относно timekpr"
 
-#: gui/timekpr.glade.h:5
+#: ../data/usr/share/timekpr/timekpr.glade.h:5
 msgid "Account locked:"
 msgstr "Заключен профил:"
 
-#: gui/timekpr.glade.h:6
+#: ../data/usr/share/timekpr/timekpr.glade.h:6
 msgid ""
 "Add time\n"
 "Reward / Penalty"
@@ -110,41 +141,42 @@ msgstr ""
 "Увеличаване / Намаляване\n"
 "на времето"
 
-#: gui/timekpr.glade.h:8
+#: ../data/usr/share/timekpr/timekpr.glade.h:8
 msgid "Bypass for today"
 msgstr "Пропускане за днес"
 
-#: gui/timekpr.glade.h:9
+#: ../data/usr/share/timekpr/timekpr.glade.h:9
 msgid "Clear all restrictions"
 msgstr "Изчистване на всички ограничения"
 
-#: gui/timekpr.glade.h:10
+#: ../data/usr/share/timekpr/timekpr.glade.h:10
 msgid "Configure per day"
 msgstr "Отделна настройка за всеки ден"
 
-#: gui/timekpr.glade.h:11
+#: ../data/usr/share/timekpr/timekpr.glade.h:11
 msgid ""
-"Copyright (c) 2008 Evan Nedberg\n"
+"Copyright (c) 2008 Even Nedberg\n"
 "Copyright (c) 2008 Savvas Radevic"
 msgstr ""
 
-#: gui/timekpr.glade.h:14
+#: ../data/usr/share/timekpr/timekpr.glade.h:14
 msgid "Fri"
 msgstr "Пет"
 
-#: gui/timekpr.glade.h:15
+#: ../data/usr/share/timekpr/timekpr.glade.h:15
+#: ../data/timekpr-gnome.desktop.in.h:1 ../data/timekpr-kde.desktop.in.h:1
 msgid "Keep control of computer usage"
 msgstr "Контрол върху използването на компютъра"
 
-#: gui/timekpr.glade.h:16
+#: ../data/usr/share/timekpr/timekpr.glade.h:16
 msgid "Limit access duration"
 msgstr "Ограничаване продължителността на достъп"
 
-#: gui/timekpr.glade.h:17
+#: ../data/usr/share/timekpr/timekpr.glade.h:17
 msgid "Limit time frame"
 msgstr "Ограничаване на времевият прозорец"
 
-#: gui/timekpr.glade.h:18
+#: ../data/usr/share/timekpr/timekpr.glade.h:18
 msgid ""
 "Limit user access by defining the hours\n"
 "when user is allowed to login"
@@ -152,7 +184,7 @@ msgstr ""
 "Ограничаване достъпа на потребителя чрез\n"
 "задаване на часови интервал, в който може да се вписва"
 
-#: gui/timekpr.glade.h:20
+#: ../data/usr/share/timekpr/timekpr.glade.h:20
 msgid ""
 "Limit user access by defining the time duration\n"
 "(how long the user is logged in)"
@@ -160,43 +192,43 @@ msgstr ""
 "Ограничаване достъпа  чрез задаване на времева продължителност\n"
 "(колко дълго е вписан потребителят)"
 
-#: gui/timekpr.glade.h:22
+#: ../data/usr/share/timekpr/timekpr.glade.h:22
 msgid "Limited by access duration (any day):"
 msgstr "Ограничен чрез продължителност на достъпа (ежедневно):"
 
-#: gui/timekpr.glade.h:23
+#: ../data/usr/share/timekpr/timekpr.glade.h:23
 msgid "Limited by time frame (any day):"
 msgstr "Ограничен чрез времеви интервал (ежедневно):"
 
-#: gui/timekpr.glade.h:24
+#: ../data/usr/share/timekpr/timekpr.glade.h:24
 msgid "Limits & Boundaries"
 msgstr "Лимити и Граници"
 
-#: gui/timekpr.glade.h:25
+#: ../data/usr/share/timekpr/timekpr.glade.h:25
 msgid "Mon"
 msgstr "Пон"
 
-#: gui/timekpr.glade.h:26
+#: ../data/usr/share/timekpr/timekpr.glade.h:26
 msgid "Reset time"
 msgstr "Изчистване на времето"
 
-#: gui/timekpr.glade.h:27
+#: ../data/usr/share/timekpr/timekpr.glade.h:27
 msgid "Sat"
 msgstr "Съб"
 
-#: gui/timekpr.glade.h:28
+#: ../data/usr/share/timekpr/timekpr.glade.h:28
 msgid "Select user"
 msgstr "Избор на потребител"
 
-#: gui/timekpr.glade.h:29
+#: ../data/usr/share/timekpr/timekpr.glade.h:29
 msgid "Status"
 msgstr "Състояние"
 
-#: gui/timekpr.glade.h:30
+#: ../data/usr/share/timekpr/timekpr.glade.h:30
 msgid "Status for <span weight=\"bold\">username</span>"
 msgstr "Състояние за <span weight=\"bold\">username</span>"
 
-#: gui/timekpr.glade.h:31
+#: ../data/usr/share/timekpr/timekpr.glade.h:31
 msgid ""
 "This program is free software: you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -213,70 +245,62 @@ msgid ""
 "file /usr/share/common-licenses/GPL-3"
 msgstr ""
 
-#: gui/timekpr.glade.h:36
+#: ../data/usr/share/timekpr/timekpr.glade.h:36
 msgid "Thu"
 msgstr "Четв"
 
-#: gui/timekpr.glade.h:37
+#: ../data/usr/share/timekpr/timekpr.glade.h:37
 msgid "Time left:"
 msgstr "Оставащо време:"
 
-#: gui/timekpr.glade.h:38
+#: ../data/usr/share/timekpr/timekpr.glade.h:38
 msgid "Tue"
 msgstr "Вто"
 
-#: gui/timekpr.glade.h:39
+#: ../data/usr/share/timekpr/timekpr.glade.h:39
 msgid "Unlock Account"
 msgstr "Отключване на профил"
 
-#: gui/timekpr.glade.h:40
+#: ../data/usr/share/timekpr/timekpr.glade.h:40
 msgid "Wed"
 msgstr "Сря"
 
-#: gui/timekpr.glade.h:41
+#: ../data/usr/share/timekpr/timekpr.glade.h:41
 msgid "_Help"
 msgstr "_Помощ"
 
-#: gui/timekpr.glade.h:42
+#: ../data/usr/share/timekpr/timekpr.glade.h:42
 msgid "from"
 msgstr "от"
 
-#: gui/timekpr.glade.h:43
+#: ../data/usr/share/timekpr/timekpr.glade.h:43
 msgid "http://launchpad.net/timekpr"
 msgstr "http://launchpad.net/timekpr"
 
-#: gui/timekpr.glade.h:44
+#: ../data/usr/share/timekpr/timekpr.glade.h:44
 msgid "minutes"
 msgstr "минути"
 
-#: gui/timekpr.glade.h:45
+#: ../data/usr/share/timekpr/timekpr.glade.h:45
 msgid "timekpr"
 msgstr "timekpr"
 
-#: gui/timekpr.glade.h:46
+#: ../data/usr/share/timekpr/timekpr.glade.h:46
 msgid "to"
 msgstr "до"
 
-#: gui/timekpr.glade.h:48
-msgid "translator-credits"
+#: ../data/timekpr-gnome.desktop.in.h:2 ../data/timekpr-kde.desktop.in.h:2
+msgid "Timekpr"
 msgstr ""
-"Launchpad Contributions:\n"
-"  Svetoslav Stefanov https://launchpad.net/~lfu-project"
 
-#: gui/client/timekpr-client.py:124
-msgid "You are early, you will be logged out in LESS than 2 minutes"
-msgstr "Вие сте подранил, ще бъдете отписан след ПО-МАЛКО от 2 минути"
+#: ../data/timekpr-gnome.desktop.in.h:3 ../data/timekpr-kde.desktop.in.h:3
+msgid "Timekpr Control Panel"
+msgstr ""
 
-#: gui/client/timekpr-client.py:127
-msgid "You are late, you will be logged out in LESS than 2 minutes"
-msgstr "Вие сте закъснял, ще бъдете отписан след ПО-МАЛКО от 2 минути"
+#: ../data/timekpr-client.desktop.in.h:1
+msgid "Timekpr Client"
+msgstr ""
 
-#: gui/client/timekpr-client.py:130
-msgid "Your time is up, you will be logged out in LESS than 2 minutes"
-msgstr "Времето изтече, ще бъдете отписан след ПО-МАЛКО от 2 минути"
-
-#: gui/client/timekpr-client.py:138
-#, python-format
-msgid ""
-"You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left"
-msgstr "Остават ви %(hour)s час(а), %(min)s минута(и) и %(sec)s секунда(и)"
+#: ../data/timekpr-client.desktop.in.h:2
+msgid "timekpr-client"
+msgstr ""
