@@ -20,8 +20,8 @@ import gobject
 import os
 from time import strftime, sleep
 import datetime
-from timekprpam import *
-from timekprcommon import *
+from timekpr.pam import *
+from timekpr.common import *
 
 import locale
 import gettext
