@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """ A library timekpr uses to read/edit Linux-PAM configuration files.
     Currently using modules: time, access
     Warning: Not all Linux-PAM possibilities are supported!
@@ -22,7 +21,7 @@
 import re
 from time import strftime
 
-#TODO: Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
+# TODO: Check/enable/disable to /etc/pam.d/gdm and /etc/pam.d/login
 
 ## COMMON
 def getconfsection(conffile):

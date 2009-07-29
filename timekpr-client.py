@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 #    Copyright (C) 2008-2009 Even Nedberg <even@nedberg.net>
 
@@ -27,19 +27,9 @@ import locale
 import gettext
 import sys
 
-APP_NAME = "timekpr"
-
-#Translation stuff
-#Get the local directory
-local_path = '/usr/share/locale'
-locale.setlocale(locale.LC_ALL, '')
-gettext.bindtextdomain(APP_NAME, local_path)
-gettext.textdomain(APP_NAME)
-_ = gettext.gettext
-
 class TimekprClient:
     def __init__(self):
-        self.VAR = getvariables(False)
+        self.VAR = getvariables()
         self.checkInterval = 60
         self.tray = gtk.StatusIcon()
         self.red = self.VAR['TIMEKPRSHARED'] + '/timekpr32x32.png'

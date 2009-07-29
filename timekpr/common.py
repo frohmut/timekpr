@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """ Common variables and definitions for timekpr."""
 
 #    Copyright (C) 2008-2009 Savvas Radevic <vicedar@gmail.com>
@@ -17,11 +16,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+# import common
 from os.path import isfile, getmtime
 from os import geteuid
 from time import strftime, localtime
+
+# import timekpr-related
 from pam import *
 import dirs
+
+# Import i18n
+import locale
+import gettext
 
 def getversion():
     return '0.3.0'
@@ -44,6 +50,14 @@ def checkifadmin():
     Example: 5 hours
 """
 
+# Translation stuff
+# Get the local directory
+local_path = '/usr/share/locale'
+locale.setlocale(locale.LC_ALL, '')
+gettext.bindtextdomain('timekpr', local_path)
+gettext.textdomain('timekpr')
+_ = gettext.gettext
+
 timekpr_variables = {
     'GRACEPERIOD'  : 120,
     'POLLTIME'     : 45,
@@ -55,14 +69,13 @@ timekpr_variables = {
     'TIMEKPRDAEMON': dirs.TIMEKPRDAEMON,
 }
 
-#TODO: Change it, fix it, make it work.
 def getvariables():
     return timekpr_variables
 
 def getcmdoutput(cmd):
-    #TODO: timekpr-gui.py: Use it for "/etc/init.d/timekpr status" and a button enable/disable
+    # TODO: timekpr-gui.py: Use it for "/etc/init.d/timekpr status" and a button enable/disable
     from os import popen
-    #Execute a command, returns its output
+    # Execute a command, returns its output
     out = popen(cmd)
     return out.read()
 
@@ -116,7 +129,7 @@ def isrestricteduser(username, limit):
         return True
 
 def readusersettings(user, conffile):
-    #Returns limits and from/to allowed hours
+    # Returns limits and from/to allowed hours
     if isfile(conffile):
         fhandle = open(conffile)
         limits = fhandle.readline() #Read 1st line

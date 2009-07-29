@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """ The "daemon service" for timekpr. """
 
 #    Copyright (C) 2008-2009 Savvas Radevic <vicedar@gmail.com>
@@ -17,6 +17,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+# import common
 import re
 from time import strftime, sleep, localtime, mktime, time as timenow
 from os.path import split as splitpath, isfile, isdir, getmtime
@@ -24,18 +25,12 @@ from os import popen, mkdir, kill, remove
 from glob import glob
 from threading import Timer
 
-#If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = False
-
-#IMPORT
-if DEVACTIVE:
-    from sys import path
-    path.append('.')
-from timekprpam import * # timekprpam.py
-from timekprcommon import * # timekprcommon.py
+# import timekpr-related
+from timekpr.pam import * # timekpr/pam.py
+from timekpr.common import * # timekpr/common.py
 
 #timekpr.conf variables (dictionary variable)
-VAR = getvariables(DEVACTIVE)
+VAR = getvariables()
 
 #Check if admin/root
 checkifadmin()
@@ -105,7 +100,7 @@ def lockacct(u):
     lockfile = VAR['TIMEKPRDIR'] + '/' + u + '.lock'
     f = open(lockfile, 'w')
     f.close()
-    lockuser(u) # timekprpam.py
+    lockuser(u) # timekpr/pam.py
 
 def checklockacct():
     #Check if user should be unlocked and unlock them

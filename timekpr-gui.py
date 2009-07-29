@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """ The graphical user interface for timekpr configuration. """
 
 #    Copyright (C) 2008-2009 Savvas Radevic <vicedar@gmail.com>
@@ -17,6 +17,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+# Import common
 import re
 from os import remove, mkdir, geteuid, getenv
 from os.path import isdir, isfile, realpath, dirname
@@ -24,41 +25,22 @@ from time import strftime, sleep
 from pwd import getpwnam
 from spwd import getspall
 
+# Import gtk
 import pygtk
 pygtk.require('2.0')
 import gtk
 import gtk.glade
 import gobject
 
-import locale
-import gettext
-import sys
+# Import timekpr-related
+from timekpr.pam import *
+from timekpr.common import *
 
-APP_NAME = "timekpr"
-
-#Translation stuff
-#Get the local directory
-local_path = '/usr/share/locale'
-locale.setlocale(locale.LC_ALL, '')
-gettext.bindtextdomain(APP_NAME, local_path)
-gettext.textdomain(APP_NAME)
-_ = gettext.gettext
-
-#If DEVACTIVE is true, it uses files from local directory
-DEVACTIVE = False
-
-#IMPORT
-if DEVACTIVE:
-    from sys import path
-    path.append('.')
-from timekprpam import *
-from timekprcommon import *
-
-#timekpr.conf variables (dictionary variable)
-VAR = getvariables(DEVACTIVE)
+# timekpr.conf variables (dictionary variable)
+VAR = getvariables()
 version = getversion()
 
-#Check if admin/root
+# Check if admin/root
 def checkifadmingui():
     if geteuid() != 0:
         dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
@@ -70,7 +52,7 @@ def checkifadmingui():
 
 checkifadmingui()
 
-#Create configuration folder if not existing
+# Create configuration folder if not existing
 if not isdir(VAR['TIMEKPRDIR']):
     mkdir(VAR['TIMEKPRDIR'])
 if not isdir(VAR['TIMEKPRWORK']):
@@ -78,9 +60,9 @@ if not isdir(VAR['TIMEKPRWORK']):
 if not isdir(VAR['TIMEKPRSHARED']):
     exit('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED'])
 
-#Check if it is a regular user, with userid within UID_MIN and UID_MAX.
+# Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
-    #FIXME: Hide active user - bug #286529
+    # FIXME: Hide active user - bug #286529
     if (getenv('SUDO_USER') and username == getenv('SUDO_USER')):
         return False
 
@@ -160,13 +142,13 @@ class timekprGUI:
         }
         self.wTree.signal_autoconnect(dic)
 
-        #Using /etc/shadow spwd module
+        # Using /etc/shadow spwd module
         for userinfo in getspall():
             if isnormal(userinfo[0]):
                 self.userSelect.append_text(userinfo[0])
                 self.userSelect.set_active(0)
 
-        #Ensure we have at least one available normal user
+        # Ensure we have at least one available normal user
         if self.userSelect.get_active_text() is None:
             dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _("You need to have at least one normal user available to configure timekpr"))
             dlg.set_default_response(gtk.RESPONSE_CLOSE)
@@ -215,23 +197,23 @@ class timekprGUI:
             self.read_settings_nolimits(self)
 
     def clearallrestrictions(self, widget):
-        #clears all limits and their files
-        #FIXME: A yes/no confirmation would be handy here
+        # clears all limits and their files
+        # FIXME: A yes/no confirmation would be handy here
         timef = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         logoutf = VAR['TIMEKPRWORK'] + '/' + self.user + '.logout'
         latef = VAR['TIMEKPRWORK'] + '/' + self.user + '.late'
         allowf = VAR['TIMEKPRWORK'] + '/' + self.user + '.allow'
-        #Should remove .allow file? It's not a restriction
+        # Should remove .allow file? It's not a restriction
         rm(timef)
         rm(logoutf)
         rm(latef)
         rm(allowf)
-        #Remove boundaries
+        # Remove boundaries
         removeuserlimits(self.user)
-        #Remove limits
+        # Remove limits
         configf = VAR['TIMEKPRDIR'] + '/' + self.user
         rm(configf)
-        #Unlock user
+        # Unlock user
         unlockuser(self.user)
 
         statusmsg = _("Removed all restrictions for account %s") % self.user
@@ -239,7 +221,7 @@ class timekprGUI:
         self.read_settings(self)
 
     def resettimefile(self, widget):
-        #clear the .time file
+        # clear the .time file
         timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
         rm(timefile)
         statusmsg = _("Cleared used up time for account %s") % self.user
@@ -264,9 +246,9 @@ class timekprGUI:
         self.read_settings_nolimits(self)
 
     def extendLimitsButton_clicked(self, widget):
-        #UPDATE: extend limits button is now "Bypass for today"
-        #It now is the same as changing boundaries from 0 to 24 for today's day of the week.
-        #.allow can still be useful - active (logged in user accounts) won't be killed
+        # UPDATE: extend limits button is now "Bypass for today"
+        # It now is the same as changing boundaries from 0 to 24 for today's day of the week.
+        # .allow can still be useful - active (logged in user accounts) won't be killed
         index = int(strftime("%w"))
         wfrom = self.fromtolimits[0]
         wto = self.fromtolimits[1]
@@ -337,9 +319,9 @@ class timekprGUI:
         self.ll.append(self.wTree.get_widget("ll6"))
 
     def readfromtolimit(self, widget):
-        #from-to time limitation (aka boundaries) - time.conf
+        # from-to time limitation (aka boundaries) - time.conf
         if isuserlimited(self.user):
-            #Get user time limits (boundaries) as lists from-to
+            # Get user time limits (boundaries) as lists from-to
             bfrom = self.fromtolimits[0]
             bto = self.fromtolimits[1]
 
@@ -350,11 +332,11 @@ class timekprGUI:
             ub = True
             # Single boundaries? (set per day)
             sb = False
-            #Are all boundaries the same?
+            # Are all boundaries the same?
             #If they're not same, activate single (per day) boundaries
             if [bfrom[0]] * 7 != bfrom or [bto[0]] * 7 != bto:
                 sb = True
-            #Even if boundaries are Al0000-2400, return False
+            # Even if boundaries are Al0000-2400, return False
             if not sb and bfrom[0] == '0' and bto[0] == '24':
                 ub = False
             self.boundariesCheck.set_active(ub)
@@ -400,14 +382,14 @@ class timekprGUI:
             self.singleLimits.set_active(False)
 
     def statusicons(self, widget, uislocked):
-        #Set icons in status gtk-yes or gtk-no
+        # Set icons in status gtk-yes or gtk-no
         lockgreen = VAR['TIMEKPRSHARED'] + '/padlock-green.png'
         lockred = VAR['TIMEKPRSHARED'] + '/padlock-red.png'
         iconyes = gtk.STOCK_YES
         iconno = gtk.STOCK_NO
         iconsize = gtk.ICON_SIZE_BUTTON
-        #limitSpin status is already set, so we can use it
-        #self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
+        # limitSpin status is already set, so we can use it
+        # self.spinlimitvalue = self.wTree.get_widget("limitSpin" + strftime('%w')).get_value()
         if not isuserlimitedtoday(self.user) and not uislocked:
             self.alldayloginicon.set_from_stock(iconyes, iconsize)
         else:
@@ -587,10 +569,10 @@ class timekprGUI:
         else:
             rm(configFile)
 
-        #No need to check if boundaries are active or not, apply the default or custom limits
-        #Remove old user limits (boundaries)
+        # No need to check if boundaries are active or not, apply the default or custom limits
+        # Remove old user limits (boundaries)
         rb = removeuserlimits(self.user)
-        #Add new limits (boundaries)
+        # Add new limits (boundaries)
         ab = adduserlimits(self.user, bFrom, bTo)
 
         statusmsg = _("Applied limit changes for account %s") % self.user
