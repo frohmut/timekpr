@@ -1,2 +1,8 @@
 - Stop using the timekpr section, add comment to each line.
-(access.conf and time.conf support side-comments)
+  (access.conf and time.conf support side-comments)
+
+- timekprpam/timekpr-gui should warn if there are other active (not commented) 
+  linux-pam limitations.
+
+- Figure out a way to halt the countdown when screensaver or locked screen is 
+  enabled.

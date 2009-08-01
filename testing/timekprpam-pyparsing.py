@@ -1,4 +1,17 @@
-# Check out:
+""" timekprpam 
+    It's a Linux-PAM parser optimized for timekpr and time/access pam modules. 
+    In other words, many of the linux-pam capabilities are not supported 
+    (and probably will never be!).
+
+    It can currently parse lines that have a comment "# Added by timekpr" at the
+    end of the line (and that aren't comments).
+
+    pyparsing was chosen because it's easier to look at, fix and manipulate
+    (compared to simple regular expressions). However, regular expressions are
+    still used in this module for simpler tasks.
+""" 
+
+# More information on pyparsing:
 # - http://www.rexx.com/~dkuhlman/python_201/python_201.html#SECTION007600000000000000000
 # - http://pyparsing.wikispaces.com/message/view/home/7002417
 
@@ -17,7 +30,7 @@ def pre_check_line(line):
             2 = ignore this line
     """
     # Ignore whitespace-only line
-    if re.search("\s*$", line):
+    if re.search("^\s*$", line):
         return 2
     # timekpr lines have "# Added by timekpr" in the end
     if line[-18::] != "# Added by timekpr":
@@ -90,7 +103,6 @@ for line in matches_tconf:
 #===========
 # Define grammar
 # permission (+ or -) : users : origins
-
 
 print("\n\naccess.conf\n")
 
