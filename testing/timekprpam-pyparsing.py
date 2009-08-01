@@ -17,12 +17,17 @@
 
 from pyparsing import *
 import re
+import sys
 
-#common
-#======
+# common
+# ======
 
-# We have to check for other active lines/limitations that might interfere with timekpr
-def pre_check_line(line):
+# Ignore commented lines (start with #)
+def confGetActiveLines(text):
+    result = re.compile('^(?!\s*#).+', re.M).findall(text)
+    return result
+
+def confPreCheckLine(line):
     """ Pre-checks the line
         Returns:
             0 = active line, with "# Added by timekpr"
@@ -30,19 +35,37 @@ def pre_check_line(line):
             2 = ignore this line
     """
     # Ignore whitespace-only line
-    if re.search("^\s*$", line):
+    if re.match("^\s*$", line):
         return 2
     # timekpr lines have "# Added by timekpr" in the end
     if line[-18::] != "# Added by timekpr":
         return 0
     return 1
 
-#time.conf
-#===========
+def confOutputLines(match, conf):
+    """ Outputs lines and checks for unrecognized ones (not controlled by timekpr)
+        Required arguments: matched lines, conf type ("time" or "access")
+    """
+    unrecognized_lines = list()
+    for line in match:
+        test = confPreCheckLine(line)
+        if test == 1:
+            if conf == "time":
+                result = tconf_parse.parseString(line)
+            elif conf == "access":
+                result = aconf_parse.parseString(line)
+            print("%s\n%s" % (line, result))
+        elif test == 0:
+            unrecognized_lines.append(line)
+        #elif test == 2: just ignore it
 
-print("time.conf\n")
+    if unrecognized_lines:
+        string = "\n".join(unrecognized_lines)
+        print("\nWARNING: Unrecognized active lines found:\n%s" % (string))
 
-# define grammar
+# time.conf
+# =========
+# Define grammar
 # services;ttys;users;times
 # ! = NOT, & = AND, | = OR
 # * = ANY (can be used only once)
@@ -57,6 +80,8 @@ def tconf_negation_replace(s, l, t):
 
 # Common
 tconf_commonops = "&|" # AND/OR
+# Ignore the first three ";"-separated items (services;ttys;users)
+tconf_start = Suppress(Regex("(?:.*;){3}"))
 # Negation
 tconf_negation = Optional("!", "allow") # block (with "!") or allow (without "!")
 tconf_negation.setParseAction(tconf_negation_replace)
@@ -69,54 +94,12 @@ tconf_time = tconf_negation + daysofweek + timeofday
 # While checking for & or | too
 tconf_time_list = Group(tconf_time) + Optional(Word(tconf_commonops))
 # Do the above all over again once or more times
-tconf_time_parse = Suppress(Regex("(?:.*;){3}")) + OneOrMore(tconf_time_list) + Suppress(Regex("# Added by timekpr")) + LineEnd()
+tconf_parse = tconf_start + OneOrMore(tconf_time_list) + Suppress(Regex("# Added by timekpr")) + LineEnd()
 
-# input string
-data = """
-#xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
-xsh & login ; ttyp* ; root | moot;!WdMo0000-2400 # Added by timekpr
-xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
-xsh & login;ttyp*;root | moot;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
-xsh & login ; ttyp* ; root | moot;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
-a;o; a; e
-  
-
-"""
-
-# Ignore commented lines (start with #)
-matches_tconf = re.compile('^(?!\s*#).+', re.M).findall(data)
-#matches_tconf = re.compile('^[^#\n]*?([^;]+)# Added by timekpr$', re.M).findall(data)
-
-for line in matches_tconf:
-    test = pre_check_line(line)
-    if test == 1:
-        print(line)
-        #match_line = re.compile('^.*?([^;]+)# Added by timekpr$').match(line)
-        #result = tconf_time_parse.parseString(match_line.group(1))
-        result = tconf_time_parse.parseString(line)
-        print(result)
-    elif test == 0:
-        print("WARNING: Unrecognized active line found: %s" % (line))
-    # if test == 2, just ignore it
-
-#access.conf
-#===========
+# access.conf
+# ===========
 # Define grammar
 # permission (+ or -) : users : origins
-
-print("\n\naccess.conf\n")
-
-data2 = """
-# testing # Added by timekpr
-- : lala : ALL # Added by timekpr
--:lala:ALL # Added by timekpr
-- : nana123_a : ALL # Added by timekpr
-- : testing : ALL # test
-- : testing : ALL EXCEPT root
-+ : john : 2001:4ca0:0:101::1# Added by timekpr
-+ : root : .foo.bar.org  # Added by timekpr
-- : john : 2001:4ca0:0:101::/64 # Added by timekpr
-"""
 
 def aconf_action_replace(s, l, t):
     if t[0] == "-":
@@ -139,16 +122,42 @@ aconf_users.setParseAction(aconf_strip_whitespace)
 # origins - everything else excluding "# Added by timekpr"
 aconf_origins = Regex("[^#]+")
 aconf_origins.setParseAction(aconf_strip_whitespace)
-aconf_access_parse = aconf_permission + aconf_splitchar + aconf_users + aconf_splitchar + aconf_origins
+aconf_parse = aconf_permission + aconf_splitchar + aconf_users + aconf_splitchar + aconf_origins
 
-# Ignore commented lines (start with #)
-matches_aconf = re.compile('^(?!\s*#).+', re.M).findall(data2)
+# Test data
+# =========
 
-for line in matches_aconf:
-    if pre_check_line(line):
-        print(line)
-        result = aconf_access_parse.parseString(line)
-        print(result)
-    else:
-        print("WARNING: Unrecognized active line found: %s" % (line))
+# time.conf
+print("time.conf\n")
 
+tconf_test_data = """
+#xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
+xsh & login ; ttyp* ; root | moot;!WdMo0000-2400 # Added by timekpr
+xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
+xsh & login;ttyp*;root | moot;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
+xsh & login ; ttyp* ; root | moot;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
+a;o; a; e
+  
+
+"""
+
+matches_tconf = confGetActiveLines(tconf_test_data)
+confOutputLines(matches_tconf, "time")
+
+# access.conf
+print("\n\naccess.conf\n")
+
+aconf_test_data = """
+# testing # Added by timekpr
+- : lala : ALL # Added by timekpr
+-:lala:ALL # Added by timekpr
+- : nana123_a : ALL # Added by timekpr
+- : testing : ALL # test
+- : testing : ALL EXCEPT root
++ : john : 2001:4ca0:0:101::1# Added by timekpr
++ : root : .foo.bar.org  # Added by timekpr
+- : john : 2001:4ca0:0:101::/64 # Added by timekpr
+"""
+
+matches_aconf = confGetActiveLines(aconf_test_data)
+confOutputLines(matches_aconf, "access")
