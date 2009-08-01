@@ -5,6 +5,25 @@
 from pyparsing import *
 import re
 
+#common
+#======
+
+# We have to check for other active lines/limitations that might interfere with timekpr
+def pre_check_line(line):
+    """ Pre-checks the line
+        Returns:
+            0 = active line, with "# Added by timekpr"
+            1 = active line, without "# Added by timekpr"
+            2 = ignore this line
+    """
+    # Ignore whitespace-only line
+    if re.search("\s*$", line):
+        return 2
+    # timekpr lines have "# Added by timekpr" in the end
+    if line[-18::] != "# Added by timekpr":
+        return 0
+    return 1
+
 #time.conf
 #===========
 
@@ -24,21 +43,26 @@ def tconf_negation_replace(s, l, t):
         return t
 
 # Common
-tconf_commonops = "&|"
+tconf_commonops = "&|" # AND/OR
 # Negation
-tconf_negation = Optional("!", "allow") # block or allow
+tconf_negation = Optional("!", "allow") # block (with "!") or allow (without "!")
 tconf_negation.setParseAction(tconf_negation_replace)
-# days of week and time of day
+# Days of week
 daysofweek = Group(OneOrMore(Literal("Mo") | Literal("Tu") | Literal("We") | Literal("Th") | Literal("Fr") | Literal("Sa") | Literal("Su") | Literal("Wk") | Literal("Wd") | Literal("Al")))
+# Get the timeofday (4 numbers and "-" and 4 numbers)
 timeofday = Group(Word(nums,exact=4) + Suppress("-") + Word(nums,exact=4))
+# Check negation, the days of week and the time of day
 tconf_time = tconf_negation + daysofweek + timeofday
+# While checking for & or | too
 tconf_time_list = Group(tconf_time) + Optional(Word(tconf_commonops))
-tconf_time_parse = OneOrMore(tconf_time_list) + LineEnd()
+# Do the above all over again once or more times
+tconf_time_parse = Suppress(Regex("(?:.*;){3}")) + OneOrMore(tconf_time_list) + Suppress(Regex("# Added by timekpr")) + LineEnd()
 
 # input string
 data = """
 #xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
 xsh & login ; ttyp* ; root | moot;!WdMo0000-2400 # Added by timekpr
+xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
 xsh & login;ttyp*;root | moot;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
 xsh & login ; ttyp* ; root | moot;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
 a;o; a; e
@@ -46,16 +70,27 @@ a;o; a; e
 
 """
 
-# Ignore commented lines (start with #) and match the ones that have "# Added by timekpr"
-matches = re.compile('^[^#]*?([^;]+)# Added by timekpr.*$', re.M).findall(data)
+# Ignore commented lines (start with #)
+matches_tconf = re.compile('^(?!\s*#).+', re.M).findall(data)
+#matches_tconf = re.compile('^[^#\n]*?([^;]+)# Added by timekpr$', re.M).findall(data)
 
-for item in matches:
-    print(item)
-    result = tconf_time_parse.parseString(item)
-    print(result)
+for line in matches_tconf:
+    test = pre_check_line(line)
+    if test == 1:
+        print(line)
+        #match_line = re.compile('^.*?([^;]+)# Added by timekpr$').match(line)
+        #result = tconf_time_parse.parseString(match_line.group(1))
+        result = tconf_time_parse.parseString(line)
+        print(result)
+    elif test == 0:
+        print("WARNING: Unrecognized active line found: %s" % (line))
+    # if test == 2, just ignore it
 
 #access.conf
 #===========
+# Define grammar
+# permission (+ or -) : users : origins
+
 
 print("\n\naccess.conf\n")
 
@@ -65,6 +100,7 @@ data2 = """
 -:lala:ALL # Added by timekpr
 - : nana123_a : ALL # Added by timekpr
 - : testing : ALL # test
+- : testing : ALL EXCEPT root
 + : john : 2001:4ca0:0:101::1# Added by timekpr
 + : root : .foo.bar.org  # Added by timekpr
 - : john : 2001:4ca0:0:101::/64 # Added by timekpr
@@ -82,19 +118,25 @@ def aconf_strip_whitespace(s, l, t):
     return t[0].strip()
 
 aconf_splitchar = Suppress(Word(":"))
-aconf_action = Word("-+", exact=1)
-aconf_action.setParseAction(aconf_action_replace)
-aconf_who = Word(alphanums + "_*() ")
-aconf_who.setParseAction(aconf_strip_whitespace)
-aconf_from = Regex(".*")
-aconf_from.setParseAction(aconf_strip_whitespace)
-aconf_access_parse = aconf_action + aconf_splitchar + aconf_who + aconf_splitchar + aconf_from
+# permission - either + or -, 1 character only
+aconf_permission = Word("-+", exact=1)
+aconf_permission.setParseAction(aconf_action_replace)
+# users - alphanumeric and one of "_*() " characters
+aconf_users = Word(alphanums + "_*() ")
+aconf_users.setParseAction(aconf_strip_whitespace)
+# origins - everything else excluding "# Added by timekpr"
+aconf_origins = Regex("[^#]+")
+aconf_origins.setParseAction(aconf_strip_whitespace)
+aconf_access_parse = aconf_permission + aconf_splitchar + aconf_users + aconf_splitchar + aconf_origins
 
-# Ignore commented lines (start with #) and match the ones that have "# Added by timekpr"
-matches2 = re.compile('^([^#]+)# Added by timekpr.*$', re.M).findall(data2)
+# Ignore commented lines (start with #)
+matches_aconf = re.compile('^(?!\s*#).+', re.M).findall(data2)
 
-for item in matches2:
-    print(item)
-    result = aconf_access_parse.parseString(item)
-    print(result)
+for line in matches_aconf:
+    if pre_check_line(line):
+        print(line)
+        result = aconf_access_parse.parseString(line)
+        print(result)
+    else:
+        print("WARNING: Unrecognized active line found: %s" % (line))
 
