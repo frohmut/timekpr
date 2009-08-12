@@ -156,22 +156,46 @@ class TimekprClient:
     '''
     Returns a formated string with the time left for a user
     '''
+
     def timeleftstring(self, h, m, s):
-        #TODO: Need to find a better way to have plural form (or just use hours(s) )
-        message = _('You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left') % {'hour': h, 'min': m, 'sec': s}
+        # Hour Plurality
+            if h == 1:
+                hplr = "hour"
+            elif h > 1:
+                hplr = "hours"
 
-        #if h > 1 or h == 0:
-            #if m > 1 or m == 0:
-                #message = _('You have %(hour)s hours, %(min)s minutes and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
-            #else:
-                #message = _('You have %(hour)s hours, %(min)s minute and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
-        #else:
-            #if m > 1 or m == 0:
-                #message = _('You have %(hour)s hour, %(min)s minutes and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
-            #else:
-                #message = _('You have %(hour)s hour, %(min)s minute and %(sec)s seconds left') % {'hour': h, 'min': m, 'sec': s)
+            # Minute Plurality
+            if m ==1:
+                mplr = "minute"
+            elif  m > 1:
+                mplr = "minutes"
 
-        return message
+            # Second Plurality
+            if s == 1:
+                splr = "second"
+            elif s > 1:
+                splr = "seconds"
+
+            # Printing Correctly
+            if h >= 1 and m >= 1 and s >= 1:
+                message = _('You have %(hour)s %(hplr)s, %(min)s %(mplr)s and %(sec)s %(splr)s left') % {'hour': h, 'hplr': hplr, 'min': m, 'mplr': mplr, 'sec': s, 'splr': splr}
+            elif h >= 1 and m >= 1 and s == 0:
+                message = _('You have %(hour)s %(hplr)s, %(min)s %(mplr)s left') % {'hour': h, 'hplr': hplr, 'min': m, 'mplr': mplr,}
+            elif h >= 1 and m == 0 and s >= 1:
+                message = _('You have %(hour)s %(hplr)s and %(sec)s %(splr)s left') % {'hour': h, 'hplr': hplr, 'sec': s, 'splr': splr}
+            elif h >= 1 and m == 0 and s == 0:
+                message = _('You have %(hour)s %(hplr)s left') % {'hour': h, 'hplr': hplr,}
+
+            if h == 0 and m >= 1 and s >= 1:
+                message = _('You have %(min)s %(mplr)s and %(sec)s %(splr)s left') % {'min': m, 'mplr': mplr, 'sec': s, 'splr': splr}
+            elif h == 0 and m >= 1 and s == 0:
+                message = _('You have %(min)s %(mplr)s left') % {'min': m, 'mplr': mplr,}
+            elif h == 0 and m == 0 and s >= 1:
+                message = _('You have %(sec)s %(splr)s left') % {'sec': s, 'splr': splr}
+
+
+            return message
+
 
     '''
     Periodic notifier, gives notifications to the user.
@@ -217,7 +241,7 @@ class TimekprClient:
         return True
 
     '''
-    Acctuall notifier
+    Actuall notifier
     '''
     def notifier(self, message):
         index = int(strftime("%w"))
