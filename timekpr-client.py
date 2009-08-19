@@ -260,11 +260,14 @@ class TimekprClient:
             if self.kde_version() == 4:
                 import sys
                 import dbus
-                kn = dbus.SessionBus().get_object("org.kde.knotify", "/Notify")
-                # Should get rid of "kde" in second argument, but it did not work with "timekpr-client
-                i = kn.event("warning", "kde", [], message, [0,0,0,0], [], 0, dbus_interface="org.kde.KNotify")
-                sleep(10)
-                kn.closeNotification(i)
+                duration = 7
+                nid = 0
+                bus = dbus.SessionBus()
+                notify = dbus.Interface(bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications'), 'org.freedesktop.Notifications')
+                title="timekpr notification"
+                nid = notify.Notify('', nid, '', title, message, '', '', -1)
+                time.sleep(duration)
+                notify.CloseNotification(nid)
             else:
                 # KDE3 and friends use dcop
                 getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
