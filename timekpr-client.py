@@ -266,7 +266,7 @@ class TimekprClient:
                 notify = dbus.Interface(bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications'), 'org.freedesktop.Notifications')
                 title="timekpr notification"
                 nid = notify.Notify('', nid, '', title, message, '', '', -1)
-                time.sleep(duration)
+                sleep(duration)
                 notify.CloseNotification(nid)
             else:
                 # KDE3 and friends use dcop
