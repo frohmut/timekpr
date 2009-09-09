@@ -17,6 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # import common
+import gtk
 from os.path import isfile, getmtime
 from os import geteuid
 from time import strftime, localtime
@@ -29,12 +30,16 @@ import dirs
 import locale
 import gettext
 
-def getversion():
-    return '0.3.0'
+timekpr_version = '0.3.0'
 
-def checkifadmin():
-    if geteuid() != 0:
-        exit('Error: You need to have administrative privileges to run timekpr')
+# Translation stuff
+local_path = '/usr/share/locale'
+locale.setlocale(locale.LC_ALL, '')
+domain = 'timekpr'
+gettext.bindtextdomain(domain, local_path)
+gettext.textdomain(domain)
+_ = gettext.gettext
+# FIXME: For translations in other files, use: _ = common._
 
 """ Variables
     * GRACEPERIOD:
@@ -50,24 +55,32 @@ def checkifadmin():
     Example: 5 hours
 """
 
-# Translation stuff
-# Get the local directory
-local_path = '/usr/share/locale'
-locale.setlocale(locale.LC_ALL, '')
-gettext.bindtextdomain('timekpr', local_path)
-gettext.textdomain('timekpr')
-_ = gettext.gettext
-
+# FIXME: dirs in these variables are just for transition
+#        Use dirs.SOMETHING_HERE instead of VAR['']
 timekpr_variables = {
     'GRACEPERIOD'  : 120,
     'POLLTIME'     : 45,
     'DEBUGME'      : True,
     'LOCKLASTS'    : '1 hour',
-    'LOGFILE'      : dirs.LOGFILE,
-    'TIMEKPRDIR'   : dirs.TIMEKPRDIR,
-    'TIMEKPRSHARED': dirs.TIMEKPRSHARED,
-    'TIMEKPRDAEMON': dirs.TIMEKPRDAEMON,
+    'LOGFILE'      : dirs.LOG_FILE,
+    'TIMEKPRDIR'   : dirs.TIMEKPR_SETTINGS_DIR,
+    'TIMEKPRSHARED': dirs.TIMEKPR_SHARED_DIR,
+    'TIMEKPRDAEMON': dirs.TIMEKPR_DAEMON_DIR,
+    'TIMEKPRWORK'  : dirs.TIMEKPR_WORK_DIR,
 }
+
+# Check if admin/root
+def checkifadmin():
+    if geteuid() != 0:
+        exit(_('Error: You need to have administrative privileges to run timekpr'))
+def checkifadmingui():
+    if geteuid() != 0:
+        dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
+                                _("You need to have administrative privileges to run timekpr-gui"))
+        dlg.set_default_response(gtk.RESPONSE_CLOSE)
+        dlg.run()
+        dlg.destroy()
+        exit(_("Error: You need to have administrative privileges to run timekpr"))
 
 def getvariables():
     return timekpr_variables
@@ -146,3 +159,4 @@ def readusersettings(user, conffile):
     bto = list(map(int, btotemp))
 
     return lims, bfrom, bto
+

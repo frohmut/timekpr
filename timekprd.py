@@ -27,13 +27,17 @@ from threading import Timer
 
 # import timekpr-related
 from timekpr.pam import * # timekpr/pam.py
-from timekpr.common import * # timekpr/common.py
+import timekpr.common as common # timekpr/common.py
 
-#timekpr.conf variables (dictionary variable)
-VAR = getvariables()
+# timekpr.conf variables (dictionary variable)
+VAR = common.timekpr_variables
+version = common.timekpr_version
+
+# gettext
+_ = common._
 
 #Check if admin/root
-checkifadmin()
+common.checkifadmin()
 
 #Check if it exists, if not, create it
 if not isdir(VAR['TIMEKPRDIR']):
@@ -47,7 +51,7 @@ notifiedusers = []
 # Keep track of todays date
 THISDAY = strftime("%Y%m%d")
 
-def logkpr(string,clear = 0):
+def logkpr(string, clear=0):
     #To log: logkpr("Something")
     #To clear file and log: logkpr("Something",1)
     if VAR['DEBUGME'] != 'True':
@@ -190,7 +194,7 @@ def removenotified(u):
         return
     notifiedusers.remove(u)
 
-logkpr('Starting timekpr version %s' % getversion())
+logkpr('Starting timekpr version %s' % version)
 logkpr('Variables: GRACEPERIOD: %s POLLTIME: %s DEBUGME: %s LOCKLASTS: %s' % (\
         VAR['GRACEPERIOD'],
         VAR['POLLTIME'],
@@ -320,3 +324,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

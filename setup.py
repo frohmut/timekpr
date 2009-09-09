@@ -30,10 +30,11 @@ import glob
 from distutils.core import setup
 from DistUtilsExtra.command import *
 
-import timekpr.dirs
-import timekpr.common
+import timekpr.dirs as dirs
+import timekpr.common as common
 
-timekpr_version = timekpr.common.getversion()
+timekpr_version = common.timekpr_version
+VAR = common.timekpr_variables
 
 if sys.version < '2.5':
     sys.exit('ERROR: Sorry, python 2.5 or higher is required for this application.')
@@ -61,7 +62,7 @@ when they can or cannot log in.",
     data_files = [
         ('share/icons/hicolor/scalable/apps', ['artwork/timekpr.svg']),
         ('share/pixmaps', ['data/share/pixmaps/timekpr.xpm']),
-        (timekpr.dirs.TIMEKPRDAEMON, ['scripts/timekpr.init'])
+        (dirs.TIMEKPR_DAEMON_DIR, ['scripts/timekpr.init'])
     ],
     cmdclass = {
         "build": build_extra.build_extra,

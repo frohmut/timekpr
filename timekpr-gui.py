@@ -34,23 +34,16 @@ import gobject
 
 # Import timekpr-related
 from timekpr.pam import *
-from timekpr.common import *
+import timekpr.common as common
 
 # timekpr.conf variables (dictionary variable)
-VAR = getvariables()
-version = getversion()
+VAR = common.timekpr_variables
+version = common.timekpr_version
 
-# Check if admin/root
-def checkifadmingui():
-    if geteuid() != 0:
-        dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
-                                _("You need to have administrative privileges to run timekpr-gui"))
-        dlg.set_default_response(gtk.RESPONSE_CLOSE)
-        dlg.run()
-        dlg.destroy()
-        exit("Error: You need to have administrative privileges to run timekpr")
+# gettext
+_ = common._
 
-checkifadmingui()
+common.checkifadmingui()
 
 # Create configuration folder if not existing
 if not isdir(VAR['TIMEKPRDIR']):
@@ -58,7 +51,7 @@ if not isdir(VAR['TIMEKPRDIR']):
 if not isdir(VAR['TIMEKPRWORK']):
     mkdir(VAR['TIMEKPRWORK'])
 if not isdir(VAR['TIMEKPRSHARED']):
-    exit('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED'])
+    exit(_('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED']))
 
 # Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username):
@@ -90,7 +83,7 @@ def rm(f):
 class timekprGUI:
     def __init__(self):
         gladefile = VAR['TIMEKPRSHARED'] + '/timekpr.glade'
-        self.wTree = gtk.glade.XML(gladefile, 'mainwindow', APP_NAME)
+        self.wTree = gtk.glade.XML(gladefile, 'mainwindow', common.domain)
 
         self.get_limit_spin()
         self.get_from_spin()

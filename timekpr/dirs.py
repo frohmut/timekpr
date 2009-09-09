@@ -5,10 +5,19 @@
 # TIMEKPRWORK: Default working directory for .time, .logout, .late files
 # TIMEKPRDAEMON: The init directory for the timekpr init script
 
+## Points to file
+#LOGFILE = '/var/log/timekpr.log'
+## Point to directories
+#TIMEKPRDIR = '/etc/timekpr'
+#TIMEKPRWORK = '/var/lib/timekpr'
+#TIMEKPRSHARED = '/usr/share/timekpr'
+#TIMEKPRDAEMON = '/etc/init.d'
+
 # Points to file
-LOGFILE = '/var/log/timekpr.log'
+LOG_FILE = '/var/log/timekpr.log'
 # Point to directories
-TIMEKPRDIR = '/etc/timekpr'
-TIMEKPRWORK = '/var/lib/timekpr'
-TIMEKPRSHARED = '/usr/share/timekpr'
-TIMEKPRDAEMON = '/etc/init.d'
+TIMEKPR_SETTINGS_DIR = '/etc/timekpr'
+TIMEKPR_WORK_DIR = '/var/lib/timekpr'
+TIMEKPR_SHARED_DIR = '/usr/share/timekpr'
+TIMEKPR_DAEMON_DIR = '/etc/init.d'
+
