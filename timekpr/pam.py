@@ -370,3 +370,256 @@ def getuserlimits(u):
             return [bfrom, bto]
     return [bf, bt]
 
+
+"""
+
+THESE ARE THE NEW STUFF!!!
+
+"""
+
+
+""" timekprpam 
+    It's a Linux-PAM parser optimized for timekpr and time/access pam modules. 
+    In other words, many of the linux-pam capabilities are not supported 
+    (and probably will never be!).
+
+    It can currently parse lines that have a comment "# Added by timekpr" at the
+    end of the line.
+
+    pyparsing was chosen because it's easier to look at, fix and manipulate
+    (compared to simple regular expressions). However, regular expressions are
+    still used in this module for simpler tasks.
+""" 
+
+# More information on pyparsing:
+# - http://www.rexx.com/~dkuhlman/python_201/python_201.html#SECTION007600000000000000000
+# - http://pyparsing.wikispaces.com/message/view/home/7002417
+
+from pyparsing import *
+import re
+import sys
+
+# CLASS: parsers(type="time.conf", input="file", file="/etc/security/time.conf")
+#   type => time.conf or access.conf
+#   input => file (default) or string (for testing)
+#   file => filename (can be blank, will use default filenames)
+# Examples? See "TEST"!
+
+class pamparsers():
+    def __init__(self, type, input="file", file="", string=""):
+        # Set default file location if file is not defined
+        self.type = type
+        self.input = input
+        self.file = file
+        self.string = string
+
+        self.result = []
+        self.unrecognized = []
+
+        if type == "time.conf" and input == "file" and not file:
+            self.file == "/etc/security/time.conf"
+        elif type == "access.conf" and input == "file" and not file:
+            self.file == "/etc/security/access.conf"
+
+        if input == "string" and not string:
+            sys.stderr.write("ERROR: parsers() class: input is 'string' but text string is empty\n")
+            sys.exit(1)
+
+        self.active = self.confGetActiveLines()
+        self.confParseLines()
+        #self.confOutputLines()
+
+    # Common
+    # ======
+    def getInput(self):
+        """ Get input, either the file contents or the string """
+        if self.input == "file":
+            f = open(self.file)
+            text = f.read()
+            f.close()
+            return self.text
+        elif self.input == "string":
+            return self.string
+    
+    def confGetActiveLines(self):
+        # Ignore commented lines (they start with #)
+        text = self.getInput()
+        result = re.compile('^(?!\s*#).+', re.M).findall(text)
+        return result
+
+    def confPreCheckLine(self, line):
+        """ Pre-checks the line
+            Returns:
+                0 = active line, with "# Added by timekpr"
+                1 = active line, without "# Added by timekpr"
+                2 = ignore this line
+        """
+        # Ignore whitespace-only line
+        if re.match("^\s*$", line):
+            return 2
+        # timekpr lines have "# Added by timekpr" in the end
+        if line[-18::] != "# Added by timekpr":
+            return 0
+        return 1
+
+    def confParseLines(self):
+        """ Outputs lines and checks for unrecognized ones (not controlled by timekpr) """
+        #self.result => [original line from file, resulting parsed list]
+        #self.unrecognized => unrecognized lines
+
+        for line in self.active:
+            test = self.confPreCheckLine(line)
+
+            if test == 1:
+                if self.type == "time.conf":
+                    tconf_parse = self.time_conf_parser()
+                    result = tconf_parse.parseString(line)
+                elif self.type == "access.conf":
+                    aconf_parse = self.access_conf_parser()
+                    result = aconf_parse.parseString(line)
+                self.result.append([line, result])
+
+            elif test == 0:
+                self.unrecognized.append(line)
+
+            #elif test == 2: just ignore it
+
+    def confOutputLines(self):
+        """ Print lines and unrecognized active lines (testing purposes) """
+        #if not self.result and not self.unrecognized:
+        #    self.confParseLines()
+        for line in self.result:
+            print("%s => %s" % (line[0], line[1]))
+
+        if self.unrecognized:
+            list_string = "\n".join(self.unrecognized)
+            print("\nWARNING: Unrecognized active lines found:\n%s" % (list_string))
+
+    def confActiveLines(self):
+        """ Return the self.result list """
+        #self.confUnrecognizedLines()
+        a = self.result
+        print(a)
+        return a
+
+    def confUnrecognizedLines(self):
+        """ Return the self.unrecognized list """
+        if self.unrecognized:
+            list_string = "\n".join(self.unrecognized)
+            print("WARNING: Unrecognized active lines found:\n%s" % (list_string))
+
+
+    # time.conf
+    # =========
+    # Define grammar
+    # services;ttys;users;times
+    # ! = NOT, & = AND, | = OR
+    # * = ANY (can be used only once)
+
+    # Defs
+    def tconf_negation_replace(self, s, l, t):
+        if t[0] == "!":
+            t[0] = "block"
+            return t
+
+    def time_conf_parser(self):
+        # Common
+        tconf_commonops = "&|" # AND/OR
+        # Ignore the first two ";"-separated items (services;ttys;users)
+        tconf_start = Suppress(Regex("(?:.*?;){2}"))
+
+        tconf_users = Regex("[^;]*")
+        tconf_users.setParseAction(self.strip_whitespace)
+
+        tconf_splitchar = Suppress(Word(";"))
+
+        # Negation
+        tconf_negation = Optional("!", "allow") # block (with "!") or allow (without "!")
+        tconf_negation.setParseAction(self.tconf_negation_replace)
+        # Days of week
+        daysofweek = Group(OneOrMore(Literal("Mo") | Literal("Tu") | Literal("We") | Literal("Th") | Literal("Fr") | Literal("Sa") | Literal("Su") | Literal("Wk") | Literal("Wd") | Literal("Al")))
+        # Get the timeofday (4 numbers and "-" and 4 numbers)
+        timeofday = Group(Word(nums,exact=4) + Suppress("-") + Word(nums,exact=4))
+        # Check negation, the days of week and the time of day
+        tconf_time = tconf_negation + daysofweek + timeofday
+        # While checking for & or | too
+        tconf_time_list = Group(tconf_time) + Optional(Word(tconf_commonops))
+        # Do the above all over again once or more times
+        tconf_parse = tconf_start + tconf_users + tconf_splitchar + OneOrMore(tconf_time_list) + Suppress(Regex("# Added by timekpr")) + LineEnd()
+        
+        return tconf_parse
+
+    # access.conf
+    # ===========
+    # Define grammar
+    # permission (+ or -) : users : origins
+
+    def aconf_action_replace(self, s, l, t):
+        if t[0] == "-":
+            t[0] = "block"
+            return t
+        elif t[0] == "+":
+            t[0] = "allow"
+            return t
+
+    def strip_whitespace(self, s, l, t):
+        return t[0].strip()
+
+    def access_conf_parser(self):
+        aconf_splitchar = Suppress(Word(":"))
+        # permission - either + or -, 1 character only
+        aconf_permission = Word("-+", exact=1)
+        aconf_permission.setParseAction(self.aconf_action_replace)
+        # users - alphanumeric and one of "_*() " characters
+        aconf_users = Word(alphanums + "_*() ")
+        aconf_users.setParseAction(self.strip_whitespace)
+        # origins - everything else excluding "# Added by timekpr"
+        aconf_origins = Regex("[^#]+")
+        aconf_origins.setParseAction(self.strip_whitespace)
+        aconf_parse = aconf_permission + aconf_splitchar + aconf_users + aconf_splitchar + aconf_origins
+        
+        return aconf_parse
+
+# TEST
+if __name__ == "__main__":
+    # CLASS: pamparsers()
+    
+    # time.conf
+    print("INFO: Checking time.conf\n")
+
+    tconf_test_data = """
+#xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
+xsh & login ; ttyp* ; ro0_ters;!WdMo0000-2400 # Added by timekpr
+xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
+xsh & login;ttyp*;root | moot;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
+xsh & login ; ttyp* ; root | moot;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
+a;o; a; e
+      
+
+    """
+    pamparsers(type="time.conf", input="string", string=tconf_test_data).confOutputLines()
+#    list = pamparsers(type="time.conf", input="string", string=tconf_test_data).confActiveLines()
+#    for x in list:
+#        print(x)
+
+    # access.conf
+    print("\nINFO: Checking access.conf\n")
+
+    aconf_test_data = """
+# testing # Added by timekpr
+- : lala : ALL # Added by timekpr
+-:lala:ALL # Added by timekpr
+- : nana123_a : ALL # Added by timekpr
+- : testing : ALL # test
+- : testing : ALL EXCEPT root
++ : john : 2001:4ca0:0:101::1# Added by timekpr
++ : root : .foo.bar.org  # Added by timekpr
+- : john : 2001:4ca0:0:101::/64 # Added by timekpr
+      
+
+    """
+    pamparsers(type="access.conf", input="string", string=aconf_test_data).confOutputLines()
+#    list2 = pamparsers(type="access.conf", input="string", string=aconf_test_data).confActiveLines()
+#    for z in list2:
+#        print(z)
+

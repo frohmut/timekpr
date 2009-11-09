@@ -15,16 +15,17 @@ http://doc.bazaar-vcs.org/latest/en/mini-tutorial/index.html
 Friendly notes
 --------------
 
-For spacing, use 4 space characters instead of one tab character.
+* Please use glade-3 (not glade-2) if you want to make the user interface better.
 
-Please note that the timekpr branch is NOT a testbed for launchpad testing!
+* For spacing, use 4 space characters instead of one tab character.
+
+* Please note that the timekpr branch is NOT a testbed for launchpad testing!
 If you want to test functions of the launchpad, please register a personal "junk" branch:
 https://code.launchpad.net/~yourusername/+addbranch
 (where yourusername is your launchpad account username)
 
-When you are editing and adding new stuff, please be clear as to 
-_every detail_ you have changed (summarize them in topics if there 
-are a lot of changes).
+* When you are editing and adding new stuff, please be clear as to what you have 
+changed (summarize them in topics if there are a lot of changes).
 
 Translations
 ------------

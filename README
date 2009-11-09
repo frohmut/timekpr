@@ -1,3 +1,11 @@
+About
+=====
+Keep control of computer usage
+
+This program will track and control the computer usage of your user accounts. 
+You can limit their daily usage based on a timed access duration and 
+configure periods of day when they can or cannot log in.
+
 Install
 =======
 
@@ -27,15 +35,24 @@ python setup.py --help-commands
 History
 =======
 
- - This is a complete re-write in python and vast improvement from the original timekpr bash script: http://tinyurl.com/waggledanceblog
- - This project was born after Charles Jackson's (crjackson) request for a program that time-limits user accounts: http://ubuntuforums.org/showthread.php?t=887769
- - Even Nedberg initially began to improve the original bash script from Chris Jackson, Savvas Radević packaged it and soon began co-development.
- - timekpr is now in experimental mode, highly unstable. Expect changes and a release that will be more distributable.
+ - This is a complete re-write in python and vast improvement from the original 
+timekpr bash script: http://tinyurl.com/waggledanceblog
+ - This project was born after Charles Jackson's (crjackson) request for a 
+program that time-limits user accounts: http://ubuntuforums.org/showthread.php?t=887769
+ - Even Nedberg initially began to improve the original bash script from Chris 
+Jackson, Savvas Radević packaged it and soon began co-development.
+ - timekpr is now in experimental mode, highly unstable. Expect changes and a 
+release that will be more distributable.
 
 Thanks
 ======
 
- Special thanks go to Charles Jackson (crjackson), who has contributed a lot by suggesting and brainstorming useful features, as well as reporting bugs. We would also like to thank all the people posting at that topic at ubuntuforums for their helpful suggestions, tests and bug reports!
- Also thanks to Nicolas Laurance, who has pointed us to the proper python documentation and coding style.
- Finally, a huge thank you to the translators and bug triagers/reporters! Since there are so many of you, there's a top contributors list:
+ Special thanks go to Charles Jackson (crjackson), who has contributed a lot by 
+suggesting and brainstorming useful features, as well as reporting bugs. We 
+would also like to thank all the people posting at that topic at ubuntuforums 
+for their helpful suggestions, tests and bug reports!
+ Also thanks to Nicolas Laurance, who has pointed us to the proper python 
+documentation and coding style.
+ Finally, a huge thank you to the translators and bug triagers/reporters! 
+Since there are so many of you, there's a top contributors list:
 https://launchpad.net/timekpr/+topcontributors
