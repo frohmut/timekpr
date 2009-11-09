@@ -399,13 +399,14 @@ from pyparsing import *
 import re
 import sys
 
-# CLASS: parsers(type="time.conf", input="file", file="/etc/security/time.conf")
+# CLASS: pamparser(type="time.conf", input="file", file="/etc/security/time.conf")
 #   type => time.conf or access.conf
 #   input => file (default) or string (for testing)
 #   file => filename (can be blank, will use default filenames)
+#   string => text string
 # Examples? See "TEST"!
 
-class pamparsers():
+class pamparser():
     def __init__(self, type, input="file", file="", string=""):
         # Set default file location if file is not defined
         self.type = type
@@ -413,41 +414,47 @@ class pamparsers():
         self.file = file
         self.string = string
 
-        self.result = []
-        self.unrecognized = []
+        self.result = list()
+        self.unrecognized = list()
 
-        if type == "time.conf" and input == "file" and not file:
-            self.file == "/etc/security/time.conf"
-        elif type == "access.conf" and input == "file" and not file:
-            self.file == "/etc/security/access.conf"
+        self.defaultfiles = {
+            "time.conf"   : "/etc/security/time.conf",
+            "access.conf" : "/etc/security/access.conf"
+        }
 
-        if input == "string" and not string:
-            sys.stderr.write("ERROR: parsers() class: input is 'string' but text string is empty\n")
+        if input == "file" and not file:
+            self.file = self.defaultfiles[type]
+        elif input == "string" and not string:
+            sys.stderr.write("ERROR: pamparser() init: input is 'string' but text string is empty\n")
             sys.exit(1)
 
-        self.active = self.confGetActiveLines()
-        self.confParseLines()
-        #self.confOutputLines()
+        self.active = self.scanActiveLines()
+        self.parseLines()
+        #self.outputLines()
 
     # Common
     # ======
     def getInput(self):
         """ Get input, either the file contents or the string """
         if self.input == "file":
-            f = open(self.file)
-            text = f.read()
-            f.close()
-            return self.text
+            try:
+                f = open(self.file)
+                text = f.read()
+                f.close()
+            except IOError, e:
+                sys.stderr.write("ERROR: pamparser() getInput: %d (%s) file: %s\n" % (e.errno, e.strerror, self.file))
+                sys.exit(1)
+            return text
         elif self.input == "string":
             return self.string
     
-    def confGetActiveLines(self):
+    def scanActiveLines(self):
         # Ignore commented lines (they start with #)
         text = self.getInput()
         result = re.compile('^(?!\s*#).+', re.M).findall(text)
         return result
 
-    def confPreCheckLine(self, line):
+    def preCheckLine(self, line):
         """ Pre-checks the line
             Returns:
                 0 = active line, with "# Added by timekpr"
@@ -462,13 +469,13 @@ class pamparsers():
             return 0
         return 1
 
-    def confParseLines(self):
+    def parseLines(self):
         """ Outputs lines and checks for unrecognized ones (not controlled by timekpr) """
         #self.result => [original line from file, resulting parsed list]
         #self.unrecognized => unrecognized lines
 
         for line in self.active:
-            test = self.confPreCheckLine(line)
+            test = self.preCheckLine(line)
 
             if test == 1:
                 if self.type == "time.conf":
@@ -484,10 +491,8 @@ class pamparsers():
 
             #elif test == 2: just ignore it
 
-    def confOutputLines(self):
+    def outputLines(self):
         """ Print lines and unrecognized active lines (testing purposes) """
-        #if not self.result and not self.unrecognized:
-        #    self.confParseLines()
         for line in self.result:
             print("%s => %s" % (line[0], line[1]))
 
@@ -495,19 +500,18 @@ class pamparsers():
             list_string = "\n".join(self.unrecognized)
             print("\nWARNING: Unrecognized active lines found:\n%s" % (list_string))
 
-    def confActiveLines(self):
+    def getActiveLines(self):
         """ Return the self.result list """
         #self.confUnrecognizedLines()
         a = self.result
         print(a)
         return a
 
-    def confUnrecognizedLines(self):
+    def getUnrecognizedLines(self):
         """ Return the self.unrecognized list """
         if self.unrecognized:
             list_string = "\n".join(self.unrecognized)
             print("WARNING: Unrecognized active lines found:\n%s" % (list_string))
-
 
     # time.conf
     # =========
@@ -580,35 +584,25 @@ class pamparsers():
         
         return aconf_parse
 
+# CLASS: access.conf()
+
 # TEST
 if __name__ == "__main__":
     # CLASS: pamparsers()
-    
-    # time.conf
-    print("INFO: Checking time.conf\n")
-
     tconf_test_data = """
 #xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
 xsh & login ; ttyp* ; ro0_ters;!WdMo0000-2400 # Added by timekpr
-xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
+    xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
 xsh & login;ttyp*;root | moot;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
 xsh & login ; ttyp* ; root | moot;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
 a;o; a; e
       
 
     """
-    pamparsers(type="time.conf", input="string", string=tconf_test_data).confOutputLines()
-#    list = pamparsers(type="time.conf", input="string", string=tconf_test_data).confActiveLines()
-#    for x in list:
-#        print(x)
-
-    # access.conf
-    print("\nINFO: Checking access.conf\n")
-
     aconf_test_data = """
 # testing # Added by timekpr
 - : lala : ALL # Added by timekpr
--:lala:ALL # Added by timekpr
+    -:lala:ALL # Added by timekpr
 - : nana123_a : ALL # Added by timekpr
 - : testing : ALL # test
 - : testing : ALL EXCEPT root
@@ -618,8 +612,26 @@ a;o; a; e
       
 
     """
-    pamparsers(type="access.conf", input="string", string=aconf_test_data).confOutputLines()
-#    list2 = pamparsers(type="access.conf", input="string", string=aconf_test_data).confActiveLines()
-#    for z in list2:
-#        print(z)
+
+    # A) time.conf
+    print("INFO: Checking time.conf")
+    testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
+    print("\n - TEST A1 (STRING)\n")
+    testA1.outputLines()
+#    for i1 in testA1.getActiveLines():
+#        print(iA1)
+    print("\n - TEST A2 (FILE)\n")
+    testA2 = pamparser(type="time.conf", input="file")
+    testA2.outputLines()
+
+    # B) access.conf
+    print("\nINFO: Checking access.conf")
+    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
+    print("\n - TEST B1 (STRING)\n")
+    testB1.outputLines()
+#    for i2 in testB1.getActiveLines():
+#        print(i2)
+    print("\n - TEST B2 (FILE)\n")
+    testB2 = pamparser(type="access.conf", input="file")
+    testB2.outputLines()
 
