@@ -399,11 +399,15 @@ from pyparsing import *
 import re
 import sys
 
+# COMMON
+
+
 # CLASS: pamparser(type="time.conf", input="file", file="/etc/security/time.conf")
-#   type => time.conf or access.conf
-#   input => file (default) or string (for testing)
-#   file => filename (can be blank, will use default filenames)
-#   string => text string
+# ================================================================================
+#   type    => time.conf or access.conf
+#   input   => file (default) or string (for testing)
+#   file    => filename (default is blank - if blank, will use default filenames)
+#   string  => text string (default is blank)
 # Examples? See "TEST"!
 
 class pamparser():
@@ -434,23 +438,23 @@ class pamparser():
 
     # Common
     # ======
-    def getInput(self):
-        """ Get input, either the file contents or the string """
+    def readInput(self):
+        """ Read input, file contents or string """
         if self.input == "file":
             try:
                 f = open(self.file)
                 text = f.read()
                 f.close()
             except IOError, e:
-                sys.stderr.write("ERROR: pamparser() getInput: %d (%s) file: %s\n" % (e.errno, e.strerror, self.file))
+                sys.stderr.write("ERROR: pamparser() readInput: %d (%s) Filename: %s\n" % (e.errno, e.strerror, self.file))
                 sys.exit(1)
             return text
         elif self.input == "string":
             return self.string
-    
+
     def scanActiveLines(self):
         # Ignore commented lines (they start with #)
-        text = self.getInput()
+        text = self.readInput()
         result = re.compile('^(?!\s*#).+', re.M).findall(text)
         return result
 
@@ -504,7 +508,6 @@ class pamparser():
         """ Return the self.result list """
         #self.confUnrecognizedLines()
         a = self.result
-        print(a)
         return a
 
     def getUnrecognizedLines(self):
@@ -515,7 +518,7 @@ class pamparser():
 
     # time.conf
     # =========
-    # Define grammar
+    # Define grammar:
     # services;ttys;users;times
     # ! = NOT, & = AND, | = OR
     # * = ANY (can be used only once)
@@ -550,12 +553,12 @@ class pamparser():
         tconf_time_list = Group(tconf_time) + Optional(Word(tconf_commonops))
         # Do the above all over again once or more times
         tconf_parse = tconf_start + tconf_users + tconf_splitchar + OneOrMore(tconf_time_list) + Suppress(Regex("# Added by timekpr")) + LineEnd()
-        
+
         return tconf_parse
 
     # access.conf
     # ===========
-    # Define grammar
+    # Define grammar:
     # permission (+ or -) : users : origins
 
     def aconf_action_replace(self, s, l, t):
@@ -581,14 +584,109 @@ class pamparser():
         aconf_origins = Regex("[^#]+")
         aconf_origins.setParseAction(self.strip_whitespace)
         aconf_parse = aconf_permission + aconf_splitchar + aconf_users + aconf_splitchar + aconf_origins
-        
+
         return aconf_parse
 
-# CLASS: access.conf()
+# CLASS: timeconf()
+# ===================
+#  input    => file (default) or string
+#  file     => filename (default is /etc/security/time.conf)
+#  string   => text string (default is blank)
 
-# TEST
+class timeconf():
+    """ Parse time.conf """
+    def __init__(self, input="file", file="/etc/security/time.conf", string=""):
+        self.input = input
+        self.file = file
+        self.string = string
+
+        if input == "string" and not string:
+            sys.stderr.write("ERROR: timeconf() init: input is 'string' but text string is empty\n")
+            sys.exit(1)
+
+        self.parser = pamparser(type="time.conf", input="string", string=self.string)
+        self.inputstring = self.parser.readInput()
+        self.activelines = self.parser.getActiveLines()
+
+    def test(self):
+        for i in self.activelines:
+            print(i)
+
+    def parse(self):
+        print("moo " + self.file)
+
+# CLASS: accessconf()
+# ===================
+#  input    => file (default) or string
+#  file     => filename (default is /etc/security/access.conf)
+#  string   => text string (default is blank)
+
+class accessconf():
+    """ Parse access.conf """
+    def __init__(self, input="file", file="/etc/security/access.conf", string=""):
+        self.input = input
+        self.file = file
+        self.string = string
+        self.userdict = dict()
+
+        if input == "string" and not string:
+            sys.stderr.write("ERROR: accessconf() init: input is 'string' but text string is empty\n")
+            sys.exit(1)
+        
+        self.parser = pamparser(type="access.conf", input="string", string=self.string)
+        self.inputstring = self.parser.readInput()
+        self.activelines = self.parser.getActiveLines()
+
+    def isuserlocked(self, user):
+        self.createUserDict()
+        if user in self.userdict:
+            #print("User: %s Status: %s" % (user, self.userdict[user]))
+
+    def createUserDict(self):
+        self.userdict.clear()
+        for l, i in self.activelines:
+            # l = original line, i = parsed list
+            # i[1] => user
+            # i[0] => status - block or allow
+            if not i[1] in self.userdict:
+                self.userdict[i[1]] = i[0]
+            else:
+                print("WARNING: accessconf() createUserDict(): More than one active lines defined for user %s: %s" % (i[1], l))
+
+    def test(self):
+        self.isuserlocked("lala")
+
+# VARIOUS TESTS
+# =============
+def class_accessconf_test(t):
+    accessconf(input="string", string=t).test()
+
+def class_timeconf_test(t):
+    timeconf(input="string", string=t).test()
+
+def class_pamparser_test(tconf_test_data, aconf_test_data):
+    # CLASS: pamparser()
+    # A) time.conf
+    testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
+    print("INFO: - TEST pamparser time.conf A1 (STRING)\n")
+    testA1.outputLines()
+#    for i1 in testA1.getActiveLines():
+#        print(i1)
+    print("\nINFO: - TEST pamparser time.conf A2 (FILE)\n")
+    testA2 = pamparser(type="time.conf", input="file")
+    testA2.outputLines()
+
+    # B) access.conf
+    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
+    print("\nINFO: - TEST pamparser access.conf B1 (STRING)\n")
+    testB1.outputLines()
+#    for i2 in testB1.getActiveLines():
+#        print(i2)
+    print("\nINFO: - TEST pamparser access.conf B2 (FILE)\n")
+    testB2 = pamparser(type="access.conf", input="file")
+    testB2.outputLines()
+
 if __name__ == "__main__":
-    # CLASS: pamparsers()
     tconf_test_data = """
 #xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
 xsh & login ; ttyp* ; ro0_ters;!WdMo0000-2400 # Added by timekpr
@@ -613,25 +711,7 @@ a;o; a; e
 
     """
 
-    # A) time.conf
-    print("INFO: Checking time.conf")
-    testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
-    print("\n - TEST A1 (STRING)\n")
-    testA1.outputLines()
-#    for i1 in testA1.getActiveLines():
-#        print(iA1)
-    print("\n - TEST A2 (FILE)\n")
-    testA2 = pamparser(type="time.conf", input="file")
-    testA2.outputLines()
-
-    # B) access.conf
-    print("\nINFO: Checking access.conf")
-    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
-    print("\n - TEST B1 (STRING)\n")
-    testB1.outputLines()
-#    for i2 in testB1.getActiveLines():
-#        print(i2)
-    print("\n - TEST B2 (FILE)\n")
-    testB2 = pamparser(type="access.conf", input="file")
-    testB2.outputLines()
+    class_pamparser_test(tconf_test_data, aconf_test_data)
+    #class_timeconf_test(tconf_test_data)
+    class_accessconf_test(aconf_test_data)
 
