@@ -378,17 +378,24 @@ THESE ARE THE NEW STUFF!!!
 """
 
 
-""" timekprpam 
+""" timekprpam
     It's a Linux-PAM parser optimized for timekpr and time/access pam modules. 
     In other words, many of the linux-pam capabilities are not supported 
     (and probably will never be!).
 
     It can currently parse lines that have a comment "# Added by timekpr" at the
-    end of the line.
+    end of the line. These lines are called "active recognized lines" in docstrings
+    and comments.
 
     pyparsing was chosen because it's easier to look at, fix and manipulate
     (compared to simple regular expressions). However, regular expressions are
     still used in this module for simpler tasks.
+
+    Classes:
+    pamparser()  => The parser for Linux PAM and general manipulation of
+                    time.conf and access.conf files.
+    timeconf()   => Contains functions specific to time.conf
+    accessconf() => Contains functions specific to access.conf (e.g. lockuser)
 """ 
 
 # More information on pyparsing:
@@ -401,24 +408,29 @@ import sys
 
 # =============================================================================
 # CLASS: pamparser(type="time.conf", input="file", file="/etc/security/time.conf")
-# =============================================================================
-#   type    => time.conf or access.conf
-#   input   => file (default) or string (for testing)
-#   file    => filename (default is blank - if blank, will use default filenames)
-#   string  => text string (default is blank)
-# Examples? See "TEST"!
 
 class pamparser():
+    """ The parser for Linux PAM and general manipulation of time.conf and
+        access.conf files.
+        CLASS: pamparser(type="time.conf", input="file", file="/etc/security/time.conf")
+        Arguments:
+            type    => "time.conf" or "access.conf"
+            input   => "file" (default) or "string" (for testing)
+            file    => filename (default is blank - if blank, will use default filenames)
+            string  => text string (default is blank)
+   """
     def __init__(self, type, input="file", file="", string=""):
-        # Set default file location if file is not defined
-        self.type = type
-        self.input = input
+        self.type = type # "time.conf" or "access.conf"
+        self.input = input # "file" or "string"
         self.file = file
         self.string = string
-        self.read_input = ""
-        self.result = list()
-        self.unrecognized = list()
+        self.read_input = "" # readInput()
+        self.recognized = list() # active recognized lines, see parseLines()
+        self.unrecognized = list() # active unrecognized lines, see parseLines()
+        self.userdict = dict() # Used for duplicate check and accessconf()
+        self.refresh_input = False # If True, it will rewrite and refresh the input.
 
+        # Set default file location if file is not defined
         self.defaultfiles = {
             "time.conf"   : "/etc/security/time.conf",
             "access.conf" : "/etc/security/access.conf"
@@ -430,12 +442,23 @@ class pamparser():
             sys.stderr.write("ERROR: pamparser() init: input is 'string' but text string is empty\n")
             sys.exit(1)
 
-        self.active = self.scanActiveLines()
+        # Parse lines and populate self.recognized (list), self.unrecognized, self.userdict
         self.parseLines()
-        #self.outputLines()
+        # TODO: Check refresh_input
+        
 
     # Common
     # ======
+    def refreshInput(self):
+        """ Will re-read the input and re-parse the lines.
+            See: parseLines()
+        """
+        # WARNING: BEWARE OF EVIL RECURSIONS!
+        self.refresh_input = False
+        if self.input == "string": # If the input is not file
+            self.string = self.new_input # Set new self.string
+        self.parseLines()
+
     def prepareLine(self, ulist):
         """ Prepare line for writing/output """
         if self.type == "access.conf":
@@ -443,14 +466,19 @@ class pamparser():
             access = controldict[ulist[0]]
             modified = "%s : %s : %s # Added by timekpr" % (access, ulist[1], ulist[2])
         elif self.type == "time.conf":
-            controldict = { "block": "", "allow": "!" }
-            # TODO: TODO: TODO: TODO: TODO: TODO: TODO: TODO: 
+            controldict = { "block": "!", "allow": "" }
+            # TODO: TODO: Make a time.conf line
             modified = ""
-            # Tip: "!" in time.conf means "do not block during this time span" (in other words, "allow")
+            # Tip: "!" in time.conf means "do NOT allow during this time span" (in other words, "block")
         return modified
 
     def appendLine(self, line):
-        """ Add a line to self.read_input. Returns the result """
+        """ Add a line to text from self.read_input.
+            It does not change self.read_input.
+            Arguments:
+                line => the text of line (not the index number)
+            Returns the result
+        """
         t = self.read_input.split("\n")
         t.append(line)
         result = "\n".join(t)
@@ -458,7 +486,12 @@ class pamparser():
         return result
 
     def removeLine(self, line):
-        """ Removes a line from self.read_input. Returns the result """
+        """ Removes a text line from self.read_input.
+            It does not change self.read_input.
+            Arguments:
+                line => the text of line (not the index number)
+            Returns the result
+        """
         t = self.read_input.split("\n")
         i = t.index(line)
         del t[i]
@@ -466,17 +499,19 @@ class pamparser():
         #print(result)
         return result
 
-    def writeOutput(self, output):
+    def writeOutput(self, output, tag="OUTPUT"):
         """ Writes to file or prints output, depending on the
             input source.
             Arguments:
-                text => the text of the whole output
+                output => the text of the whole output
+                tag => (useful when input=string) e.g. "OUTPUT"
+                        would be "[OUTPUT]"
             Returns:
                 True => Operation successful
                 False => Writing to file failed
         """
+        # If original input was from file
         if self.input == "file":
-            # output => file
             fr = open(self.file, 'r')
             source = fr.read()
             fr.close()
@@ -492,16 +527,14 @@ class pamparser():
                 fw.close()
             except IOError:
                 return False
-
+        # If original input was from text string
         elif self.input == "string":
-            # output => print()
-            print("OUTPUT: %s" % (output))
-
+            print("[%s] %s\n" % (tag, output))
         return True # All done!
 
     def readInput(self):
-        """ Read input, file contents or string
-            Returns self.read_input
+        """ Read input, file contents or string.
+            Sets and returns self.read_input
         """
         if self.input == "file":
             try:
@@ -515,73 +548,168 @@ class pamparser():
         elif self.input == "string":
             self.read_input = self.string
 
+        self.new_input = self.read_input
         return self.read_input
 
-    def scanActiveLines(self):
-        # Ignore commented lines (they start with #)
-        text = self.readInput()
-        result = re.compile('^(?!\s*#).+', re.M).findall(text)
-        return result
-
-    def preCheckLine(self, line):
-        """ Pre-checks the line
+    def precheckLine(self, line):
+        """ Pre-checks the line.
             Returns:
-                0 = active line, with "# Added by timekpr"
+                0 = active timekpr-compatible line, with "# Added by timekpr"
                 1 = active line, without "# Added by timekpr"
                 2 = ignore this line
         """
-        # Ignore whitespace-only line
-        if re.match("^\s*$", line):
+        # Ignore whitespace-only, empty and commented lines
+        if re.match("^(?:\s*$|\s*#)", line):
             return 2
         # timekpr lines have "# Added by timekpr" in the end
         if line[-18::] != "# Added by timekpr":
             return 0
         return 1
 
-    def parseLines(self):
-        # TODO: TODO: Check for duplicate lines (= of the same user)
-        """ Creates two lists:
-            - active (uncommented) lines, that are recognized by timekpr.
-            - active but unrecognized lines.
+    def getUserDict(self):
+        """ Returns a new user dictionary. Useful for accessconf()
 
-            self.result => [original line from file, resulting parsed list]
-            self.unrecognized => unrecognized lines list
+            Arguments:
+                dup_warning => - True (default, prints warning about duplicate lines)
+                               - False (does not print warning about duplicate lines)
+
+            Returns the dictionary, self.userdict, which is "categorized" by user.
+            The structure of self.userdict for:
+            - access.conf: {
+                "user": [
+                    "original line from input",
+                    ["block" or "allow", "user", "origins"]
+                ]
+            }
+
+            - time.conf: {
+                "user": [
+                    "original line from input",
+                    ["user", time span list with block/allow]
+                ]
+            }
+
+            Also see: parseLines()
         """
-        for line in self.active:
-            test = self.preCheckLine(line)
+        return self.userdict
 
+    def checkIfDuplicateUserDict(self, user, line, dup_warning=True):
+        """ Check if there are more than one lines for a user in self.userdict.
+            Prints a warning if dup_warning=True (default).
+
+            Results:
+                True  => Duplicate! There is already another line for this user
+                         in self.userdict.
+                False => Not duplicate! This line is unique and the first one
+                         for this user in self.userdict.
+        """
+        if user in self.userdict:
+            if dup_warning:
+                print("""WARNING: checkIfDuplicateUserDict(): User %s has more than one active recognized lines:
+    %s""" % (user, line))
+            return True
+        return False
+
+    def commentLineNewInput(self, lindex):
+        """ Comments a line from self.new_input (NOT self.read_input).
+            This way we can track down changes, write them to output once and
+            refresh the input. Useful for duplicate check in parseLines().
+
+            Notes:
+                * It directly alters self.new_input.
+                * It sets self.refresh_input = True
+
+            Arguments:
+                lindex => the line index
+
+            Doesn't return anything.
+        """
+        t = self.new_input.split("\n")
+        original = t[lindex]
+
+        t[lindex] = "#%s" % (original)
+        self.new_input = "\n".join(t) # Set new self.new_input
+        self.refresh_input = True # Rewrite and refresh the input.
+
+    def parseLines(self):
+        """ Reads from input and parses lines with the appropriate parser,
+            depending on the type.
+
+            * Creates two lists:
+            - self.recognized: active (uncommented) lines, that are recognized by timekpr.
+            - self.unrecognized: active but unrecognized lines.
+
+            * Also creates a dictionary (self.userdict). This way we can cut
+            down on processing and check for duplicates. See getUserDict() for
+            more info.
+
+            * While it checks for duplicate lines of a user, it also comments
+            the duplicate lines and initiates refreshInput()
+
+            self.recognized (list)     => [original line from file, parsed list]
+            self.unrecognized (list)   => unrecognized lines list
+            self.userdict (dictionary) => see getUserDict()
+
+            Also see: getUserDict(), precheckLine(), refreshInput()
+        """
+        self.userdict.clear()
+
+        input_list = self.readInput().split("\n")
+        lindex = 0
+        for line in input_list:
+            # line => original line (text string) from input
+            # lindex => line index
+            test = self.precheckLine(line)
             if test == 1:
                 if self.type == "time.conf":
                     tconf_parse = self.time_conf_parser()
-                    result = tconf_parse.parseString(line)
+                    parsedlist = tconf_parse.parseString(line)
+                    user = parsedlist[0] # Used for duplicate check
+
                 elif self.type == "access.conf":
                     aconf_parse = self.access_conf_parser()
-                    result = aconf_parse.parseString(line)
-                self.result.append([line, result])
+                    parsedlist = aconf_parse.parseString(line)
+                    user = parsedlist[1] # Used for duplicate check
 
+                # Duplicate check: If the user does not have any other duplicate 
+                # lines, add this line to self.userdict (dictionary).
+                if not self.checkIfDuplicateUserDict(user, line):
+                    self.userdict[user] = [line, parsedlist]
+                    # self.recognized (list) => [original line from file (text string), parsed list (list)]
+                    self.recognized.append([line, parsedlist])
+                else:
+                    self.commentLineNewInput(lindex) # Also sets self.refresh_input = True
             elif test == 0:
+                # self.unrecognized (list) => unrecognized lines list
                 self.unrecognized.append(line)
+            #elif test == 2: pass # Just ignore it
+            lindex += 1 # Increase lindex + 1
 
-            #elif test == 2: just ignore it
+        # WARNING: BEWARE OF EVIL RECURSIONS!
+        if self.refresh_input: # Rewrite and refresh the input.
+            self.writeOutput(self.new_input, "OUTPUT parseLines() refresh input")
+            self.refreshInput()
 
-    def outputLines(self):
+    def testOutputLines(self):
         """ Print active lines and unrecognized active lines.
             Useful for testing purposes.
         """
-        for line in self.result:
+        for line in self.recognized:
             print("%s => %s" % (line[0], line[1]))
 
         if self.unrecognized:
             list_string = "\n".join(self.unrecognized)
             print("\nWARNING: Unrecognized active lines found:\n%s" % (list_string))
 
-    def getActiveLines(self):
-        """ Return the self.result list """
-        a = self.result
+    def getParsedActiveLines(self):
+        """ Returns the self.recognized list. See parseLines() for more info. """
+        a = self.recognized
         return a
 
     def getUnrecognizedLines(self):
-        """ Return the self.unrecognized list """
+        """ Prints out a warning if self.unrecognized list is filled.
+            See parseLines() for more info.
+        """
         if self.unrecognized:
             list_string = "\n".join(self.unrecognized)
             print("WARNING: Unrecognized active lines found:\n%s" % (list_string))
@@ -595,6 +723,9 @@ class pamparser():
 
     # Defs
     def tconf_negation_replace(self, s, l, t):
+        """ time.conf pyparsing:
+            replace "!" and "" with "block" and "allow" respectively.
+        """
         if t[0] == "!":
             t[0] = "block"
             return t
@@ -607,16 +738,15 @@ class pamparser():
         tconf_commonops = "&|" # AND/OR
         # Ignore the first two ";"-separated items (services;ttys;users)
         tconf_start = Suppress(Regex("(?:[^;]*;){2}"))
-
+        # Users
         tconf_users = Regex("[^;]*")
         tconf_users.setParseAction(self.strip_whitespace)
-
+        # Split character ";"
         tconf_splitchar = Suppress(Word(";"))
-
         # Negation
         tconf_negation = Optional("!", "allow") # block (with "!") or allow (without "!")
         tconf_negation.setParseAction(self.tconf_negation_replace)
-        # Days of week
+        # Days of week (Note: Wk = Week [Mo-Fr], Wd = Weekend-days [Sa-Su], Al = All days)
         daysofweek = Group(OneOrMore(Literal("Mo") | Literal("Tu") | Literal("We") | Literal("Th") | Literal("Fr") | Literal("Sa") | Literal("Su") | Literal("Wk") | Literal("Wd") | Literal("Al")))
         # Get the timeofday (4 numbers and "-" and 4 numbers)
         timeofday = Group(Word(nums,exact=4) + Suppress("-") + Word(nums,exact=4))
@@ -635,6 +765,9 @@ class pamparser():
     # permission (+ or -) : users : origins
 
     def aconf_action_replace(self, s, l, t):
+        """ access.conf pyparsing:
+            replace "-"/"+" with "block"/"allow" respectively.
+        """
         if t[0] == "-":
             t[0] = "block"
             return t
@@ -643,34 +776,39 @@ class pamparser():
             return t
 
     def strip_whitespace(self, s, l, t):
-        return t[0].strip()
+        """ pyparsing: Strip whitespace characters."""
+        stripped = t[0].strip()
+        return stripped
 
     def access_conf_parser(self):
         """ access.conf parser.
             Note: Capital-lettered functions are from pyparsing.
         """
+        # Split character ":"
         aconf_splitchar = Suppress(Word(":"))
-        # permission - either + or -, 1 character only
+        # Permission/Access control: "+" or "-", 1 character only
         aconf_permission = Word("-+", exact=1)
         aconf_permission.setParseAction(self.aconf_action_replace)
-        # users - alphanumeric and one of "_*() " characters
+        # Users - alphanumeric and one of "_*() " characters
         aconf_users = Word(alphanums + "_*() ")
         aconf_users.setParseAction(self.strip_whitespace)
-        # origins - everything else excluding "# Added by timekpr"
+        # Origins - everything else excluding "# Added by timekpr"
         aconf_origins = Regex("[^#]+")
         aconf_origins.setParseAction(self.strip_whitespace)
         aconf_parse = aconf_permission + aconf_splitchar + aconf_users + aconf_splitchar + aconf_origins
 
         return aconf_parse
 
+# =============================================================================
 # CLASS: timeconf()
-# ===================
-#  input    => file (default) or string
-#  file     => filename (default is /etc/security/time.conf)
-#  string   => text string (default is blank)
 
 class timeconf():
-    """ Parse time.conf """
+    """ Functions specific to time.conf
+        Arguments:
+            input    => "file" (default) or "string" (for testing)
+            file     => filename (default is /etc/security/time.conf)
+            string   => text string (default is blank)        
+    """
     def __init__(self, input="file", file="/etc/security/time.conf", string=""):
         self.input = input
         self.file = file
@@ -681,65 +819,31 @@ class timeconf():
             sys.exit(1)
 
         self.parser = pamparser(type="time.conf", input="string", string=self.string)
-        self.inputstring = self.parser.readInput()
-        self.activelines = self.parser.getActiveLines()
 
     def test(self):
-        for i in self.activelines:
-            print(i)
-
-    def parse(self):
-        print("moo " + self.file)
+        pass
 
 # =============================================================================
 # CLASS: accessconf()
-# =============================================================================
-#  input    => file (default) or string
-#  file     => filename (default is /etc/security/access.conf)
-#  string   => text string (default is blank)
 
 class accessconf():
-    """ Parse access.conf """
+    """ Functions specific to access.conf
+        Arguments:
+            input    => "file" (default) or "string" (for testing)
+            file     => filename (default is /etc/security/access.conf)
+            string   => text string (default is blank)
+    """
     def __init__(self, input="file", file="/etc/security/access.conf", string=""):
         self.input = input
         self.file = file
         self.string = string
-        self.userdict = dict()
 
         if input == "string" and not string:
             sys.stderr.write("ERROR: accessconf() init: input is 'string' but text string is empty\n")
             sys.exit(1)
 
         self.parser = pamparser(type="access.conf", input="string", string=self.string)
-        self.inputstring = self.parser.readInput() # the original input text
-        self.activelines = self.parser.getActiveLines() # the parsed active lines
-        self.createUserDict()
-
-    def createUserDict(self):
-        """ Create a new user dictionary. It can return the dictionary.
-            Note: It does NOT re-read access.conf
-
-            self.userdict structure: {
-                "user": [
-                    "original line from input",
-                    ["block" or "allow", "user", "origins"]
-                ]
-            }
-        """
-        self.userdict.clear()
-        for l, i in self.activelines:
-            # l = original line, i = parsed list
-            # i[1] => user
-            # i[0] => status - block or allow
-            if not i[1] in self.userdict:
-                self.userdict[i[1]] = [l,i]
-            else:
-                print("WARNING: accessconf() createUserDict(): User %s has more than one active lines: %s" % (i[1], l))
-
-        return self.userdict
-        #~ ulist = self.userdict[user][1]      # Get userdict list for the user
-        #~ ulist[0] = "allow"                  # Switch "block" to "allow"
-
+        self.userdict = self.parser.getUserDict() # get a user dictionary
 
     def isuserlocked(self, user):
         """ Checks if user is blocked by access.conf
@@ -776,6 +880,7 @@ class accessconf():
         output = self.parser.removeLine(loriginal) # Remove that line
         result = self.parser.writeOutput(output) # Write to output
 
+        # TODO: Should it refresh readInput()?
         return result
 
     def lockuser(self, user):
@@ -792,54 +897,64 @@ class accessconf():
         ulist = ["block", user, "ALL"] # Prepare access data
         line = self.parser.prepareLine(ulist) # Prepare the line
         output = self.parser.appendLine(line) # Add a line
-        result = self.parser.writeOutput(output) # Write to output
+        result = self.parser.writeOutput(output, "OUTPUT lockuser()") # Write to output
 
         return result
 
     def test(self):
-        #print("createUserDict(): %s" % (str(self.createUserDict())))
+        #print("getUserDict(): %s" % (str(self.getUserDict())))
         #print("isuserlocked(): User lala, result: %d" % (self.isuserlocked("lala")))
         #print("unlockuser(): User lala, result: %s" % (self.unlockuser("lala")))
         print("lockuser(): User papoutsosiko, result: %s" % (self.lockuser("papoutsosiko")))
-        pass
+        print("accessconf() test: All done!")
 
+# =============================================================================
 # VARIOUS TESTS
-# =============
+# =============================================================================
+
 def class_accessconf_test(t):
+    """ Test class accessconf() """
     accessconf(input="string", string=t).test()
 
 def class_timeconf_test(t):
+    """ Test class timeconf() """
     timeconf(input="string", string=t).test()
 
 def class_pamparser_test(tconf_test_data, aconf_test_data):
-    # CLASS: pamparser()
+    """ Test class pamparser() """
     # A) time.conf
     testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
-    print("INFO: - TEST pamparser time.conf A1 (STRING)\n")
-    testA1.outputLines()
-    #for i1 in testA1.getActiveLines():
+    print("INFO: - TEST A1 pamparser time.conf (STRING)\n")
+    testA1.testOutputLines()
+    #for i1 in testA1.getParsedActiveLines():
     #    print(i1)
-    print("\nINFO: - TEST pamparser time.conf A2 (FILE)\n")
+    print("\nINFO: - TEST A2 pamparser time.conf (FILE)\n")
     testA2 = pamparser(type="time.conf", input="file")
-    testA2.outputLines()
+    testA2.testOutputLines()
 
     # B) access.conf
     testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
-    print("\nINFO: - TEST pamparser access.conf B1 (STRING)\n")
-    testB1.outputLines()
-    #for i2 in testB1.getActiveLines():
+    print("\nINFO: - TEST B1 pamparser access.conf (STRING)\n")
+    testB1.testOutputLines()
+    #for i2 in testB1.getParsedActiveLines():
     #    print(i2)
-    print("\nINFO: - TEST pamparser access.conf B2 (FILE)\n")
+    print("\nINFO: - TEST B2 pamparser access.conf (FILE)\n")
     testB2 = pamparser(type="access.conf", input="file")
-    testB2.outputLines()
+    testB2.testOutputLines()
 
-if __name__ == "__main__":
+def doctesting():
+    import doctest
+    doctest.testmod()
+
+def main():
+    doctesting()
+    
     tconf_test_data = """
 #xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
 xsh & login ; ttyp* ; ro0_ters;!WdMo0000-2400 # Added by timekpr
     xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
-xsh & login;ttyp*;root | moot;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
-xsh & login ; ttyp* ; root | moot;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
+xsh & login;ttyp*;kentauros;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
+xsh & login ; ttyp* ; papoutsosiko;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
 a;o; a; e
       
 
@@ -848,6 +963,7 @@ a;o; a; e
 # testing # Added by timekpr
 - : lala : ALL # Added by timekpr
     -:papa4a:ALL # Added by timekpr
++ : lala : .foo.bar.org # Added by timekpr
 - : nana123_a : ALL # Added by timekpr
 - : testing : ALL # test
 - : testing : ALL EXCEPT root
@@ -859,4 +975,7 @@ a;o; a; e
     #class_pamparser_test(tconf_test_data, aconf_test_data)
     #class_timeconf_test(tconf_test_data)
     class_accessconf_test(aconf_test_data)
+
+if __name__ == "__main__":
+    main()
 
