@@ -255,7 +255,7 @@ class TimekprClient:
         # Gnome and XFCE can user notify-send
         if self.get_de() == 'GNOME' or self.get_de() == 'XFCE':
             getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')
-        else:
+        elif self.get_de() == 'KDE':
             # KDE4 uses dbus
             if self.kde_version() == 4:
                 import sys
@@ -265,12 +265,16 @@ class TimekprClient:
                 bus = dbus.SessionBus()
                 notify = dbus.Interface(bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications'), 'org.freedesktop.Notifications')
                 title="timekpr notification"
+                #message = "<div><img style=\"float: left; position: bottom; margin: 0px 5px 40px 0px;\" src=\"<path to image here>\" /><p style=\"font-size: x-large;\">Message</p></div>"
                 nid = notify.Notify('', nid, '', title, message, '', '', -1)
                 sleep(duration)
                 notify.CloseNotification(nid)
             else:
                 # KDE3 and friends use dcop
                 getcmdoutput('dcop knotify default notify notifying timekpr-client "' + message + '" "" "" 16 0')
+        else:
+            # Not using Gnome, XFCE or KDE, try standard notification with notify-send
+            getcmdoutput('notify-send --icon=gtk-dialog-warning --urgency=critical -t 3000 "' + title + '" "' + message + '"')
 
         self.lastNotified = datetime.datetime.now()
 
