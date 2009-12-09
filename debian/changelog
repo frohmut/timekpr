@@ -1,3 +1,35 @@
+timekpr (0.3.2~ppa1~ubuntu1) karmic; urgency=low
+
+  * Client includes a deafult notification for unsupported DEs (LP: #486881)
+  * Release reflects revision 194 from timekpr/stable
+
+ -- Even Nedberg <even@undertow>  Wed, 09 Dec 2009 21:15:15 +0100
+
+timekpr (0.3.1~ppa1~ubuntu6) jaunty; urgency=low
+
+  * Release reflects revision 193 from lp:timekpr/stable
+
+ -- Even Nedberg <even@undertow>  Mon, 09 Nov 2009 20:29:44 +0100
+
+timekpr (0.3.1~ppa1~ubuntu5~beta1) jaunty; urgency=low
+
+  * Fixed an error in timekpr-client.py 
+
+ -- Even Nedberg <even@undertow>  Tue, 03 Nov 2009 21:28:24 +0100
+
+timekpr (0.3.1~ppa1~ubuntu2~beta1) januty; urgency=low
+
+  * Added some files that got lost in last build
+
+ -- Even Nedberg <even@lateralus>  Sun, 01 Nov 2009 19:14:28 +0100
+
+timekpr (0.3.1~ppa1~ubuntu1~beta1) jaunty; urgency=low  
+
+  * Fixed notifications in KDE4, LP: #302774
+  * Cleaned up code for notification string (Stephen Scott)
+
+ -- Even Nedberg <even@lateralus>  Sun, 01 Nov 2009 13:22:33 +0100
+
 timekpr (0.3.0~ppa1~ubuntu1) jaunty; urgency=low
 
   * Fixed a bug that would kick a unrestricted user who was logged in all day
