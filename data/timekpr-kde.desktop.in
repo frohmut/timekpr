@@ -2,7 +2,7 @@
 _Name=Timekpr Control Panel
 _GenericName=Timekpr
 _Comment=Keep control of computer usage
-Exec=gksu timekpr-gui
+Exec=kdesudo timekpr-gui
 Icon=timekpr
 Terminal=false
 Type=Application

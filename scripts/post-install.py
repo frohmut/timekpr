@@ -56,7 +56,9 @@ def pamfilecheck(file):
         f.close()
 
 def pamconffilecheck(file):
-    """ Checks time.conf and access.conf, adds the required timekpr section """
+    """ Checks time.conf and access.conf, adds the required timekpr section.
+        This is not required for the new timekpr
+    """
     filewpath = os.path.join(PAM_SECURITY_DIR, file)
     if not os.path.isfile(filewpath):
         return 1
@@ -109,7 +111,8 @@ def beginpamconfcheck():
 
 def main():
     beginpamcheck()
-    beginpamconfcheck()
+    # Not required anymore
+    #beginpamconfcheck()
 
 if __name__ == '__main__':
     main()
