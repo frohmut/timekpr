@@ -73,14 +73,19 @@ timekpr_variables = {
 def checkifadmin():
     if geteuid() != 0:
         exit(_('Error: You need to have administrative privileges to run timekpr'))
+
 def checkifadmingui():
     if geteuid() != 0:
-        dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
-                                _("You need to have administrative privileges to run timekpr-gui"))
-        dlg.set_default_response(gtk.RESPONSE_CLOSE)
-        dlg.run()
-        dlg.destroy()
-        exit(_("Error: You need to have administrative privileges to run timekpr"))
+        msg = _("You need to have administrative privileges to run timekpr-gui")
+        errormsg(msg)
+
+def errormsg(msg):
+    """ Print an error message in GUI (GTK) and console (and exit) """
+    dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+    dlg.set_default_response(gtk.RESPONSE_CLOSE)
+    dlg.run()
+    dlg.destroy()
+    exit(msg)
 
 def getvariables():
     return timekpr_variables

@@ -22,8 +22,8 @@ import re
 from os import remove, mkdir, geteuid, getenv
 from os.path import isdir, isfile, realpath, dirname
 from time import strftime, sleep
-from pwd import getpwnam
-from spwd import getspall
+import pwd
+import spwd
 
 # Import gtk
 import pygtk
@@ -35,6 +35,7 @@ import gobject
 # Import timekpr-related
 from timekpr.pam import *
 import timekpr.common as common
+import timekpr.dirs as dirs
 
 # timekpr.conf variables (dictionary variable)
 VAR = common.timekpr_variables
@@ -54,25 +55,37 @@ if not isdir(VAR['TIMEKPRSHARED']):
     exit(_('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED']))
 
 # Check if it is a regular user, with userid within UID_MIN and UID_MAX.
-def isnormal(username):
-    # FIXME: Hide active user - bug #286529
+def isnormal(username, uidmin, uidmax):
+    # NOTE: Hides active (current admin) user - bug #286529
     if (getenv('SUDO_USER') and username == getenv('SUDO_USER')):
         return False
+    userid = int(pwd.getpwnam(username)[2])
+    if uidmin <= userid <= uidmax:
+        return True
+    else:
+        return False
 
-    userid = int(getpwnam(username)[2])
-    logindefs = open('/etc/login.defs')
+def read_uid_minmax(f=dirs.LOGIN_DEFS):
+    try:
+        logindefs = open(f)
+    except IOError:
+        msg = _("Could not find file with login default settings: %s" % (f))
+        common.errormsg(msg)
+
     uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)', re.M).findall(logindefs.read())
+
+    # TODO: Check if uidminmax has 2 variables or 1 or none
+    # FIXME: If less than 2 (< 2), show lists with all users (return True)
+    # Show popup with a warning, but don't exit
+
     if uidminmax[0] < uidminmax[1]:
         uidmin = int(uidminmax[0])
         uidmax = int(uidminmax[1])
     else:
         uidmin = int(uidminmax[1])
         uidmax = int(uidminmax[0])
-
-    if uidmin <= userid <= uidmax:
-        return True
-    else:
-        return False
+    
+    return (uidmin, uidmax)
 
 def rm(f):
     try:
@@ -135,8 +148,10 @@ class timekprGUI:
         }
         self.wTree.signal_autoconnect(dic)
 
-        # Using /etc/shadow spwd module
-        for userinfo in getspall():
+        # Read UID_MIN / UID_MAX variables
+        (uidmin, uidmax) = read_uid_minmax()
+        # Check if the user is normal (not system user)
+        for userinfo in spwd.getspall():
             if isnormal(userinfo[0]):
                 self.userSelect.append_text(userinfo[0])
                 self.userSelect.set_active(0)
