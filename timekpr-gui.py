@@ -57,8 +57,13 @@ if not isdir(VAR['TIMEKPRSHARED']):
 # Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username, uidmin, uidmax):
     # NOTE: Hides active (current admin) user - bug #286529
-    if (getenv('SUDO_USER') and username == getenv('SUDO_USER')):
+    if getenv('SUDO_USER') and username == getenv('SUDO_USER'):
         return False
+
+    # Check if read_uid_minmax() returned an error string
+    if type(uidmin) == type(str()) and uidmin == "ERROR":
+        return True
+
     userid = int(pwd.getpwnam(username)[2])
     if uidmin <= userid <= uidmax:
         return True
@@ -66,33 +71,29 @@ def isnormal(username, uidmin, uidmax):
         return False
 
 def read_uid_minmax(f=dirs.LOGIN_DEFS):
+    # NOTE: If problem with login.defs or variables, show all (system and normal) users -- bug #529770
     try:
         logindefs = open(f)
     except IOError:
-        msg = _("Could not find file with login default settings: %s" % (f))
-        common.errormsg(msg)
+        common.popup(_("timekpr administration warning"), _("Could not open file %(file)s -- cannot distinguish normal users from system users.\nAll users will be shown.") % {'file': f})
+        return ("ERROR", "ERROR")
 
     uidminmax = re.compile('^UID_(?:MIN|MAX)\s+(\d+)', re.M).findall(logindefs.read())
+    # Check if uidminmax array has less than 2 items
+    # If less, return "ERROR". Show all users, system and normal users. Show a warning popup
+    if len(uidminmax) < 2:
+        # Two cases included here, either missing UID_MIN or UID_MAX, or both missing.
+        common.popup(_("timekpr administration warning"), _("Missing UID_MIN / UID_MAX variables -- Cannot distinguish normal users from system users.\nAll users will be shown."))
+        return ("ERROR", "ERROR")
 
-    # TODO: Check if uidminmax has 2 variables or 1 or none
-    # FIXME: If less than 2 (< 2), show lists with all users (return True)
-    # Show popup with a warning, but don't exit
-    # "Could not determine normal users from system users, all will be listed."
-    # common.popup(_("timekpr administration warning"), _("Could not find UID_MIN / UID_MAX variables!\ntimekpr cannot distinguish normal users from system users, all users will be shown."))
-
-    if len(uidminmax) == 1:
-        pass #missing one variable, either UID_MIN or UID_MAX
-    elif len(uidminmax) == 0:
-        pass #missing one variable, either UID_MIN or UID_MAX
-
-    if uidminmax[0] < uidminmax[1]:
-        uidmin = int(uidminmax[0])
-        uidmax = int(uidminmax[1])
     else:
-        uidmin = int(uidminmax[1])
-        uidmax = int(uidminmax[0])
-    
-    return (uidmin, uidmax)
+        if uidminmax[0] < uidminmax[1]:
+            uidmin = int(uidminmax[0])
+            uidmax = int(uidminmax[1])
+        else:
+            uidmin = int(uidminmax[1])
+            uidmax = int(uidminmax[0])
+        return (uidmin, uidmax)
 
 def rm(f):
     try:
