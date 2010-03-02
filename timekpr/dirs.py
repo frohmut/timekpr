@@ -25,8 +25,8 @@ LOGIN_DEFS = '/etc/login.defs'
 LOG_FILE = '/var/log/timekpr.log'
 
 # Point to directories/folders
-TIMEKPR_SETTINGS_DIR = '/etc/timekpr' # Holds various settings and configuration files
-TIMEKPR_WORK_DIR = '/var/lib/timekpr' # Default working directory (.time, .logout, .late files)
-TIMEKPR_SHARED_DIR = '/usr/share/timekpr' # Shared directory, e.g. icons and glade files
-TIMEKPR_DAEMON_DIR = '/etc/init.d' # Init directory for the timekpr init script
+TIMEKPR_SETTINGS_DIR = '/etc/timekpr'
+TIMEKPR_WORK_DIR = '/var/lib/timekpr'
+TIMEKPR_SHARED_DIR = '/usr/share/timekpr'
+TIMEKPR_DAEMON_DIR = '/etc/init.d'
 

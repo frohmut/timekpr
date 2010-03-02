@@ -18,10 +18,12 @@
 import gtk
 import gobject
 import os
+import os.path
 from time import strftime, sleep
 import datetime
-from timekpr.pam import *
-from timekpr.common import *
+import timekpr.pam as pam
+import timekpr.common as common
+import timekpr.dirs as dirs
 
 import locale
 import gettext
@@ -29,20 +31,20 @@ import sys
 
 class TimekprClient:
     def __init__(self):
-        self.VAR = getvariables()
+        self.VAR = common.timekpr_variables
         self.checkInterval = 60
         self.tray = gtk.StatusIcon()
-        self.red = self.VAR['TIMEKPRSHARED'] + '/timekpr32x32.png'
-        self.green = self.VAR['TIMEKPRSHARED'] + '/padlock-green.png'
+        self.red = os.path.join(dirs.TIMEKPR_SHARED_DIR, 'timekpr32x32.png')
+        self.green = os.path.join(dirs.TIMEKPR_SHARED_DIR, 'padlock-green.png')
         self.tray.set_from_file(self.red)
-        self.tray.set_tooltip('Timekpr-client')
+        self.tray.set_tooltip('timekpr-client')
         self.tray.set_visible(True)
         self.tray.connect('activate', self.on_activate)
         self.tray.connect('popup-menu', self.on_popup_menu)
         self.username = os.getenv('USER')
-        self.timefile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.time'
-        self.allowfile = self.VAR['TIMEKPRWORK'] + '/' + self.username + '.allow'
-        self.conffile = self.VAR['TIMEKPRDIR'] + '/' + self.username
+        self.timefile = os.path.join(dirs.TIMEKPR_WORK_DIR, self.username + '.time')
+        self.allowfile = os.path.join(dirs.TIMEKPR_WORK_DIR, self.username + '.allow')
+        self.conffile = os.path.join(dirs.TIMEKPR_SETTINGS_DIR, self.username)
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
         self.timer = None
         self.checkLimits()
@@ -248,7 +250,7 @@ class TimekprClient:
         # Don't notify an unrestricted user
         if not isrestricteduser(self.username, self.limits[index]):
             return
-        title = "Timekpr"
+        title = "timekpr"
         # Don't notify if we just gave a notification
         if (datetime.datetime.now() - self.lastNotified).seconds < 5:
             return

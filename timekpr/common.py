@@ -1,7 +1,7 @@
 """ Common variables and definitions for timekpr."""
 
-#    Copyright (C) 2008-2009 Savvas Radevic <vicedar@gmail.com>
-#    Copyright (C) 2008-2009 Even Nedberg <even@nedberg.net>
+#    Copyright (c) 2008-2010 Savvas Radevic <vicedar@gmail.com>
+#    Copyright (c) 2008-2009 Even Nedberg <even@nedberg.net>
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@
 
 # import common
 import gtk
-from os.path import isfile, getmtime
-from os import geteuid
+import os.path
+import os
 from time import strftime, localtime
 import pynotify
 
 # import timekpr-related
-from pam import *
+import pam
 import dirs
 
 # Import i18n
@@ -40,7 +40,10 @@ domain = 'timekpr'
 gettext.bindtextdomain(domain, local_path)
 gettext.textdomain(domain)
 _ = gettext.gettext
-# FIXME: For translations in other files, use: _ = common._
+
+# NOTE: For translations in other files, use:
+#  import timekpr.common as common
+#   _ = common._
 
 """ Variables
     * GRACEPERIOD:
@@ -56,27 +59,20 @@ _ = gettext.gettext
     Example: 5 hours
 """
 
-# FIXME: dirs in these variables are just for transition
-#        Use dirs.SOMETHING_HERE instead of VAR['']
 timekpr_variables = {
     'GRACEPERIOD'  : 120,
     'POLLTIME'     : 45,
     'DEBUGME'      : True,
     'LOCKLASTS'    : '1 hour',
-    'LOGFILE'      : dirs.LOG_FILE,
-    'TIMEKPRDIR'   : dirs.TIMEKPR_SETTINGS_DIR,
-    'TIMEKPRSHARED': dirs.TIMEKPR_SHARED_DIR,
-    'TIMEKPRDAEMON': dirs.TIMEKPR_DAEMON_DIR,
-    'TIMEKPRWORK'  : dirs.TIMEKPR_WORK_DIR,
 }
 
 # Check if admin/root
 def checkifadmin():
-    if geteuid() != 0:
+    if os.geteuid() != 0:
         exit(_('Error: You need to have administrative privileges to run timekpr'))
 
 def checkifadmingui():
-    if geteuid() != 0:
+    if os.geteuid() != 0:
         msg = _("You need to have administrative privileges to run timekpr-gui")
         errormsg(msg)
 
@@ -98,9 +94,6 @@ def popup(title, msg):
     if not n.show():
         exit('ERROR: timekpr -- Failed to send notification')
 
-def getvariables():
-    return timekpr_variables
-
 def getcmdoutput(cmd):
     # TODO: timekpr-gui.py: Use it for "/etc/init.d/timekpr status" and a button enable/disable
     from os import popen
@@ -110,7 +103,7 @@ def getcmdoutput(cmd):
 
 def fromtoday(fname):
     # Returns True if a file was last modified today
-    fdate = strftime("%Y%m%d", localtime(getmtime(fname)))
+    fdate = strftime("%Y%m%d", localtime(os.path.getmtime(fname)))
     today = strftime("%Y%m%d")
     return fdate == today
 
@@ -119,7 +112,7 @@ def islate(bto, allowfile):
     index = int(strftime("%w"))
     hour = int(strftime("%H"))
     if (hour > bto[index]):
-        if isfile(allowfile):
+        if os.path.isfile(allowfile):
             if not fromtoday(allowfile):
                 return True
             else:
@@ -141,7 +134,7 @@ def isearly(bfrom, allowfile):
     index = int(strftime("%w"))
     hour = int(strftime("%H"))
     if (hour < bfrom[index]):
-        if isfile(allowfile):
+        if os.path.isfile(allowfile):
             if not fromtoday(allowfile):
                 return True
             else:
@@ -159,7 +152,7 @@ def isrestricteduser(username, limit):
 
 def readusersettings(user, conffile):
     # Returns limits and from/to allowed hours
-    if isfile(conffile):
+    if os.path.isfile(conffile):
         fhandle = open(conffile)
         limits = fhandle.readline() #Read 1st line
         limits = re.compile('(\d+)').findall(limits)
