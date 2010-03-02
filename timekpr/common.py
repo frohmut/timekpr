@@ -21,6 +21,7 @@ import gtk
 from os.path import isfile, getmtime
 from os import geteuid
 from time import strftime, localtime
+import pynotify
 
 # import timekpr-related
 from pam import *
@@ -86,6 +87,16 @@ def errormsg(msg):
     dlg.run()
     dlg.destroy()
     exit(msg)
+
+def popup(title, msg):
+    if not pynotify.init("timekpr warning"):
+        exit("ERROR: timekpr -- Something wrong with pynotify")
+
+    n = pynotify.Notification(title, msg, 'dialog-warning')
+    n.set_urgency(pynotify.URGENCY_CRITICAL)
+
+    if not n.show():
+        exit('ERROR: timekpr -- Failed to send notification')
 
 def getvariables():
     return timekpr_variables

@@ -77,6 +77,13 @@ def read_uid_minmax(f=dirs.LOGIN_DEFS):
     # TODO: Check if uidminmax has 2 variables or 1 or none
     # FIXME: If less than 2 (< 2), show lists with all users (return True)
     # Show popup with a warning, but don't exit
+    # "Could not determine normal users from system users, all will be listed."
+    # common.popup(_("timekpr administration warning"), _("Could not find UID_MIN / UID_MAX variables!\ntimekpr cannot distinguish normal users from system users, all users will be shown."))
+
+    if len(uidminmax) == 1:
+        pass #missing one variable, either UID_MIN or UID_MAX
+    elif len(uidminmax) == 0:
+        pass #missing one variable, either UID_MIN or UID_MAX
 
     if uidminmax[0] < uidminmax[1]:
         uidmin = int(uidminmax[0])
@@ -152,7 +159,7 @@ class timekprGUI:
         (uidmin, uidmax) = read_uid_minmax()
         # Check if the user is normal (not system user)
         for userinfo in spwd.getspall():
-            if isnormal(userinfo[0]):
+            if isnormal(userinfo[0], uidmin, uidmax):
                 self.userSelect.append_text(userinfo[0])
                 self.userSelect.set_active(0)
 
