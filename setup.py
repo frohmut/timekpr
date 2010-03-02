@@ -31,7 +31,6 @@ import glob
 
 from distutils.command.config import config
 from distutils.core import setup
-#from distutils.core import Command
 from DistUtilsExtra.command import *
 
 import timekpr.dirs as dirs
@@ -40,20 +39,25 @@ import timekpr.common as common
 timekpr_version = common.timekpr_version
 VAR = common.timekpr_variables
 
+# python setup.py config --help
+# python setup.py config --login-defs "moo"
+# python setup.py config
 class config_custom(config):
     # Extend the array of user_options
-    config.user_options.extend([
-        ('login-defs=', None, 'Path to login defaults file (Default: /etc/login.defs)'),
-        ('log-file=', None, 'Path to log file (Default: /var/log/timekpr.log)'),
-        ('settings-dir=', None, 'Path to directory for configuration and settings files (Default: /etc/timekpr)'),
-        ('work-dir=', None, 'Path to working directory (Default: /var/lib/timekpr)'),
-        ('shared-dir=', None, 'Path to shared directory (Default: /usr/share/timekpr)'),
-        ('daemon-dir=', None, 'Path to init directory (Default: /etc/init.d)'),
-    ])
+    # config.user_options.extend([
+    config.user_options = [
+        ('login-defs=', None, 'path to login defaults file (default: /etc/login.defs)'),
+        ('log-file=', None, 'path to log file (default: /var/log/timekpr.log)'),
+        ('settings-dir=', None, 'path to directory for configuration and settings files (default: /etc/timekpr)'),
+        ('work-dir=', None, 'path to working directory (default: /var/lib/timekpr)'),
+        ('shared-dir=', None, 'path to shared directory (default: /usr/share/timekpr)'),
+        ('daemon-dir=', None, 'path to init directory (default: /etc/init.d)'),
+    ]
+    #])
 
     def initialize_options(self):
         # Default values
-        self.login_defs = "/etc/login.defs"
+        self.login_defs = '/etc/login.defs'
         self.log_file = '/var/log/timekpr.log'
         self.settings_dir = '/etc/timekpr'
         self.work_dir = '/var/lib/timekpr'
@@ -65,37 +69,9 @@ class config_custom(config):
         config.finalize_options(self)
 
     def run(self):
-        # Run commands here
-        print("test: %s", self.login_defs)
+        # TODO: Run commands here to adapt timekpr/dirs.py
+        print("login-defs: %s" % (self.login_defs))
         config.run(self)
-
-#class configure_dirs(Command):
-#    description = """ Configure directories in timekpr/dirs.py """
-#    user_options = [
-#        ('login-defs=', None, 'Path to login.defs file'),
-#        ('log-file=', None, 'Path to log file'),
-#        ('settings-dir=', None, 'Path to directory for configuration and settings files'),
-#        ('work-dir=', None, 'Path to working directory (e.g. for .time, .logout, .late files)'),
-#        ('shared-dir=', None, 'Path to shared directory (e.g. for icons and glade files)'),
-#        ('daemon-dir=', None, 'Path to init directory (for the timekpr init script)'),
-#    ]
-
-#    def initialize_options(self):
-#        # Default values
-#        self.login_defs = "/etc/login.defs"
-#        self.log_file = '/var/log/timekpr.log'
-#        self.settings_dir = '/etc/timekpr'
-#        self.work_dir = '/var/lib/timekpr'
-#        self.shared_dir = '/usr/share/timekpr'
-#        self.daemon_dir = '/etc/init.d'
-#        pass
-
-#    def finalize_options(self):
-#        pass
-
-#    def run(self):
-#        print("test: %s", self.login_defs)
-#        pass
 
 if sys.version < '2.5':
     sys.exit('ERROR: Sorry, python 2.5 or higher is required for this application.')
