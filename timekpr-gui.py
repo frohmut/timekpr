@@ -19,8 +19,8 @@
 
 # Import common
 import re
-from os import remove, mkdir, geteuid, getenv
-from os.path import isdir, isfile, realpath, dirname
+import os
+import os.path
 from time import strftime, sleep
 import pwd
 import spwd
@@ -37,7 +37,7 @@ from timekpr.pam import *
 import timekpr.common as common
 import timekpr.dirs as dirs
 
-# timekpr.conf variables (dictionary variable)
+# timekpr.conf variables
 VAR = common.timekpr_variables
 version = common.timekpr_version
 
@@ -47,17 +47,17 @@ _ = common._
 common.checkifadmingui()
 
 # Create configuration folder if not existing
-if not isdir(VAR['TIMEKPRDIR']):
-    mkdir(VAR['TIMEKPRDIR'])
-if not isdir(VAR['TIMEKPRWORK']):
-    mkdir(VAR['TIMEKPRWORK'])
-if not isdir(VAR['TIMEKPRSHARED']):
-    exit(_('Error: Could not find the shared directory %s' % VAR['TIMEKPRSHARED']))
+if not os.path.isdir(dirs.SETTINGS_DIR):
+    os.mkdir(dirs.SETTINGS_DIR)
+if not os.path.isdir(dirs.WORK_DIR):
+    os.mkdir(dirs.WORK_DIR)
+if not os.path.isdir(dirs.SHARED_DIR):
+    exit(_('Error: Could not find the shared directory %s') % dirs.SHARED_DIR)
 
 # Check if it is a regular user, with userid within UID_MIN and UID_MAX.
 def isnormal(username, uidmin, uidmax):
     # NOTE: Hides active (current admin) user - bug #286529
-    if getenv('SUDO_USER') and username == getenv('SUDO_USER'):
+    if os.getenv('SUDO_USER') and username == os.getenv('SUDO_USER'):
         return False
 
     # Check if read_uid_minmax() returned an error string
@@ -97,13 +97,13 @@ def read_uid_minmax(f=dirs.LOGIN_DEFS):
 
 def rm(f):
     try:
-        remove(f)
+        os.remove(f)
     except OSError:
         pass
 
 class timekprGUI:
     def __init__(self):
-        gladefile = VAR['TIMEKPRSHARED'] + '/timekpr.glade'
+        gladefile = os.path.join(dirs.SHARED_DIR, 'timekpr.glade')
         self.wTree = gtk.glade.XML(gladefile, 'mainwindow', common.domain)
 
         self.get_limit_spin()
@@ -183,7 +183,7 @@ class timekprGUI:
         timeoutid = gobject.timeout_add(6000, self.statusrefresh, self, msgid)
 
     def showaboutdialog(self, widget):
-        self.aboutdialog = gtk.glade.XML(VAR['TIMEKPRSHARED'] + '/timekpr.glade', 'aboutdialog')
+        self.aboutdialog = gtk.glade.XML(os.path.join(dirs.SHARED_DIR, '/timekpr.glade'), 'aboutdialog')
         self.aboutd = self.aboutdialog.get_widget('aboutdialog')
         self.aboutd.set_version(version)
         self.aboutd.set_translator_credits(_("translator-credits"))
@@ -202,11 +202,11 @@ class timekprGUI:
             #unlock account
             unlockuser(self.user)
             #remove .lock file
-            lockf = VAR['TIMEKPRDIR'] + '/' + self.user + '.lock'
+            lockf = os.path.join(dirs.SETTINGS_DIR, self.user + '.lock')
             rm(lockf)
-            logoutf = VAR['TIMEKPRWORK'] + '/' + self.user + '.logout'
+            logoutf = os.path.join(dirs.WORK_DIR, self.user + '.logout')
             rm(logoutf)
-            latef = VAR['TIMEKPRWORK'] + '/' + self.user + '.late'
+            latef = os.path.join(dirs.WORK_DIR, self.user + '.late')
             rm(latef)
             statusmsg = _("Unlocked account %s") % self.user
             self.statusmessage(self, statusmsg)
@@ -215,10 +215,10 @@ class timekprGUI:
     def clearallrestrictions(self, widget):
         # clears all limits and their files
         # FIXME: A yes/no confirmation would be handy here
-        timef = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
-        logoutf = VAR['TIMEKPRWORK'] + '/' + self.user + '.logout'
-        latef = VAR['TIMEKPRWORK'] + '/' + self.user + '.late'
-        allowf = VAR['TIMEKPRWORK'] + '/' + self.user + '.allow'
+        timef = os.path.join(dirs.WORK_DIR, self.user + '.time')
+        logoutf = os.path.join(dirs.WORK_DIR, self.user + '.logout')
+        latef = os.path.join(dirs.WORK_DIR, self.user + '.late')
+        allowf = os.path.join(dirs.WORK_DIR, self.user + '.allow')
         # Should remove .allow file? It's not a restriction
         rm(timef)
         rm(logoutf)
@@ -227,7 +227,7 @@ class timekprGUI:
         # Remove boundaries
         removeuserlimits(self.user)
         # Remove limits
-        configf = VAR['TIMEKPRDIR'] + '/' + self.user
+        configf = os.path.join(dirs.SETTINGS_DIR, self.user)
         rm(configf)
         # Unlock user
         unlockuser(self.user)
@@ -238,7 +238,7 @@ class timekprGUI:
 
     def resettimefile(self, widget):
         # clear the .time file
-        timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
+        timefile = os.path.join(dirs.WORK_DIR, self.user + '.time')
         rm(timefile)
         statusmsg = _("Cleared used up time for account %s") % self.user
         self.statusmessage(self, statusmsg)
@@ -246,8 +246,8 @@ class timekprGUI:
 
     def rewardButton_clicked(self, widget):
         arg = self.rewardSpin.get_value_as_int()
-        timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
-        if isfile(timefile):
+        timefile = os.path.join(dirs.WORK_DIR, self.user + '.time')
+        if os.path.isfile(timefile):
             f = open(timefile)
             tlast = int(f.read())
             f.close()
@@ -272,7 +272,7 @@ class timekprGUI:
         wto[index] = '24'
         removeuserlimits(self.user)
         adduserlimits(self.user, wfrom, wto)
-        allowfile = VAR['TIMEKPRWORK'] + '/' + self.user + '.allow'
+        allowfile = os.path.join(dirs.WORK_DIR, self.user + '.allow')
         f = open(allowfile, 'w').close()
         statusmsg = _("Set access hours to 00-24 on %(day)s for account %(user)s") % {'day': strftime("%A"), 'user': self.user}
         self.statusmessage(self, statusmsg)
@@ -366,9 +366,9 @@ class timekprGUI:
 
     def readdurationlimit(self, widget):
         #time length limitation
-        configFile = VAR['TIMEKPRDIR'] + '/' + self.user
+        configFile = os.path.join(dirs.SETTINGS_DIR, self.user)
         del self.limits[:]
-        if isfile(configFile):
+        if os.path.isfile(configFile):
             fileHandle = open(configFile)
             self.limits = fileHandle.readline()
             self.limits = self.limits.replace("limit=( ", "")
@@ -399,8 +399,8 @@ class timekprGUI:
 
     def statusicons(self, widget, uislocked):
         # Set icons in status gtk-yes or gtk-no
-        lockgreen = VAR['TIMEKPRSHARED'] + '/padlock-green.png'
-        lockred = VAR['TIMEKPRSHARED'] + '/padlock-red.png'
+        lockgreen = os.path.join(dirs.SHARED_DIR, 'padlock-green.png')
+        lockred = os.path.join(dirs.SHARED_DIR, 'padlock-red.png')
         iconyes = gtk.STOCK_YES
         iconno = gtk.STOCK_NO
         iconsize = gtk.ICON_SIZE_BUTTON
@@ -432,9 +432,9 @@ class timekprGUI:
         except IndexError:
             limit = 86400
 
-        timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
+        timefile = os.path.join(dirs.WORK_DIR, self.user + '.time')
         used = 0
-        if isfile(timefile) and fromtoday(timefile):
+        if os.path.isfile(timefile) and fromtoday(timefile):
             t = open(timefile)
             used = int(t.readline())
             t.close()
@@ -449,8 +449,8 @@ class timekprGUI:
             self.lockLabel.set_label(_('Lock account'))
 
         if self.limitCheck.get_active():
-            timefile = VAR['TIMEKPRWORK'] + '/' + self.user + '.time'
-            if isfile(timefile):
+            timefile = os.path.join(dirs.WORK_DIR, self.user + '.time')
+            if os.path.isfile(timefile):
                 self.resettimeButton.set_sensitive(True)
             else:
                 self.resettimeButton.set_sensitive(False)
@@ -577,7 +577,7 @@ class timekprGUI:
                 for i in range(7):
                     bFrom.append(str(self.fromSpin[0].get_value_as_int()))
                     bTo.append(str(self.toSpin[0].get_value_as_int()))
-        configFile = VAR['TIMEKPRDIR'] + '/' + self.user
+        configFile = os.path.join(dirs.SETTINGS_DIR, self.user)
         if self.limitCheck.get_active():
             fH = open(configFile, 'w')
             fH.write(limit + "\n")

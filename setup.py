@@ -99,7 +99,7 @@ when they can or cannot log in.",
     data_files = [
         ('share/icons/hicolor/scalable/apps', ['artwork/timekpr.svg']),
         ('share/pixmaps', ['data/share/pixmaps/timekpr.xpm']),
-        (dirs.TIMEKPR_DAEMON_DIR, ['scripts/timekpr.init'])
+        (dirs.DAEMON_DIR, ['scripts/timekpr.init'])
     ],
     cmdclass = {
         "build": build_extra.build_extra,

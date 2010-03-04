@@ -1,9 +1,4 @@
-""" Contains timekpr-related directories.
-    Packagers should patch this module, or we ought to use some sort of 
-    installation method:
-    a) scons? Note: Check gpick project
-    b) normal simple config?
-"""
+""" timekpr directories """
 
 # TODO: Commented until removed completely
 # LOGFILE: Log file
@@ -25,8 +20,8 @@ LOGIN_DEFS = '/etc/login.defs'
 LOG_FILE = '/var/log/timekpr.log'
 
 # Point to directories/folders
-TIMEKPR_SETTINGS_DIR = '/etc/timekpr'
-TIMEKPR_WORK_DIR = '/var/lib/timekpr'
-TIMEKPR_SHARED_DIR = '/usr/share/timekpr'
-TIMEKPR_DAEMON_DIR = '/etc/init.d'
+SETTINGS_DIR = '/etc/timekpr'
+WORK_DIR = '/var/lib/timekpr'
+SHARED_DIR = '/usr/share/timekpr'
+DAEMON_DIR = '/etc/init.d'
 

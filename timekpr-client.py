@@ -34,17 +34,17 @@ class TimekprClient:
         self.VAR = common.timekpr_variables
         self.checkInterval = 60
         self.tray = gtk.StatusIcon()
-        self.red = os.path.join(dirs.TIMEKPR_SHARED_DIR, 'timekpr32x32.png')
-        self.green = os.path.join(dirs.TIMEKPR_SHARED_DIR, 'padlock-green.png')
+        self.red = os.path.join(dirs.SHARED_DIR, 'timekpr32x32.png')
+        self.green = os.path.join(dirs.SHARED_DIR, 'padlock-green.png')
         self.tray.set_from_file(self.red)
         self.tray.set_tooltip('timekpr-client')
         self.tray.set_visible(True)
         self.tray.connect('activate', self.on_activate)
         self.tray.connect('popup-menu', self.on_popup_menu)
         self.username = os.getenv('USER')
-        self.timefile = os.path.join(dirs.TIMEKPR_WORK_DIR, self.username + '.time')
-        self.allowfile = os.path.join(dirs.TIMEKPR_WORK_DIR, self.username + '.allow')
-        self.conffile = os.path.join(dirs.TIMEKPR_SETTINGS_DIR, self.username)
+        self.timefile = os.path.join(dirs.WORK_DIR, self.username + '.time')
+        self.allowfile = os.path.join(dirs.WORK_DIR, self.username + '.allow')
+        self.conffile = os.path.join(dirs.SETTINGS_DIR, self.username)
         self.limits, self.bfrom, self.bto = readusersettings(self.username, self.conffile)
         self.timer = None
         self.checkLimits()
