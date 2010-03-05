@@ -405,6 +405,7 @@ THESE ARE THE NEW STUFF!!!
 from pyparsing import *
 import re
 import sys
+import dirs
 
 # =============================================================================
 # CLASS: pamparser(type="time.conf", input="file", file="/etc/security/time.conf")
@@ -432,8 +433,8 @@ class pamparser():
 
         # Set default file location if file is not defined
         self.defaultfiles = {
-            "time.conf"   : "/etc/security/time.conf",
-            "access.conf" : "/etc/security/access.conf"
+            "time.conf"   : dirs.PAM_TIME_CONF,
+            "access.conf" : dirs.PAM_ACCESS_CONF
         }
 
         if input == "file" and not file:
@@ -630,6 +631,80 @@ class pamparser():
         t[lindex] = "#%s" % (original)
         self.new_input = "\n".join(t) # Set new self.new_input
         self.refresh_input = True # Rewrite and refresh the input.
+    
+    def time_conf_prettyparser(self, parsedlist):
+        """ Pretty-parses the list from tconf_parse.parseString().
+            This helps greatly in order to get allow/block by day.
+            
+            parsedlist[0] = user
+            parsedlist[1] = time limitations
+            
+            prettyparsed:
+            {
+                "Mo": {
+                    "allow": [
+                        [from1, to1], [from2, to2]
+                    ],
+                    "block": [
+                        [from1, to1]
+                    ]
+                }
+                "Tu": ...
+            }
+        """
+        prettyparsed = {
+            "Mo": { "allow": [], "block": []},
+            "Tu": { "allow": [], "block": []},
+            "We": { "allow": [], "block": []},
+            "Th": { "allow": [], "block": []},
+            "Fr": { "allow": [], "block": []},
+            "Sa": { "allow": [], "block": []},
+            "Su": { "allow": [], "block": []},
+        }
+        
+        #print("Pretty parsing: %s %s" % (parsedlist[0], parsedlist[1]))
+        for item in parsedlist[1]:
+            if not item in ["|", "&"]:
+                # Ignore whether it's OR (|) or AND (&)
+                # timekpr will support only "AND"
+                # example of "item": ['block', ['Wd', 'Mo'], ['0000', '2400']]
+                #                item[   0   ,    1[...]   ,    2[0], 2[1]   ]
+
+                # NOTE: For some reason I can't check "item in array". I use "item in tuple(array)"
+                tuple_item = tuple(item[1])
+                ignore_days = list()
+
+                if "Wd" in tuple_item: # WEEKEND DAYS (Sa, Su)
+                    for day in ("Sa", "Su"):
+                        # Repeated days should be ignored (e.g. WdSu = "All weekend days except Sunday")
+                        if not day in tuple_item:
+                            prettyparsed[ day ][ item[0] ].append( [ item[2][0], item[2][1] ] )
+                        else:
+                            ignore_days.append(day)
+
+                if "Wk" in tuple_item: # WEEK DAYS (Mo-Fr)
+                    for day in ("Mo", "Tu", "We", "Th", "Fr"):
+                        # Repeated days should be ignored (e.g. WkFr = "All weekdays except Friday")
+                        if not day in tuple_item:
+                            prettyparsed[ day ][ item[0] ].append( [ item[2][0], item[2][1] ] )
+                        else:
+                            ignore_days.append(day)
+
+                if "Al" in tuple_item: # ALL DAYS
+                    for day in ("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"):
+                        # Repeated days should be ignored (e.g. AlFr = "All days except Friday")
+                        if not day in tuple_item:
+                            prettyparsed[ day ][ item[0] ].append( [ item[2][0], item[2][1] ] )
+                        else:
+                            ignore_days.append(day)
+
+                # Rest of the days
+                for day in ("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"):
+                    # FIXME: Ignore "MoMo", which means no day
+                    if day in tuple_item and not day in ignore_days:
+                        prettyparsed[ day ][ item[0] ].append( [ item[2][0], item[2][1] ] )
+
+        return prettyparsed
 
     def parseLines(self):
         """ Reads from input and parses lines with the appropriate parser,
@@ -664,12 +739,17 @@ class pamparser():
                 if self.type == "time.conf":
                     tconf_parse = self.time_conf_parser()
                     parsedlist = tconf_parse.parseString(line)
-                    user = parsedlist[0] # Used for duplicate check
+                    user = parsedlist[0] # Used mainly for duplicate check
+
+                    # Also pretty parse it (by day)
+                    pretty_parsed = self.time_conf_prettyparser(parsedlist)
+                    # TODO: Use pretty_parsed
+                    print("User %s on Monday: %s -- Saturday: %s -- Sunday: %s" % (user, pretty_parsed["Mo"], pretty_parsed["Sa"], pretty_parsed["Su"]))
 
                 elif self.type == "access.conf":
                     aconf_parse = self.access_conf_parser()
                     parsedlist = aconf_parse.parseString(line)
-                    user = parsedlist[1] # Used for duplicate check
+                    user = parsedlist[1] # Used mainly for duplicate check
 
                 # Duplicate check: If the user does not have any other duplicate 
                 # lines, add this line to self.userdict (dictionary).
@@ -755,7 +835,7 @@ class pamparser():
         # While checking for & or | too
         tconf_time_list = Group(tconf_time) + Optional(Word(tconf_commonops))
         # Do the above all over again once or more times
-        tconf_parse = tconf_start + tconf_users + tconf_splitchar + OneOrMore(tconf_time_list) + Suppress(Regex("# Added by timekpr")) + LineEnd()
+        tconf_parse = tconf_start + tconf_users + tconf_splitchar + Group(OneOrMore(tconf_time_list)) + Suppress(Regex("# Added by timekpr")) + LineEnd()
 
         return tconf_parse
 
@@ -809,7 +889,7 @@ class timeconf():
             file     => filename (default is /etc/security/time.conf)
             string   => text string (default is blank)        
     """
-    def __init__(self, input="file", file="/etc/security/time.conf", string=""):
+    def __init__(self, input="file", file=dirs.PAM_TIME_CONF, string=""):
         self.input = input
         self.file = file
         self.string = string
@@ -833,7 +913,7 @@ class accessconf():
             file     => filename (default is /etc/security/access.conf)
             string   => text string (default is blank)
     """
-    def __init__(self, input="file", file="/etc/security/access.conf", string=""):
+    def __init__(self, input="file", file=dirs.PAM_ACCESS_CONF, string=""):
         self.input = input
         self.file = file
         self.string = string
@@ -926,21 +1006,17 @@ def class_pamparser_test(tconf_test_data, aconf_test_data):
     testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
     print("INFO: - TEST A1 pamparser time.conf (STRING)\n")
     testA1.testOutputLines()
-    #for i1 in testA1.getParsedActiveLines():
-    #    print(i1)
     print("\nINFO: - TEST A2 pamparser time.conf (FILE)\n")
     testA2 = pamparser(type="time.conf", input="file")
     testA2.testOutputLines()
 
     # B) access.conf
-    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
-    print("\nINFO: - TEST B1 pamparser access.conf (STRING)\n")
-    testB1.testOutputLines()
-    #for i2 in testB1.getParsedActiveLines():
-    #    print(i2)
-    print("\nINFO: - TEST B2 pamparser access.conf (FILE)\n")
-    testB2 = pamparser(type="access.conf", input="file")
-    testB2.testOutputLines()
+#    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
+#    print("\nINFO: - TEST B1 pamparser access.conf (STRING)\n")
+#    testB1.testOutputLines()
+#    print("\nINFO: - TEST B2 pamparser access.conf (FILE)\n")
+#    testB2 = pamparser(type="access.conf", input="file")
+#    testB2.testOutputLines()
 
 def doctesting():
     import doctest
@@ -955,6 +1031,7 @@ xsh & login ; ttyp* ; ro0_ters;!WdMo0000-2400 # Added by timekpr
     xsh & login ; ttyp* ; root | moot;!WdMo0200-1500
 xsh & login;ttyp*;kentauros;WdMo0000-2400 | Tu0800-2400 # Added by timekpr
 xsh & login ; ttyp* ; papoutsosiko;!WdMo0700-1500 & !MoWeFr1500-2000 # Added by timekpr
+xsh & login ; ttyp* ; pastourmas;!WdSu0700-1500 & !MoWeFr1500-2000 # Added by timekpr
 a;o; a; e
       
 
@@ -972,9 +1049,9 @@ a;o; a; e
 - : john : 2001:4ca0:0:101::/64 # Added by timekpr
      """
 
-    #class_pamparser_test(tconf_test_data, aconf_test_data)
+    class_pamparser_test(tconf_test_data, aconf_test_data)
     #class_timeconf_test(tconf_test_data)
-    class_accessconf_test(aconf_test_data)
+    #class_accessconf_test(aconf_test_data)
 
 if __name__ == "__main__":
     main()

@@ -13,15 +13,25 @@
 #TIMEKPRSHARED = '/usr/share/timekpr'
 #TIMEKPRDAEMON = '/etc/init.d'
 
+# ==============================================================================
+# FILES
 # Points to file with login defaults
 LOGIN_DEFS = '/etc/login.defs'
 
 # Points to log file
 LOG_FILE = '/var/log/timekpr.log'
 
+# Points to pam module time.conf and access.conf
+PAM_TIME_CONF = '/etc/security/time.conf'
+PAM_ACCESS_CONF = '/etc/security/access.conf'
+
+# ==============================================================================
+# DIRECTORIES
 # Point to directories/folders
 SETTINGS_DIR = '/etc/timekpr'
 WORK_DIR = '/var/lib/timekpr'
 SHARED_DIR = '/usr/share/timekpr'
 DAEMON_DIR = '/etc/init.d'
+
+
 
