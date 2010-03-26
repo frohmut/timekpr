@@ -1,6 +1,9 @@
 """ A library timekpr uses to read/edit Linux-PAM configuration files.
     Currently using modules: time, access
     Warning: Not all Linux-PAM possibilities are supported!
+
+    time.conf:
+        Ignore whether it's OR (|) or AND (&) - support only "AND"
 """
 
 #    Copyright (C) 2008-2009 Savvas Radevic <vicedar@gmail.com>
@@ -430,6 +433,7 @@ class pamparser():
         self.unrecognized = list() # active unrecognized lines, see parseLines()
         self.userdict = dict() # Used for duplicate check and accessconf()
         self.refresh_input = False # If True, it will rewrite and refresh the input.
+        self.time_conf_by_day_dict = dict() # see time_conf_prettyparser()
 
         # Set default file location if file is not defined
         self.defaultfiles = {
@@ -632,7 +636,7 @@ class pamparser():
         self.new_input = "\n".join(t) # Set new self.new_input
         self.refresh_input = True # Rewrite and refresh the input.
     
-    def time_conf_prettyparser(self, parsedlist):
+    def time_conf_by_day_parser(self, parsedlist):
         """ Pretty-parses the list from tconf_parse.parseString().
             This helps greatly in order to get allow/block by day.
             
@@ -646,7 +650,7 @@ class pamparser():
                         [from1, to1], [from2, to2]
                     ],
                     "block": [
-                        [from1, to1]
+                        ["0000", "2400"]
                     ]
                 }
                 "Tu": ...
@@ -725,6 +729,23 @@ class pamparser():
             self.unrecognized (list)   => unrecognized lines list
             self.userdict (dictionary) => see getUserDict()
 
+            * Moreover, it populates a time.conf dictionary ('by day'):
+                self.time_conf_by_day_dict:
+                {
+                "username":
+                    {
+                        "Mo": {
+                            "allow": [
+                                [from1, to1], [from2, to2]
+                            ],
+                            "block": [
+                                ["0000", "2400"]
+                            ]
+                        }
+                        "Tu": ...
+                    }
+                }
+
             Also see: getUserDict(), precheckLine(), refreshInput()
         """
         self.userdict.clear()
@@ -741,10 +762,10 @@ class pamparser():
                     parsedlist = tconf_parse.parseString(line)
                     user = parsedlist[0] # Used mainly for duplicate check
 
-                    # Also pretty parse it (by day)
-                    pretty_parsed = self.time_conf_prettyparser(parsedlist)
-                    # TODO: Use pretty_parsed
-                    print("User %s on Monday: %s -- Saturday: %s -- Sunday: %s" % (user, pretty_parsed["Mo"], pretty_parsed["Sa"], pretty_parsed["Su"]))
+                    # Also parse time.conf by day
+                    by_day_parsed_line = self.time_conf_by_day_parser(parsedlist)
+                    #print("User %s, pretty_parsed_line: %s" % (user, pretty_parsed_line))
+                    self.time_conf_by_day_dict[user] = by_day_parsed_line
 
                 elif self.type == "access.conf":
                     aconf_parse = self.access_conf_parser()
@@ -772,10 +793,18 @@ class pamparser():
 
     def testOutputLines(self):
         """ Print active lines and unrecognized active lines.
+            Print time.conf 'by day' dictionary
             Useful for testing purposes.
         """
-        for line in self.recognized:
-            print("%s => %s" % (line[0], line[1]))
+
+        if self.type == "time.conf":
+            # Prefer parsed time.conf by day
+            print("Users: %s" % self.time_conf_by_day_dict.keys())
+            print(self.time_conf_by_day_dict)
+
+        elif self.type == "access.conf":
+            for line in self.recognized:
+                print("%s => %s" % (line[0], line[1]))
 
         if self.unrecognized:
             list_string = "\n".join(self.unrecognized)
@@ -985,8 +1014,9 @@ class accessconf():
         #print("getUserDict(): %s" % (str(self.getUserDict())))
         #print("isuserlocked(): User lala, result: %d" % (self.isuserlocked("lala")))
         #print("unlockuser(): User lala, result: %s" % (self.unlockuser("lala")))
-        print("lockuser(): User papoutsosiko, result: %s" % (self.lockuser("papoutsosiko")))
-        print("accessconf() test: All done!")
+        #print("lockuser(): User papoutsosiko, result: %s" % (self.lockuser("papoutsosiko")))
+        #print("accessconf() test: All done!")
+        pass
 
 # =============================================================================
 # VARIOUS TESTS
@@ -1003,16 +1033,16 @@ def class_timeconf_test(t):
 def class_pamparser_test(tconf_test_data, aconf_test_data):
     """ Test class pamparser() """
     # A) time.conf
-    testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
     print("INFO: - TEST A1 pamparser time.conf (STRING)\n")
+    testA1 = pamparser(type="time.conf", input="string", string=tconf_test_data)
     testA1.testOutputLines()
     print("\nINFO: - TEST A2 pamparser time.conf (FILE)\n")
     testA2 = pamparser(type="time.conf", input="file")
     testA2.testOutputLines()
 
     # B) access.conf
-#    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
 #    print("\nINFO: - TEST B1 pamparser access.conf (STRING)\n")
+#    testB1 = pamparser(type="access.conf", input="string", string=aconf_test_data)
 #    testB1.testOutputLines()
 #    print("\nINFO: - TEST B2 pamparser access.conf (FILE)\n")
 #    testB2 = pamparser(type="access.conf", input="file")
@@ -1024,7 +1054,8 @@ def doctesting():
 
 def main():
     doctesting()
-    
+
+    #time.conf test data
     tconf_test_data = """
 #xsh ; ttyp* ; root ; !WeMo1700-2030 | !WeFr0600-0830 # Added by timekpr
 xsh & login ; ttyp* ; ro0_ters;!WdMo0000-2400 # Added by timekpr
@@ -1036,6 +1067,8 @@ a;o; a; e
       
 
     """
+
+    # access.conf test data
     aconf_test_data = """
 # testing # Added by timekpr
 - : lala : ALL # Added by timekpr
