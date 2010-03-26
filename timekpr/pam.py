@@ -449,8 +449,6 @@ class pamparser():
 
         # Parse lines and populate self.recognized (list), self.unrecognized, self.userdict
         self.parseLines()
-        # TODO: Check refresh_input
-        
 
     # Common
     # ======
