@@ -17,7 +17,7 @@ EXECUTABLES
 
 1. timekpr
    The daemon service
-    
+	
 2. timekpr-gui
    The user interface (gtk)
 

@@ -1,0 +1,37 @@
+COPYRIGHT
+---------
+	The original timekpr was a bash script:
+		Copyright (c) 2008 Chris Jackson <chris@91courtstreet.net>
+	Further developed by:
+		Copyright (c) 2008 Even Nedberg <code@nedberg.net>
+	Latest additions to support at least ubuntu 14.04 by:
+		Copyright (c) 2014 Eduards Bezverhijs <edzis@inbox.lv>
+
+	The timekpr project and timekpr.py is a complete rewrite in
+	python based on that bash script:
+		Copyright (c) 2008 Even Nedberg <code@nedberg.net>
+		Copyright (c) 2008 Savvas Radevic <vicedar@gmail.com>
+		Copyright (c) 2008 Nicolas Laurance <nlaurance@zindep.com>
+
+LICENSE
+-------
+	The logo and artwork SVG source files included in this project
+	are released into the Public Domain.
+
+	All other parts of this project (except the artwork) are released
+	under the GNU General Public License:
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	On a Debian system, see /usr/share/common-licenses/GPL-3
+

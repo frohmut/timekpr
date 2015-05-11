@@ -1,0 +1,23 @@
+Authors:
+	Even Nedberg <even@nedberg.net>
+	Savvas Radevic <vicedar@gmail.com>
+	Nicolas Laurance <nlaurance@zindep.com>
+	Eduards Bezverhijs <edzis@inbox.lv>
+
+Package maintainers:
+	Eduards Bezverhijs
+
+Lead testers, Bug reporters:
+	Eduards Bezverhijs
+	Rinalds Dobelis
+	Even Nedberg
+	Charles Jackson <crjackson@carolina.rr.com>
+
+Lead planners (Blueprints):
+	Charles Jackson
+
+Documenters:
+	Savvas Radevic
+
+Artwork:
+	Savvas Radevic

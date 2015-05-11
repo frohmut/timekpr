@@ -2,65 +2,132 @@
 #Prepare gdm and login in /etc/pam.d/
 gfile='/etc/pam.d/gdm'
 kfile='/etc/pam.d/kdm'
-lfile='/etc/pam.d/login'
+lsfile='/etc/pam.d/login'
+lgfile='/etc/pam.d/lightdm'
+lfile='/etc/pam.d/lxdm'
+mfile='/etc/pam.d/mdm'
 
+# GDM
 if [ -e $gfile ] ; then
   #pam_time
   echo "Checking for pam_time.so in $gfile"
   x=$(grep -c '^account\s*required\s*pam_time.so' $gfile)
   if [ $x = 0 ] ; then
-    #Didn't find pam_time.so - add it
-    echo "Adding pam_time in $gfile"
-    sed -i -e '$s/$/\naccount required pam_time.so\n/' $gfile
+	#Didn't find pam_time.so - add it
+	echo "Adding pam_time in $gfile"
+	sed -i -e '$s/$/\naccount required pam_time.so\n/' $gfile
   fi
   #pam_access
   echo "Checking for pam_access.so in $gfile"
   x=$(grep -c '^account\s*required\s*pam_access.so' $gfile)
   if [ $x = 0 ] ; then
-    #Didn't find pam_access.so - add it
-    sed -i -e '$s/$/\naccount required pam_access.so\n/' $gfile
+	#Didn't find pam_access.so - add it
+	sed -i -e '$s/$/\naccount required pam_access.so\n/' $gfile
   fi
 else
   echo "Couldn't find $gfile (oops?)"
 fi
 
+# KDM
 if [ -e $kfile ] ; then
   #pam_time
   echo "Checking for pam_time.so in $kfile"
   x=$(grep -c '^account\s*required\s*pam_time.so' $kfile)
   if [ $x = 0 ] ; then
-    #Didn't find pam_time.so - add it
-    echo "Adding pam_time in $kfile"
-    sed -i -e '$s/$/\naccount required pam_time.so\n/' $kfile
+	#Didn't find pam_time.so - add it
+	echo "Adding pam_time in $kfile"
+	sed -i -e '$s/$/\naccount required pam_time.so\n/' $kfile
   fi
   #pam_access
   echo "Checking for pam_access.so in $kfile"
   x=$(grep -c '^account\s*required\s*pam_access.so' $kfile)
   if [ $x = 0 ] ; then
-    #Didn't find pam_access.so - add it
-    sed -i -e '$s/$/\naccount required pam_access.so\n/' $kfile
+	#Didn't find pam_access.so - add it
+	sed -i -e '$s/$/\naccount required pam_access.so\n/' $kfile
   fi
 else
   echo "Couldn't find $kfile (oops?)"
 fi
 
+# standard shadow login
+if [ -e $lsfile ] ; then
+  #pam_time
+  echo "Checking for pam_time.so in $lsfile"
+  x=$(grep -c '^account\s*required\s*pam_time.so' $lsfile)
+  if [ $x = 0 ] ; then
+	#Didn't find pam_time.so - add it
+	sed -i -e '$s/$/\naccount required pam_time.so\n/' $lsfile
+  fi
+  #pam_access
+  echo "Checking for pam_access.so in $lsfile"
+  x=$(grep -c '^account\s*required\s*pam_access.so' $lsfile)
+  if [ $x = 0 ] ; then
+	#Didn't find pam_access.so - add it
+	sed -i -e '$s/$/\naccount required pam_access.so\n/' $lsfile
+  fi
+else
+  echo "Couldn't find $lsfile (oops?)"
+fi
+
+# LightDM
+if [ -e $lgfile ] ; then
+  #pam_time
+  echo "Checking for pam_time.so in $lgfile"
+  x=$(grep -c '^account\s*required\s*pam_time.so' $lgfile)
+  if [ $x = 0 ] ; then
+	#Didn't find pam_time.so - add it
+	echo "Adding pam_time in $lgfile"
+	sed -i -e '$s/$/\naccount required pam_time.so\n/' $lgfile
+  fi
+  #pam_access
+  echo "Checking for pam_access.so in $lgfile"
+  x=$(grep -c '^account\s*required\s*pam_access.so' $lgfile)
+  if [ $x = 0 ] ; then
+	#Didn't find pam_access.so - add it
+	sed -i -e '$s/$/\naccount required pam_access.so\n/' $lgfile
+  fi
+else
+  echo "Couldn't find $lgfile (oops?)"
+fi
+
+# LXDM
 if [ -e $lfile ] ; then
   #pam_time
   echo "Checking for pam_time.so in $lfile"
   x=$(grep -c '^account\s*required\s*pam_time.so' $lfile)
   if [ $x = 0 ] ; then
-    #Didn't find pam_time.so - add it
-    sed -i -e '$s/$/\naccount required pam_time.so\n/' $lfile
+	#Didn't find pam_time.so - add it
+	sed -i -e '$s/$/\naccount required pam_time.so\n/' $lfile
   fi
   #pam_access
   echo "Checking for pam_access.so in $lfile"
   x=$(grep -c '^account\s*required\s*pam_access.so' $lfile)
   if [ $x = 0 ] ; then
-    #Didn't find pam_access.so - add it
-    sed -i -e '$s/$/\naccount required pam_access.so\n/' $lfile
+	#Didn't find pam_access.so - add it
+	sed -i -e '$s/$/\naccount required pam_access.so\n/' $lfile
   fi
 else
   echo "Couldn't find $lfile (oops?)"
+fi
+
+# MDM (MATE)
+if [ -e $mfile ] ; then
+  #pam_time
+  echo "Checking for pam_time.so in $mfile"
+  x=$(grep -c '^account\s*required\s*pam_time.so' $mfile)
+  if [ $x = 0 ] ; then
+	#Didn't find pam_time.so - add it
+	sed -i -e '$s/$/\naccount required pam_time.so\n/' $mfile
+  fi
+  #pam_access
+  echo "Checking for pam_access.so in $mfile"
+  x=$(grep -c '^account\s*required\s*pam_access.so' $mfile)
+  if [ $x = 0 ] ; then
+	#Didn't find pam_access.so - add it
+	sed -i -e '$s/$/\naccount required pam_access.so\n/' $mfile
+  fi
+else
+  echo "Couldn't find $mfile (oops?)"
 fi
 
 #Prepare access.conf and time.conf in /etc/security/
@@ -70,11 +137,11 @@ afile='/etc/security/access.conf'
 if [ -e $afile ] ; then
   x=$(grep -c "^###\? TIMEKPR START" $afile)
   if [ $x -ge 1 ] ; then
-    #Found timekpr section, fix if commented (after removal, see postrm)
-    sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
+	#Found timekpr section, fix if commented (after removal, see postrm)
+	sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $afile
   else
-    #No timekpr section
-    sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $afile
+	#No timekpr section
+	sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $afile
   fi
 else
   #Create access.conf
@@ -85,11 +152,11 @@ fi
 if [ -e $tfile ] ; then
   x=$(grep -c "^###\? TIMEKPR START" $tfile)
   if [ $x -ge 1 ] ; then
-    #Found timekpr section, fix if commented (after removal, see postrm)
-    sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
+	#Found timekpr section, fix if commented (after removal, see postrm)
+	sed -i -e '/^### TIMEKPR START/,/^### TIMEKPR END/ s/^#//g' $tfile
   else
-    #No timekpr section
-    sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $tfile
+	#No timekpr section
+	sed -i -e '$s/$/\n## TIMEKPR START\n## TIMEKPR END/' $tfile
   fi
 else
   #Create access.conf

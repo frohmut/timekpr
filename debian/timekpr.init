@@ -1,15 +1,15 @@
 #! /bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          timekpr
-# Required-Start:    $remote_fs
-# Required-Stop:     $remote_fs
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Provides:		  timekpr
+# Required-Start:	$remote_fs
+# Required-Stop:	 $remote_fs
+# Default-Start:	 2 3 4 5
+# Default-Stop:	  0 1 6
 # Short-Description: Timekpr - Keep control of computer usage
-# Description:       This program will track and control the computer usage
-#                    of your kids. You can limit their daily usage and
-#                    configure periods when they cannot log in.
+# Description:	   This program will track and control the computer usage
+#					of your kids. You can limit their daily usage and
+#					configure periods when they cannot log in.
 ### END INIT INFO
 
 # Author: Savvas Radevic <vicedar@gmail.com>

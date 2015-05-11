@@ -1,23 +1,23 @@
 Source: timekpr
 Section: admin
 Priority: extra
-Maintainer: Savvas Radevic <vicedar@gmail.com>
-Uploaders: Even Nedberg <code@nedberg.net>
+Maintainer: Eduards Bezverhijs <edzis@inbox.lv>
+Uploaders: Eduards Bezverhijs <edzis@inbox.lv>, Even Nedberg <code@nedberg.net>, Savvas Radevic <vicedar@gmail.com>
 Build-Depends: debhelper (>= 7), python-dev, python-support (>= 0.5.3), po-debconf
 Standards-Version: 3.8.0
 XS-Python-Version: >= 2.5
-Vcs-Bzr: https://code.launchpad.net/~timekpr-maintainers/timekpr/trunk
-Vcs-Browser: https://code.launchpad.net/~timekpr-maintainers/timekpr/trunk
+Vcs-Bzr: none
+Vcs-Browser: none
 Homepage: http://launchpad.net/timekpr/
 
 Package: timekpr
-Architecture: all
+Architecture: any
 XB-Python-Version: ${python:Versions}
-Depends: ${misc:Depends}, ${python:Depends}, python-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules, gksu | kdesu
+Depends: ${misc:Depends}, ${python:Depends}, python-gtk2, python-glade2, procps, libnotify-bin, login, libpam-modules, gksu
 Provides: timekpr
 Conflicts: timekpr (< 0.2.2)
 Replaces: timekpr (< 0.2.2)
-Recommends: gdm | kdm
+Recommends: gdm | kdm | lightdm
 Description: Keep control of computer usage
  This program will track and control the computer usage of
  your user accounts. You can limit their daily usage based

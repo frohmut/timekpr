@@ -1,36 +1,21 @@
-Format-Specification: http://dep.debian.net/deps/dep5/
-Name: timekpr
-Maintainer: Even Nedberg <code@nedberg.net>
-            Savvas Radevic <vicedar@gmail.com>
-Source: http://launchpad.net/timekpr/+download
+This package was debianized by Savvas Radevic (medigeek)
+<vicedar@gmail.com> on Wed, 17 Sep 2008 10:00:00 +0200.
 
-Files: *, doc/*, data/*, i18n/*, scripts/*
-Copyright: Savvas Radevic <vicedar@gmail.com>
-License: GPL-3+
+It was downloaded from http://code.launchpad.net/timekpr
 
-Files: artwork/*
-License: other
-    Released into the Public Domain
+Upstream Authors: 
+Even Nedberg <code@nedberg.net>
+Savvas Radevic <vicedar@gmail.com>
+Nicolas Laurance <nlaurance@zindep.com>
 
-Files: debian/*
-Copyright: 2008-2009, Savvas Radevic <vicedar@gmail.com>
-           2008-2009, Even Nedberg <code@nedberg.net>
-License: GPL-3+
+Copyright:
+2008 Even Nedberg
+2008 Savvas Radevic
+2008 Nicolas Laurance
 
-License: GPL-3+
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+All code is released under the GPLv3, see
+/usr/share/common-licenses/GPL-3
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    On Debian systems the full text of the GNU General Public License can be 
-    found in the `/usr/share/common-licenses/GPL' file.
+With the exception of the artwork SVG source files,
+which are released to the Public Domain.
 

@@ -5,15 +5,15 @@
 .. man-pages can have these parts:
 ..   NAME
 ..   SYNOPSIS
-..   CONFIGURATION      [Normally only in Section 4]
+..   CONFIGURATION	  [Normally only in Section 4]
 ..   DESCRIPTION
 ..   OPTIONS.. [Normally only in Sections 1, 8]
-..   EXIT STATUS        [Normally only in Sections 1, 8]
-..   RETURN VALUE       [Normally only in Sections 2, 3]
+..   EXIT STATUS		[Normally only in Sections 1, 8]
+..   RETURN VALUE	   [Normally only in Sections 2, 3]
 ..   ERRORS..  [Typically only in Sections 2, 3]
 ..   ENVIRONMENT
 ..   FILES
-..   VERSIONS           [Normally only in Sections 2, 3]
+..   VERSIONS		   [Normally only in Sections 2, 3]
 ..   CONFORMING TO
 ..   NOTES
 ..   BUGS

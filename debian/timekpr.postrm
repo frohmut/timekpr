@@ -7,10 +7,10 @@ timekprdir=/etc/timekpr
 if [ "$1" = "purge" ] ; then
   #This will clear default directories
   if [ -d $timekprwork ] ; then
-    rm -rf $timekprwork
+	rm -rf $timekprwork
   fi
   if [ -d $timekprdir ] ; then
-    rm -rf $timekprdir
+	rm -rf $timekprdir
   fi
   #This will uncomment the commented areas and remove the lines
   echo "Removing timekpr section from $afile"

@@ -1,0 +1,67 @@
+* Add more tooltips to GUI
+* Implement i18n support
+
+* Should we use 'who' to get a list of users and then log them out using 'pkill -u <username>' instead of getting username and pid
+  if x-session-manager?
+  x-session-manager gives us a problem making the daemon work in XFCE, 'who' and 'pkill' will fix this
+  x-session-manager gives us a problem with the "Hardy Hack" preventing the daemon from working with KDE, 'who' and 'pkill' will not do this
+  Logging out a user with 'pkill' is not nice, but we will warn them and data loss will happen the way it is also if they don't log out!
+  To use 'who' and 'pkill' will will have to move notificatios out of the daemon and into the client. This would, imo, be a better solution than the current as the client will know what DE the user is running.
+
+* Move most of the logic in the while-loop of timekpr.py into timekprcommon.py
+  That way it can be used by timekpr-client.py without the need to rewrite the code
+
+* Lock users at first logout
+  Remove .lock from the while-loop
+
+* PAM time and access modules:
+  add to /etc/pam.d/gdm and /etc/pam.d/login
+
+* Debian package:
+  Suggests: gdm or Recommends: gdm ?
+
+* Manual:
+  docbook? http://www.debian.org/doc/manuals/sgml-howto/x165.html
+  *OR* debiandoc? http://www.debian.org/doc/manuals/sgml-howto/x306.html
+
+* Check out "memory files": http://docs.python.org/lib/module-StringIO.html
+
+* Idea: to make a timekpr-client.py that would run using
+ /etc/xdg/autostart/, somehow sending with dbus or with
+ some other way (username.message?)
+
+* Support xfce4-session, gnome-session and kde session
+  GNOME:
+	/usr/share/xsessions/gnome.desktop
+	/etc/pam.d/gdm
+
+  XFCE:
+	/usr/share/xsessions/xfce4.desktop
+	/etc/pam.d/xdm
+
+  KDE4:
+	/usr/share/xsessions/kde4.desktop
+	/etc/pam.d/kdm-kde4
+
+  KDE3: (?)
+	/usr/share/xsessions/kde.desktop
+	/etc/pam.d/kdm
+
+* testing/timekpr-gui and testing/timekpr.glade
+ "Clear all restrictions" will clear all limits and all files related (.logout .late etc..)
+ "Reset time" will remove the .time file
+ "Bypass for today" will be "timekpr-extend" (Will set "0000-2400" in time.conf for today)
+ "Unlock account" will set user in access.conf
+ Also figure out a way for bypass, e.g. comment at the end of the line or in a file?
+
+* testing/timekpr.glade - we need easily understandable tooltips!
+
+* timekpr.py: Setting to disable/enable limiting users in groups admin/wheel? (or just disable them by default?)
+  http://bugs.launchpad.net/timekpr/+bug/286529
+
+* timekprpam.py: blacklist hours in between - this should use a time.conf line such as:
+  *;*;username;Mo0800-2230&!1200-1500 & Tu0800-2230
+  for the gui of such an improvement, we should add a gtk.DrawingArea box for each day, one box per half an hour
+
+less script, more objects ?
+^ Nicolas, what do you mean? Please edit the line and explain a bit more

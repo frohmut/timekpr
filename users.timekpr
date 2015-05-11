@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# check if w is available
+which who 1>/dev/null 2>/dev/null
+W=$?
+
+# check if loginctl is available
+which loginctl 1>/dev/null 2>/dev/null
+LC=$?
+
+# check if users is available
+which users 1>/dev/null 2>/dev/null
+U=$?
+
+# check users in priority (w, loginctl, users)
+if [ $W -eq 0 ];
+then
+	TKPR_USERS="$(who -s -u | cut -d' ' -f1)"
+elif [ $LC -eq 0 ];
+then
+	TKPR_USERS="$(loginctl list-users | sed 's/^ \+//' | cut -d' ' -f2)"
+elif [ $U -eq 0 ];
+then
+	TKPR_USERS="$(users)"
+fi
+
+# now filter out DM's and improve the result
+TKPR_USERS="$(echo $TKPR_USERS | sed 's/ /\n/g' | sort | uniq | grep -v -e '^gdm$' -e '^kdm$' -e '^lxdm$' -e '^lightdm$' | tr '\n' ' ' | sed 's/ $/\n/')"
+
+# output final user list
+echo "$TKPR_USERS"

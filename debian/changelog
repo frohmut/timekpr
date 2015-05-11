@@ -1,4 +1,102 @@
-timekpr (0.3.2~ppa1~ubuntu1) karmic; urgency=low
+timekpr (0.3.5~ppa1~precise~ubuntu9) precise; urgency=low
+
+  * Fixed issue (reported by maarts in forums) with long usernames
+  ** using "who" instead of "w"
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Tue, 26 May 2015 09:21:17 +0200
+
+timekpr (0.3.5~ppa1~trusty~ubuntu8) trusty; urgency=low
+
+  * Trying to support 15.04
+  * Functionality changes
+  ** New method of determining logged in users (using w instead of loginctl if available, will fall back to loginctl or users in case w is not available)
+  ** Notifications will be critical all the time (they will show up in fullscreen windows all the time)
+  * Administration changes
+  ** Now it will be possible to administer timekpr using non-administrative account (using pkexec now)
+  ** It's possible to administer Timekpr from appindicator/systray menu
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Sun, 26 April 2015 15:21:17 +0200
+
+timekpr (0.3.5~ppa1~14.04~ubuntu6) trusty; urgency=low
+
+  * Translation related changes
+  ** Cleaned up non-translatable strings (like authors / GPL)
+  ** Made timekpr.pot file up-to-date so people can start translation w/o me sending them .po files
+  * Cleaned up older files / experiments
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Sun, 6 July 2014 00:53:11 +0200
+
+timekpr (0.3.5~ppa1~14.04~ubuntu5) trusty; urgency=low
+
+  * Translation related changes
+  ** Couple of translation fixes in About page
+  ** Timekpr launcher now uses translated names
+  ** German translations fixes (thanks to Kai Springstein)
+  * KeyError fixes in timekpr-gui (thanks to Frank Gerbig)
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Sun, 6 July 2014 00:53:11 +0200
+
+timekpr (0.3.5~ppa1~14.04~ubuntu4) trusty; urgency=low
+
+  * Translation related changes
+  ** Modfied/simplified (from code perspective) translations
+  ** Introduced plural forms in translations
+  ** Added German translation (thanks to Kai Springstein)
+  * version fix in GUI
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Sun, 5 July 2014 20:11:39 +0200
+
+timekpr (0.3.5~ppa1~14.04~ubuntu3) trusty; urgency=low
+
+  * Translation related changes
+  ** Added Russian (myself) translation
+  * minor changes in GUI
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Sun, 21 June 2014 20:11:39 +0200
+
+timekpr (0.3.5~ppa1~14.04~ubuntu2) trusty; urgency=low
+
+  * Translation related changes
+  ** Old translations are not working, old translations dropped, info - http://ubuntuforums.org/showthread.php?t=2219675&page=2
+  ** Made all gui strings translatable (including menu and indicator/client messages)
+  ** Added Latvian, French, Finnish translations - thanks to myself (Latvian), Jean-Phillipe Lord (French) and Petja Touru (Finnish)
+  * Added MATE support - supports MDM and client for MATE DE (tested using Mint 17)
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Sun, 21 June 2014 20:11:39 +0200
+
+timekpr (0.3.5~ppa1~14.04~ubuntu1) trusty; urgency=low
+
+  Indicator/client changes
+  * Added immediate notifications in case time is added to account to inform user about change asap
+  * Unified indicator and tray client into one module (new functionality are the same for both now)
+  * New icons which reflect time status
+  ** unlimited time = unlocked green
+  ** time left > 10 mins = locked green
+  ** time left < 10 mins = locked yellow
+  ** time left < 3 mins = locked red
+  * All client notifications should be translatable
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Fri, 9 May 2014 20:11:39 +0200
+
+timekpr (0.3.4~ppa1~14.04~ubuntu1) trusty; urgency=low
+
+  * Trying to support LXDM
+  * Integrate patch which initializes notification (thanks goes to SanskritFritz, ArchLinux AUR Timekpr maintainer)
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Mon, 7 May 2014 20:11:39 +0200
+
+timekpr (0.3.3~ppa1~14.04~ubuntu2) trusty; urgency=low
+
+  * Adapted to work with 14.04 (no backport planned at this time, although it might work even on 12.04)
+  * Added loginctl support (will fall back to "users" in case loginctl is not present)
+  * User list is filtered against popular DM's (gdm, kdm, lxdm, lightdm)
+  * Added support for lightdm (tested only on 14.04)
+  * NEW appindicator to support ubuntu's indicators
+  * Appindicator works different from standard client, I hope - better
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Mon, 21 Mar 2014 20:11:39 +0200
+
+timekpr (0.3.2~ppa1~ubuntu2) jaunty; urgency=low
 
   * Client includes a deafult notification for unsupported DEs (LP: #486881)
   * Release reflects revision 194 from timekpr/stable
@@ -119,7 +217,7 @@ timekpr (0.2.2~b2) UNRELEASED; urgency=low
   * Works in Ubuntu Hardy Heron 8.04.1 now (Bug #287012)
   * Removed debian/menu, using gksu package (Bug #286527)
   * First user with UserID == UID_MIN from login.defs is now hidden
-    from the user list (Bug #286529)
+	from the user list (Bug #286529)
 
  -- Savvas Radevic <vicedar@gmail.com>  Thu, 23 Oct 2008 20:51:18 +0200
 
@@ -168,10 +266,10 @@ timekpr (0.1.0ubuntu8) UNRELEASED; urgency=low
 
   * Revision #30:
   * More fixes to timekpr, kicking and locking after allowed hours also
-    when username.allow does not exist
+	when username.allow does not exist
   * Fixed error in timekpr
   * Changed timekpr, restricted user will be kicked out faster when
-    logging in after allowed time
+	logging in after allowed time
 
  -- Savvas Radevic <vicedar@gmail.com>  Sun, 21 Sep 2008 17:39:31 +0200
 
@@ -182,7 +280,7 @@ timekpr (0.1.0ubuntu7) UNRELEASED; urgency=low
   * New script to unlock a user account manually: timekpr-unlock username
   * New logging function: logkpr 'message' - Log file: /var/log/timekpr.log
   * New lock/unlock functions: based on usermod -e (user expiration) - Would use
-    -L to actually lock it, but it would just say 'wrong password'
+	-L to actually lock it, but it would just say 'wrong password'
   * Tidied up timekpr
   * New variable for lock function: lock_lasts='1 hour' 
 
@@ -200,7 +298,7 @@ timekpr (0.1.0ubuntu5) UNRELEASED; urgency=low
   * Cleaned up timekpr and timekpr-gui
   * timekpr-gui shows users with userid within UID_MIN and UID_MAX
   * timekpr and timekpr-gui now check and create the default
-    directory if necessary
+	directory if necessary
   * Applied possible bugfix (LP: #272142)
 
  -- Savvas Radevic <vicedar@gmail.com>  Fri, 19 Sep 2008 19:35:41 +0200

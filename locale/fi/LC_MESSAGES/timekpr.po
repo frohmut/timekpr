@@ -1,0 +1,331 @@
+#
+# Eduards Bezverhijs <edzis@inbox.lv>, 2014.
+# Petja Touru <>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Timekpr\n"
+"POT-Creation-Date: 2014-07-06 12:16+0300\n"
+"PO-Revision-Date: 2014-07-06 12:16+0300\n"
+"Last-Translator: \n"
+"Language-Team: Petja Touru\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: /home/admins/Desktop/timekpr/stable/gui\n"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:47
+msgid "Time left..."
+msgstr "Käyttöaikaa jäljellä..."
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:185
+msgid "You are early, you will be logged out in LESS than 2 minutes"
+msgstr "Olet aikaisessa ja sinut kirjataan ulos ALLE kahdessa minuutissa"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:189
+msgid "You are late, you will be logged out in LESS than 2 minutes"
+msgstr "Olet myöhässä ja sinut kirjataan ulos ALLE kahdessa minuutissa"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:193
+msgid "Your time is up, you will be logged out in LESS than 2 minutes"
+msgstr ""
+"Käyttöaikasi on loppunut, sinut kirjataan ulos ALLE kahdessa minuutissa"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:214
+msgid "Your time is not limited today"
+msgstr "Käyttöaikaasi ei ole rajoitettu tänään"
+
+#. TRANSLATORS: this is a part of message "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left" please translate accordingly
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:313
+msgid "You have"
+msgstr "Käyttöaikaa jäljellä"
+
+#. TRANSLATORS: this is a part of message "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left" please translate accordingly
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:318
+#, python-format
+msgid "%(hour)s hour"
+msgid_plural "%(hour)s hours"
+msgstr[0] "%(hour)s tunti"
+msgstr[1] "%(hour)s tuntia"
+
+#. TRANSLATORS: this is a part of message "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left" please translate accordingly
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:334
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:441
+#, python-format
+msgid "%(min)s minute"
+msgid_plural "%(min)s minutes"
+msgstr[0] "%(min)s minuutti"
+msgstr[1] "%(min)s minuuttia"
+
+#. TRANSLATORS: this is a part of message "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left" please translate accordingly
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:350
+#, python-format
+msgid "%(sec)s second"
+msgid_plural "%(sec)s seconds"
+msgstr[0] "%(sec)s sekunnin"
+msgstr[1] "%(sec)s sekuntia"
+
+#. TRANSLATORS: this is a part of message "You have %(hour)s hour(s), %(min)s minute(s) and %(sec)s second(s) left" please translate accordingly
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:357
+msgid "left"
+msgstr " "
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-client.py:386
+msgid "Timekpr notification"
+msgstr "Timekpr-ilmoitus"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:51
+msgid "You need to have administrative privileges to run timekpr-gui"
+msgstr "Pääkäyttäjän oikeudet vaaditaan timekpr-gui -ohjelman suorittamiseen"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:102
+msgid "Timekpr Control Panel"
+msgstr "Timekpr Ohjauspaneeli"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:103
+msgid "Timekpr Client"
+msgstr "Timekpr Client"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:166
+msgid ""
+"You need to have at least one normal user available to configure timekpr"
+msgstr ""
+"Vähintään yksi normaali käyttäjä vaaditaan timekpr-ohjelman konfigurointiin"
+
+#. #-#-#-#-#  3merged_chunks.pot (PACKAGE VERSION)  #-#-#-#-#
+#. TRANSLATORS: Replace this string with your names, one name per line.
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:186
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1551
+msgid "translator-credits"
+msgstr "Petja Touru"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:187
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1540
+msgid "Keep control of computer usage"
+msgstr "Hallitse tietokoneen käyttöä"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:193
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:447
+msgid "Lock account"
+msgstr "Lukitse käyttäjätili"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:196
+#, python-format
+msgid "Locked account %s"
+msgstr "Lukittu käyttäjä %s"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:209
+#, python-format
+msgid "Unlocked account %s"
+msgstr "Lukitus poistettu käyttäjältä %s"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:233
+#, python-format
+msgid "Removed all restrictions for account %s"
+msgstr "Käyttäjän %s kaikki rajoitukset poistettu"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:241
+#, python-format
+msgid "Cleared used up time for account %s"
+msgstr "Käyttäjän %s käyttämä aika on nollattu"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:258
+#, python-format
+msgid "Applied reward of %(num)s minute(s) to account %(user)s"
+msgstr "Käyttäjä %(user)s palkittu %(num)s minuutilla"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:275
+#, python-format
+msgid "Set access hours to 00-24 on %(day)s for account %(user)s"
+msgstr "Aseta käytön kellonajat 0-24 %(day)s käyttäjälle %(user)s"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:280
+#, python-format
+msgid "Refreshed setting values from account %s"
+msgstr "Päivitetty asetukset käyttäjältä %s"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:445
+msgid "Unlock account"
+msgstr "Poista lukitus"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:482
+msgid "Status for"
+msgstr "Tila käyttäjälle"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:514
+msgid "\tSun\t "
+msgstr "\tSu\t"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:520
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:545
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:766
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1095
+msgid "Every day"
+msgstr "Joka päivä"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:540
+msgid "Sun"
+msgstr "Su"
+
+#: /home/admins/Desktop/timekpr/stable/gui/client/timekpr-gui.py:592
+#, python-format
+msgid "Applied limit changes for account %s"
+msgstr "Rajoitukset otettu käyttöön käyttäjälle %s"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:7
+msgid "timekpr"
+msgstr "timekpr"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:25
+msgid "_Help"
+msgstr "_Ohje"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:94
+msgid "Select user"
+msgstr "Valitse käyttäjä"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:191
+msgid "Bypass for today"
+msgstr "Ohita rajoitukset tänään"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:219
+msgid ""
+"Able to login all day today:\n"
+"(Also active bypass)"
+msgstr ""
+"Kirjautuminen mahdollista koska tahansa tänään:\n"
+"(Myös aktiivinen ohitus)"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:234
+msgid "Limited by access duration (any day):"
+msgstr "Rajoitettu käyttöajan perusteella (mikä tahansa päivä):"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:292
+msgid "Reset time"
+msgstr "Nollaa aika"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:339
+msgid ""
+"Add time\n"
+"Reward / Penalty"
+msgstr ""
+"Lisää aikaa\n"
+"Palkitse/Rankaise"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:375
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:858
+msgid "minutes"
+msgstr "minuuttia"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:443
+msgid "Limited by time frame (any day):"
+msgstr "Rajoitettu kellonajan perusteella (mikä tahansa päivä):"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:481
+msgid "Clear all restrictions"
+msgstr "Poista kaikki rajoitukset"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:531
+msgid "Unlock Account"
+msgstr "Poista lukitus käyttäjältä"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:587
+msgid "Account locked:"
+msgstr "Käyttäjätili lukittu:"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:601
+msgid "Status for <span weight=\"bold\">username</span>"
+msgstr "Käyttäjän <span weight=\"bold\">username</span> tila"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:630
+msgid "Time left:"
+msgstr "Aikaa jäljellä:"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:640
+msgid "-"
+msgstr "-"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:654
+msgid "Status"
+msgstr "Tila"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:679
+msgid ""
+"Limit user access by defining the time duration\n"
+"(how long the user is logged in)"
+msgstr ""
+"Rajoita käyttöä määrittämällä käyttöajan pituus\n"
+"(kuinka pitkään käyttäjä voi olla kirjautuneena sisään)"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:706
+msgid "Limit access duration"
+msgstr "Rajoita käyttöajan pituutta"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:726
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1033
+msgid "Configure per day"
+msgstr "Konfiguroi päiväkohtaisesti"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:792
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1106
+msgid "Mon"
+msgstr "Ma"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:803
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1117
+msgid "Tue"
+msgstr "Ti"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:814
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1128
+msgid "Wed"
+msgstr "Ke"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:825
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1139
+msgid "Thu"
+msgstr "To"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:836
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1150
+msgid "Fri"
+msgstr "Pe"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:847
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1161
+msgid "Sat"
+msgstr "La"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:986
+msgid ""
+"Limit user access by defining the hours\n"
+"when user is allowed to login"
+msgstr ""
+"Rajoita käyttöä määrittämällä tunnit\n"
+"(koska käyttäjä on sallittu kirjautumaan)"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1013
+msgid "Limit time frame"
+msgstr "Rajoita aikaväliä"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1073
+msgid "from"
+msgstr "Alkaa"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1084
+msgid "to"
+msgstr "Päättyy"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1424
+msgid "Limits & Boundaries"
+msgstr "Rajoitukset"
+
+#: /home/admins/Desktop/timekpr/stable/gui/timekpr.glade:1530
+msgid "About timekpr"
+msgstr "Tietoja timekpr-ohjelmasta"
