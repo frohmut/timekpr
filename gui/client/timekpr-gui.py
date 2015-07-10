@@ -7,7 +7,7 @@ import re
 from os import remove, mkdir, geteuid, getenv
 from os.path import isdir, isfile, realpath, dirname
 from time import strftime, sleep
-from pwd import getpwnam
+from pwd import getpwnam,getpwall
 from spwd import getspall
 
 import pygtk
@@ -156,7 +156,7 @@ class timekprGUI:
 		self.wTree.signal_autoconnect(dic)
 
 		#Using /etc/shadow spwd module
-		for userinfo in getspall():
+		for userinfo in getpwall():
 			if isnormal(userinfo[0]):
 				self.userSelect.append_text(userinfo[0])
 				self.userSelect.set_active(0)
