@@ -1,3 +1,9 @@
+timekpr (0.3.5~ppa1~ubuntu10) UNRELEASED; urgency=medium
+
+  * fixes bug #1467654 (from original timekpr repo)
+
+ -- Eduards Bezverhijs <edzis@inbox.lv>  Fri, 10 Jul 2015 13:01:35 +0300
+
 timekpr (0.3.5~ppa1~precise~ubuntu9) precise; urgency=low
 
   * Fixed issue (reported by maarts in forums) with long usernames
