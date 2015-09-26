@@ -19,6 +19,7 @@ if DEVACTIVE:
 	path.append('.')
 from timekprpam import * # timekprpam.py
 from timekprcommon import * # timekprcommon.py
+from timekprsync import syncserverconfig
 
 #timekpr.conf variables (dictionary variable)
 VAR = getvariables(DEVACTIVE)
@@ -194,6 +195,8 @@ logkpr('Directories: LOGFILE: %s TIMEKPRDIR: %s TIMEKPRWORK: %s TIMEKPRSHARED: %
 		VAR['TIMEKPRSHARED']))
 
 while (True):
+        # sync with server (if there is one)
+        syncserverconfig()
 	# Check if any accounts should be unlocked and re-activate them
 	checklockacct()
 	# Check if we have passed midnight, ie new day

@@ -8,6 +8,7 @@ timekpr-client usr/bin/
 users.timekpr usr/bin
 timekprpam.py usr/share/pyshared/timekpr/
 timekpr.py usr/share/pyshared/timekpr/
+timekprsync.py usr/share/pyshared/timekpr/
 gui/client/timekpr-gui.py usr/share/pyshared/timekpr/
 gui/client/timekpr-client.py usr/share/pyshared/timekpr/
 timekprpam.py usr/share/pyshared/timekpr/
