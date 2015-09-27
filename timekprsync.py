@@ -205,7 +205,11 @@ def update_from_server(server_conf, hostname, var):
             # if
             # - the used time is bigger than the local used time
             # - or is more than 3 minutes smaller.
-            if u['time'] > time or ((time - u['time'])/60.0) > 3:
+            #
+            # only update the 'used time' if the last server
+            # update for the time was from today
+            if server_conf['last_change'][0:10] == strftime("%Y-%m-%d", gmtime()):
+                if u['time'] > time or ((time - u['time'])/60.0) > 3:
                     write_time(var, user, u['time'])
 
     return True
