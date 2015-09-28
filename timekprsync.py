@@ -88,12 +88,12 @@ def post_json(url, data, timeout):
         d = {}
         d['json'] = json_text + "\n"
         r = requests.post(url, data=d, timeout=timeout)
-        if r != json_text:
-            return False
+        if r.json() != data:
+            return "non-matching json"
         else:
-            return True
+            return None
     except requests.exceptions.Timeout:
-        return False
+        return "timeout"
 
 # get all local accounts
 def get_local_accounts():
@@ -265,9 +265,9 @@ def do_sync_server_config():
     if updated_from_server or orig_server_conf != server_conf:
         server_conf['devices'][hostname]['checked_change'] = server_conf['last_change']
         log_kpr(var, "posting modified configuration")
-        ok = post_json(server_var['postjson'], server_conf, server_var['timeout'])
-        if not ok:
-            log_kpr(var, "server sync failed")
+        err = post_json(server_var['postjson'], server_conf, server_var['timeout'])
+        if err != None:
+            log_kpr(var, "server sync failed: " + err)
 
 def syncserverconfig():
     try:
