@@ -5,7 +5,7 @@ usr/share/polkit-1/actions/com.ubuntu.timekpr.pkexec.policy usr/share/polkit-1/a
 timekpr usr/bin/
 timekpr-gui usr/bin/
 timekpr-client usr/bin/
-users.timekpr usr/bin
+users.timekpr usr/bin/
 timekprpam.py usr/share/pyshared/timekpr/
 timekpr.py usr/share/pyshared/timekpr/
 timekprsync.py usr/share/pyshared/timekpr/
