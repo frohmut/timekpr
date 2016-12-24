@@ -12,7 +12,7 @@ from timekprcommon import *
 import locale
 import gettext
 import sys
-import time
+from time import *
 import datetime
 
 from timekprcommon import getversion
@@ -374,18 +374,18 @@ class IndicatorTimekpr:
 		# KDE uses different tech to notify users
 		if self.getSessionName() == 'KDE':
 			# KDE4 uses dbus
-			if self.getSessionVersion(self.getSessionName()) == 4:
+			if self.getSessionVersion(self.getSessionName()) >= 4:
 				# do DBUS stuff
 				import dbus
 
 				# set up
 				notificationId = 0
 				sessionDbus = dbus.SessionBus()
-				notifyInterface = dbus.Interface(bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications'), 'org.freedesktop.Notifications')
+				notifyInterface = dbus.Interface(sessionDbus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications'), 'org.freedesktop.Notifications')
 				
 				# notify
 				notificationId = notifyInterface.Notify('', notificationId, '', title, message, '', '', -1)
-				sleep(duration) # we need to sleep explicitly
+				sleep(durationSecs) # we need to sleep explicitly
 				notifyInterface.CloseNotification(notificationId)
 			else:
 				# KDE3 and friends use dcop
